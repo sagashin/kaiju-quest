@@ -268,26 +268,28 @@ export function speakJapanese(text: string, soundEnabled = true) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ja-JP';
-    // ドラゴンボール悟空（野沢雅子さん風）の元気で勢いのある少年ボイス設定
-    utterance.rate = 1.15; // 早口でキビキビしたテンポ
-    utterance.pitch = 1.35; // 高めで張りのある少年声のピッチ
+    // ヒカキン風のハイテンションで親しみやすい男性YouTuberボイス設定
+    utterance.rate = 1.22; // テンポよくノリのいいYouTuberトーク速度
+    utterance.pitch = 0.92; // 男性らしい声帯の響きを保ちつつハリのあるトーン
     utterance.volume = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
-    // 悟空の声質（女性声優の少年ボイス）に近い声を優先
-    const gokuVoice =
+    // 男性ボイス（Otoya, Ichiro, Hattori, Keita 等）を最優先で選択
+    const hikakinVoice =
       voices.find(
         (v) =>
           v.lang.includes('ja') &&
-          (v.name.includes('Kyoko') ||
-            v.name.includes('Ayumi') ||
-            v.name.includes('Sayaka') ||
-            v.name.includes('Google') ||
-            v.name.includes('Otoya'))
-      ) || voices.find((v) => v.lang.includes('ja'));
+          (v.name.includes('Otoya') ||
+            v.name.includes('Ichiro') ||
+            v.name.includes('Keita') ||
+            v.name.includes('Hattori') ||
+            v.name.includes('Takumi'))
+      ) ||
+      voices.find((v) => v.lang.includes('ja') && v.name.includes('Google')) ||
+      voices.find((v) => v.lang.includes('ja'));
 
-    if (gokuVoice) {
-      utterance.voice = gokuVoice;
+    if (hikakinVoice) {
+      utterance.voice = hikakinVoice;
     }
 
     window.speechSynthesis.speak(utterance);
