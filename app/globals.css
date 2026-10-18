@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@keyframes egg-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  15% { transform: translate(-8px, -4px) rotate(-10deg) scale(1.05); }
+  30% { transform: translate(8px, 2px) rotate(10deg) scale(1.08); }
+  45% { transform: translate(-10px, -6px) rotate(-14deg) scale(1.1); }
+  60% { transform: translate(10px, 4px) rotate(14deg) scale(1.12); }
+  75% { transform: translate(-6px, -2px) rotate(-8deg) scale(1.15); }
+  90% { transform: translate(6px, 0px) rotate(8deg) scale(1.18); }
+}
+
+@keyframes holo-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes stamp-slam {
+  0% { transform: scale(2.6) rotate(-25deg); opacity: 0; }
+  60% { transform: scale(0.9) rotate(-8deg); opacity: 1; }
+  80% { transform: scale(1.08) rotate(-12deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-10deg); opacity: 1; }
+}
+
+.animate-egg-shake {
+  animation: egg-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+}
+
+.animate-holo {
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 240, 150, 0.45) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 80%
+  );
+  background-size: 250% 100%;
+  animation: holo-shimmer 3.2s infinite linear;
+}
+
+.animate-float {
+  animation: float-bounce 2.6s ease-in-out infinite;
+}
+
+.animate-stamp {
+  animation: stamp-slam 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

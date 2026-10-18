@@ -1,0 +1,6 @@
+{
+  "name": "お支度クエスト＆怪獣召喚図鑑",
+  "description": "4歳児が毎日の習慣（お支度クエスト）をクリアしてエネルギーを貯め、16種類のカッコいい怪獣を召喚・コレクションできる音声＆効果音つき知育Webアプリ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
