@@ -4,6 +4,12 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'お支度クエスト＆怪獣召喚図鑑',
   description: '毎日のクエストをクリアしてカッコいい怪獣を召喚しよう！音声読み上げ＆ド派手エフェクトつきお支度アプリ',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'かいじゅうクエスト',
+  },
   openGraph: {
     title: 'お支度クエスト＆怪獣召喚図鑑',
     description: '毎日のクエストをクリアしてカッコいい怪獣を召喚しよう！音声読み上げ＆ド派手エフェクトつきお支度アプリ',
