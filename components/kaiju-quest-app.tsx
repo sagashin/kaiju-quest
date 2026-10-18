@@ -79,7 +79,10 @@ export default function KaijuQuestApp() {
         if (raw) {
           const parsed = JSON.parse(raw) as Partial<SavedAppState>;
           if (typeof parsed.energy === 'number') setEnergy(parsed.energy);
-          if (Array.isArray(parsed.completedQuests)) setCompletedQuests(parsed.completedQuests);
+          if (Array.isArray(parsed.completedQuests)) {
+            const migrated = parsed.completedQuests.map((q) => (q === 'teeth' ? 'morning-teeth' : q));
+            setCompletedQuests(migrated);
+          }
           if (Array.isArray(parsed.unlockedKaijuIds)) setUnlockedKaijuIds(parsed.unlockedKaijuIds);
           if (typeof parsed.soundEnabled === 'boolean') setSoundEnabled(parsed.soundEnabled);
         }
@@ -357,7 +360,7 @@ export default function KaijuQuestApp() {
               )}
             </div>
 
-            {/* 8つのクエストカードグリッド（スマホ1〜2列、PC3列） */}
+            {/* 9つのクエストカードグリッド（スマホ1〜2列、PC3列） */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
               {QUEST_LIST.map((quest) => {
                 const isDone = completedQuests.includes(quest.id);
