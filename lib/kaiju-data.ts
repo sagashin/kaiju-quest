@@ -31,6 +31,15 @@ export const QUEST_LIST: QuestItem[] = [
     iconBg: 'bg-cyan-500/30',
   },
   {
+    id: 'toilet',
+    emoji: '🚽',
+    title: 'トイレに いく',
+    shortSpeechName: 'トイレ',
+    cardBg: 'from-rose-500/25 to-pink-500/15',
+    borderAccent: 'border-rose-400/60',
+    iconBg: 'bg-rose-500/30',
+  },
+  {
     id: 'shoes',
     emoji: '👟',
     title: 'くつを そろえる',
@@ -49,6 +58,24 @@ export const QUEST_LIST: QuestItem[] = [
     iconBg: 'bg-amber-500/30',
   },
   {
+    id: 'dinner',
+    emoji: '🍛',
+    title: 'よるごはんを たべる',
+    shortSpeechName: 'よるごはん',
+    cardBg: 'from-orange-500/25 to-rose-500/15',
+    borderAccent: 'border-orange-400/60',
+    iconBg: 'bg-orange-500/30',
+  },
+  {
+    id: 'bath',
+    emoji: '🛁',
+    title: 'おふろに はいる',
+    shortSpeechName: 'おふろ',
+    cardBg: 'from-blue-500/25 to-cyan-500/15',
+    borderAccent: 'border-blue-400/60',
+    iconBg: 'bg-blue-500/30',
+  },
+  {
     id: 'pajamas',
     emoji: '👕',
     title: 'パジャマに きがえる',
@@ -56,15 +83,6 @@ export const QUEST_LIST: QuestItem[] = [
     cardBg: 'from-indigo-500/25 to-blue-500/15',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-500/30',
-  },
-  {
-    id: 'toilet',
-    emoji: '🚽',
-    title: 'トイレに いく',
-    shortSpeechName: 'トイレ',
-    cardBg: 'from-rose-500/25 to-pink-500/15',
-    borderAccent: 'border-rose-400/60',
-    iconBg: 'bg-rose-500/30',
   },
 ];
 
