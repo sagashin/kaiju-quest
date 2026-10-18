@@ -30,7 +30,7 @@ export function KaijuHeroCard({
     playSpecialAttackSound();
     fireSummonConfetti(elMeta.confettiColors);
     speakJapanese(
-      `${kaiju.roar} ぼくは、${kaiju.name}！ ひっさつわざは、${kaiju.specialMove} だ！`,
+      `オッス！${kaiju.roar} ぼくは、${kaiju.name}！ ひっさつわざは、${kaiju.specialMove} だ！いっちょやってみっか！`,
       soundEnabled
     );
     setTimeout(() => {

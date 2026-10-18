@@ -268,16 +268,26 @@ export function speakJapanese(text: string, soundEnabled = true) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ja-JP';
-    utterance.rate = 1.05; // 元気でテンポの良い速度
-    utterance.pitch = 1.18; // 明るく親しみやすい声の高さ
+    // ドラゴンボール悟空（野沢雅子さん風）の元気で勢いのある少年ボイス設定
+    utterance.rate = 1.15; // 早口でキビキビしたテンポ
+    utterance.pitch = 1.35; // 高めで張りのある少年声のピッチ
     utterance.volume = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
-    const jaVoice =
-      voices.find((v) => v.lang.includes('ja') && (v.name.includes('Google') || v.name.includes('Kyoko') || v.name.includes('Otoya'))) ||
-      voices.find((v) => v.lang.includes('ja'));
-    if (jaVoice) {
-      utterance.voice = jaVoice;
+    // 悟空の声質（女性声優の少年ボイス）に近い声を優先
+    const gokuVoice =
+      voices.find(
+        (v) =>
+          v.lang.includes('ja') &&
+          (v.name.includes('Kyoko') ||
+            v.name.includes('Ayumi') ||
+            v.name.includes('Sayaka') ||
+            v.name.includes('Google') ||
+            v.name.includes('Otoya'))
+      ) || voices.find((v) => v.lang.includes('ja'));
+
+    if (gokuVoice) {
+      utterance.voice = gokuVoice;
     }
 
     window.speechSynthesis.speak(utterance);
