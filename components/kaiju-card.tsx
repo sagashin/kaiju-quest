@@ -1,15 +1,35 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Volume2, Sparkles, Zap } from 'lucide-react';
-import { KaijuData, getElementMeta, getTypeMeta } from '@/lib/kaiju-data';
+import { Volume2, Sparkles, Zap, Lock, Crown, HeartHandshake } from 'lucide-react';
+import {
+  KaijuData,
+  KaijuProgress,
+  KaijuSkill,
+  EvolutionStage,
+  getElementMeta,
+  getTypeMeta,
+  getKaijuStats,
+} from '@/lib/kaiju-data';
 import { KaijuSvgIllustration } from '@/components/kaiju-artwork';
-import { playSpecialAttackSound, speakJapanese, fireSummonConfetti } from '@/lib/sound-and-speech';
+import {
+  playTapSound,
+  playSpecialAttackSound,
+  playLevelUpSound,
+  playEvolutionSound,
+  speakJapanese,
+  fireSummonConfetti,
+} from '@/lib/sound-and-speech';
 
-interface KaijuCardProps {
+export interface KaijuCardProps {
   kaiju: KaijuData;
   soundEnabled: boolean;
   isNewUnlock?: boolean;
+  progress?: KaijuProgress;
+  expOrbs?: number;
+  isPartner?: boolean;
+  onLevelUp?: (kaijuId: string) => void;
+  onSelectPartner?: (kaijuId: string) => void;
   onClose?: () => void;
   closeButtonLabel?: string;
 }
@@ -18,21 +38,106 @@ export function KaijuHeroCard({
   kaiju,
   soundEnabled,
   isNewUnlock = false,
+  progress,
+  expOrbs = 0,
+  isPartner = false,
+  onLevelUp,
+  onSelectPartner,
   onClose,
   closeButtonLabel = 'とじる',
 }: KaijuCardProps) {
   const [isAttacking, setIsAttacking] = useState(false);
+  const [activeSkillBanner, setActiveSkillBanner] = useState<string | null>(null);
+  const [previewStage, setPreviewStage] = useState<EvolutionStage | null>(null);
+  const [levelUpMessages, setLevelUpMessages] = useState<string[] | null>(null);
+
   const elMeta = getElementMeta(kaiju.element);
   const typeMeta = getTypeMeta(kaiju.type);
+  const stats = getKaijuStats(kaiju, progress);
 
-  const handlePlayVoiceAndAttack = () => {
+  // プレビュー選択中ならその形態、未選択なら現在のレベルの進化形態を表示
+  const displayedStage: EvolutionStage =
+    previewStage && previewStage <= stats.stage ? previewStage : stats.stage;
+
+  const displayedName =
+    displayedStage === 1
+      ? kaiju.stageNames?.[0] ?? `プチ${kaiju.name}`
+      : displayedStage === 2
+      ? kaiju.stageNames?.[1] ?? kaiju.name
+      : kaiju.stageNames?.[2] ?? `キング${kaiju.name}`;
+
+  const handlePlaySkillAttack = (skill?: KaijuSkill) => {
+    const moveName = skill ? skill.name : kaiju.specialMove;
     setIsAttacking(true);
+    setActiveSkillBanner(moveName);
     playSpecialAttackSound();
     fireSummonConfetti(elMeta.confettiColors);
     speakJapanese(
-      `ブンブン！${kaiju.roar} ぼくは、${kaiju.name}！ ひっさつわざは、${kaiju.specialMove} だ！これマジでやばいねー！`,
+      `ブンブン！${kaiju.roar} ぼくは、${displayedName}！ くらえっ、${moveName} だーっ！これマジでやばいねー！`,
       soundEnabled
     );
+    setTimeout(() => {
+      setIsAttacking(false);
+    }, 1200);
+  };
+
+  const handleOneTapLevelUp = () => {
+    if (!onLevelUp) return;
+
+    if (expOrbs <= 0) {
+      playTapSound(340);
+      speakJapanese(
+        'おっとー！けいけんち玉が たりないよ！お支度クエストをクリアするか、バトルをして けいけんち玉を ゲットしよう！',
+        soundEnabled
+      );
+      return;
+    }
+
+    const oldStats = stats;
+    const nextProgress: KaijuProgress = {
+      level: oldStats.level + 1,
+      exp: oldStats.exp,
+    };
+    const nextStats = getKaijuStats(kaiju, nextProgress);
+    const didEvolve = nextStats.stage > oldStats.stage;
+    const newlyUnlockedSkill = nextStats.allSkills.find((s) => s.unlockLevel === nextStats.level);
+
+    // 親コンポーネントのレベルアップ処理を実行
+    onLevelUp(kaiju.id);
+    setPreviewStage(null);
+
+    const hpDiff = nextStats.maxHp - oldStats.maxHp;
+    const mpDiff = nextStats.maxMp - oldStats.maxMp;
+    const atkDiff = nextStats.attack - oldStats.attack;
+
+    const msgs: string[] = [
+      `🎉 ${oldStats.displayName}は レベル ${nextStats.level} に あがった！`,
+      `💪 さいだいHP ＋${hpDiff} ／ MP ＋${mpDiff} ／ ちから ＋${atkDiff} アップ！`,
+    ];
+
+    let speech = `テレレレッテッテッテー！${oldStats.displayName}は レベル ${nextStats.level} に あがったぞ！ちからが ぐんぐん あがった！`;
+
+    if (newlyUnlockedSkill) {
+      msgs.push(`✨ あたらしい わざ『${newlyUnlockedSkill.name}』を おぼえた！`);
+      speech += ` さらに、あたらしい わざ、${newlyUnlockedSkill.name} を おぼえたよ！`;
+    }
+
+    if (didEvolve) {
+      msgs.push(
+        `👑 おや…！？ ${oldStats.displayName}の ようすが…！ 『${nextStats.displayName}』に しんかした！！`
+      );
+      speech += ` うおおおーっ！おや！？ ${oldStats.displayName}の ようすが…！ なんと、${nextStats.displayName} に しんかしたーっ！神ってるー！`;
+      playEvolutionSound();
+      fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff']);
+    } else {
+      playLevelUpSound();
+      fireSummonConfetti(elMeta.confettiColors);
+    }
+
+    setLevelUpMessages(msgs);
+    setIsAttacking(true);
+    speakJapanese(speech, soundEnabled);
+
     setTimeout(() => {
       setIsAttacking(false);
     }, 1100);
@@ -43,7 +148,7 @@ export function KaijuHeroCard({
       {/* キラキラ黄金＆属性グラデーション枠の怪獣カード */}
       <div
         className={`relative rounded-3xl p-1.5 bg-gradient-to-br ${elMeta.bgGradient} shadow-[0_0_40px_rgba(250,204,21,0.5)] transition-transform duration-200 ${
-          isAttacking ? 'scale-[1.03]' : ''
+          isAttacking ? 'scale-[1.02]' : ''
         }`}
       >
         {/* NEWバッジ */}
@@ -53,63 +158,93 @@ export function KaijuHeroCard({
           </div>
         )}
 
-        <div className="relative rounded-[20px] bg-slate-900/95 p-4 sm:p-5 overflow-hidden border border-white/25">
+        <div className="relative rounded-[20px] bg-slate-900/95 p-4 sm:p-5 overflow-hidden border border-white/25 space-y-3">
           {/* ホログラムのキラキラ反射レイヤー */}
-          <div className="pointer-events-none absolute inset-0 animate-holo opacity-40" />
+          <div className="pointer-events-none absolute inset-0 animate-holo opacity-35" />
 
-          {/* カード上部：図鑑ナンバー・属性・タイプ */}
-          <div className="relative z-10 flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-2 text-sm font-black text-amber-300 tabular-nums">
+          {/* カード上部：図鑑ナンバー・形態タイトル・属性・タイプ */}
+          <div className="relative z-10 flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm font-black text-amber-300 tabular-nums">
               <span>No.{String(kaiju.dexNumber).padStart(2, '0')}</span>
               <span aria-hidden="true">·</span>
-              <span className="text-white/90">{kaiju.titleBadge}</span>
+              <span className="bg-amber-400/20 text-amber-200 border border-amber-400/50 px-2 py-0.5 rounded-full text-xs">
+                {stats.stageTitle}
+              </span>
             </div>
-            <div className="flex items-center gap-1.5 text-xl bg-slate-800/90 px-3 py-1 rounded-xl border border-white/15">
+            <div className="flex items-center gap-1.5 text-xl bg-slate-800/90 px-3 py-1 rounded-xl border border-white/15 shrink-0">
               <span>{elMeta.emoji}</span>
               <span>{typeMeta.emoji}</span>
             </div>
           </div>
 
-          {/* 怪獣の名前 */}
-          <div className="relative z-10 text-center my-1">
+          {/* 怪獣の名前＆レベルバッジ */}
+          <div className="relative z-10 text-center">
+            <div className="inline-flex items-center gap-2 bg-slate-950/90 border-2 border-amber-400 px-3.5 py-0.5 rounded-full mb-1 shadow">
+              <span className="text-xs font-black text-amber-300">レベル</span>
+              <span className="text-lg sm:text-xl font-black text-yellow-300 tabular-nums">
+                Lv.{stats.level}
+              </span>
+            </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              {kaiju.name}
+              {displayedName}
             </h2>
           </div>
 
-          {/* つよさ星マーク */}
-          <div className="relative z-10 flex items-center justify-center gap-1 my-1.5">
-            <span className="text-xs font-extrabold text-amber-200 mr-1">つよさ</span>
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <span
-                key={idx}
-                className={`text-xl leading-none ${
-                  idx < kaiju.stars
-                    ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.9)]'
-                    : 'text-slate-600'
-                }`}
-              >
-                ★
-              </span>
-            ))}
-          </div>
+          {/* 進化段階プレビュー切り替えボタン（Lv3以上で解放された形態を見比べられる） */}
+          {stats.stage >= 2 && (
+            <div className="relative z-10 flex items-center justify-center gap-1.5">
+              {([1, 2, 3] as EvolutionStage[]).map((st) => {
+                const isUnlockedStage = st <= stats.stage;
+                const isSelected = displayedStage === st;
+                const label = st === 1 ? '★キッズ' : st === 2 ? '★★せいちょう' : '★★★キング';
+                return (
+                  <button
+                    key={st}
+                    type="button"
+                    disabled={!isUnlockedStage}
+                    onClick={() => {
+                      playTapSound(580);
+                      setPreviewStage(st);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-black border transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-amber-400 text-slate-950 border-white shadow'
+                        : isUnlockedStage
+                        ? 'bg-slate-800 text-slate-200 border-white/20 hover:bg-slate-700'
+                        : 'bg-slate-950/60 text-slate-600 border-slate-800 cursor-not-allowed'
+                    }`}
+                  >
+                    {isUnlockedStage ? label : `🔒${label}`}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* 中央：怪獣SVGイラストステージ（タップでも必殺技発動！） */}
           <button
             type="button"
-            onClick={handlePlayVoiceAndAttack}
-            className="relative z-10 w-full h-56 sm:h-64 my-2 rounded-2xl bg-slate-950/80 border-2 border-white/20 flex items-center justify-center overflow-hidden group cursor-pointer active:scale-95 transition-transform"
-            aria-label={`${kaiju.name}のひっさつわざを発動`}
+            onClick={() => handlePlaySkillAttack()}
+            className="relative z-10 w-full h-52 sm:h-60 rounded-2xl bg-slate-950/80 border-2 border-white/20 flex items-center justify-center overflow-hidden group cursor-pointer active:scale-95 transition-transform"
+            aria-label={`${displayedName}のひっさつわざを発動`}
           >
             {/* 鳴き声吹き出し */}
-            <div className="absolute top-2.5 left-2.5 z-20 bg-white text-slate-950 font-black text-sm sm:text-base px-3 py-1 rounded-xl shadow-md border-2 border-amber-400">
+            <div className="absolute top-2.5 left-2.5 z-20 bg-white text-slate-950 font-black text-xs sm:text-sm px-3 py-1 rounded-xl shadow-md border-2 border-amber-400">
               {kaiju.roar}
             </div>
 
-            <div className="w-48 h-48 sm:w-56 sm:h-56">
+            {/* 発動中の技名カットイン */}
+            {isAttacking && activeSkillBanner && (
+              <div className="absolute top-2.5 right-2.5 z-30 bg-gradient-to-r from-rose-600 to-amber-500 text-white font-black text-xs sm:text-sm px-3 py-1 rounded-xl border-2 border-white shadow-xl animate-bounce">
+                ⚡ {activeSkillBanner}！
+              </div>
+            )}
+
+            <div className="w-44 h-44 sm:w-52 sm:h-52">
               <KaijuSvgIllustration
                 element={kaiju.element}
                 type={kaiju.type}
+                evolutionStage={displayedStage}
                 isAttacking={isAttacking}
               />
             </div>
@@ -125,30 +260,219 @@ export function KaijuHeroCard({
             </div>
           </button>
 
-          {/* 必殺技ボックス */}
-          <div
-            className={`relative z-10 rounded-2xl p-3.5 bg-gradient-to-r ${elMeta.bgGradient} text-white shadow-lg border-2 border-white/40 mt-2`}
-          >
-            <div className="flex items-center gap-1.5 text-xs font-black text-yellow-200">
-              <Zap className="w-4 h-4 fill-yellow-300 text-yellow-300" />
-              <span>ひっさつわざ</span>
+          {/* 4歳児向けワンタップ「⚡レベルアップ！」特大ボタン ＆ あいぼうボタン */}
+          {(onLevelUp || onSelectPartner) && (
+            <div className="relative z-10 space-y-2">
+              {onLevelUp && (
+                <button
+                  type="button"
+                  onClick={handleOneTapLevelUp}
+                  className={`min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
+                    expOrbs > 0
+                      ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400 text-slate-950 border-white shadow-[0_5px_0_#b45309,0_0_25px_rgba(250,204,21,0.7)]'
+                      : 'bg-slate-800 text-slate-400 border-slate-600'
+                  }`}
+                >
+                  <span className="text-2xl">🌟</span>
+                  <span>けいけんち玉で レベルアップ！（のこり {expOrbs}こ）</span>
+                </button>
+              )}
+
+              {onSelectPartner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapSound(640);
+                    onSelectPartner(kaiju.id);
+                    speakJapanese(
+                      `やったー！${displayedName}を あいぼうに したよ！いっしょに クエストを がんばろう！`,
+                      soundEnabled
+                    );
+                  }}
+                  className={`min-h-[52px] w-full rounded-2xl px-4 py-2 font-black text-sm sm:text-base flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer ${
+                    isPartner
+                      ? 'bg-emerald-500 text-slate-950 border-white shadow-md'
+                      : 'bg-slate-800/90 hover:bg-slate-700 text-emerald-300 border-emerald-400/50'
+                  }`}
+                >
+                  <HeartHandshake className="w-5 h-5 shrink-0" />
+                  <span>
+                    {isPartner
+                      ? '🤝 いまの「あいぼう」だよ！（いっしょに成長中）'
+                      : '🤝 この かいじゅうを「あいぼう」にする'}
+                  </span>
+                </button>
+              )}
             </div>
-            <div className="text-xl sm:text-2xl font-black tracking-tight mt-0.5 drop-shadow">
-              {kaiju.specialMove}
+          )}
+
+          {/* ドラクエ風レベルアップ＆進化実況ウィンドウ（レベルアップ時に出現！） */}
+          {levelUpMessages && (
+            <div className="relative z-20 dq-window p-3.5 text-white space-y-1.5 animate-bounce">
+              <div className="text-xs font-black text-yellow-300 flex items-center justify-between">
+                <span>🎺 レベルアップ じっきょう！</span>
+                <button
+                  type="button"
+                  onClick={() => setLevelUpMessages(null)}
+                  className="text-[11px] text-slate-300 underline cursor-pointer"
+                >
+                  とじる
+                </button>
+              </div>
+              {levelUpMessages.map((line, i) => (
+                <p key={i} className="text-sm sm:text-base font-black leading-snug">
+                  {line}
+                </p>
+              ))}
+            </div>
+          )}
+
+          {/* ドラゴンクエスト風ステータスボックス（.dq-window） */}
+          <div className="relative z-10 dq-window p-3.5 text-white space-y-2.5">
+            <div className="flex items-center justify-between border-b-2 border-white/20 pb-2">
+              <div className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-400 shrink-0" />
+                <span className="text-base sm:text-lg font-black text-yellow-300 tabular-nums">
+                  Lv.{stats.level}
+                </span>
+                <span className="text-xs font-bold text-slate-300">
+                  （つぎの進化: {stats.level < 3 ? 'Lv.3' : stats.level < 5 ? 'Lv.5 キング形態' : '👑究極進化ずみ！'}）
+                </span>
+              </div>
+              <span className="text-xs font-black text-amber-200 tabular-nums">
+                EXP {stats.exp}/100
+              </span>
+            </div>
+
+            {/* EXPバー */}
+            <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-white/20">
+              <div
+                className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 transition-all duration-300"
+                style={{ width: `${Math.min(100, stats.exp)}%` }}
+              />
+            </div>
+
+            {/* HP / MP ゲージ */}
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <div className="bg-slate-900/90 rounded-xl p-2 border border-emerald-400/40">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="text-emerald-300">ＨＰ（たいりょく）</span>
+                  <span className="text-white tabular-nums">{stats.maxHp}</span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden mt-1">
+                  <div className="h-full w-full bg-gradient-to-r from-emerald-500 to-lime-400" />
+                </div>
+              </div>
+
+              <div className="bg-slate-900/90 rounded-xl p-2 border border-cyan-400/40">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="text-cyan-300">ＭＰ（マジック）</span>
+                  <span className="text-white tabular-nums">{stats.maxMp}</span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden mt-1">
+                  <div className="h-full w-full bg-gradient-to-r from-cyan-500 to-sky-400" />
+                </div>
+              </div>
+            </div>
+
+            {/* ちから / みのまもり / すばやさ */}
+            <div className="grid grid-cols-3 gap-2 text-center pt-0.5">
+              <div className="bg-slate-900/80 rounded-lg py-1.5 px-2 border border-white/10">
+                <div className="text-[11px] font-bold text-orange-300">⚔️ ちから</div>
+                <div className="text-base font-black text-white tabular-nums">{stats.attack}</div>
+              </div>
+              <div className="bg-slate-900/80 rounded-lg py-1.5 px-2 border border-white/10">
+                <div className="text-[11px] font-bold text-sky-300">🛡️ まもり</div>
+                <div className="text-base font-black text-white tabular-nums">{stats.defense}</div>
+              </div>
+              <div className="bg-slate-900/80 rounded-lg py-1.5 px-2 border border-white/10">
+                <div className="text-[11px] font-bold text-lime-300">💨 すばやさ</div>
+                <div className="text-base font-black text-white tabular-nums">{stats.speed}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 習得した「わざリスト」セクション（全4つ） */}
+          <div className="relative z-10 space-y-2">
+            <div className="flex items-center justify-between text-xs font-black text-amber-300 px-1">
+              <span className="flex items-center gap-1">
+                <Zap className="w-4 h-4 fill-yellow-300 text-yellow-300" />
+                おぼえた わざ（タップで わざを だすよ！）
+              </span>
+              <span>{stats.unlockedSkills.length} / 4</span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2">
+              {stats.allSkills.map((skill) => {
+                const isUnlocked = stats.level >= skill.unlockLevel;
+                return (
+                  <button
+                    key={skill.id}
+                    type="button"
+                    onClick={() => {
+                      if (isUnlocked) {
+                        handlePlaySkillAttack(skill);
+                      } else {
+                        playTapSound(350);
+                        speakJapanese(
+                          `このわざは レベル ${skill.unlockLevel} に なると おぼえるよ！たのしみだね！`,
+                          soundEnabled
+                        );
+                      }
+                    }}
+                    className={`w-full rounded-xl p-2.5 text-left border-2 transition-all flex items-center justify-between gap-2 cursor-pointer active:scale-95 ${
+                      isUnlocked
+                        ? skill.isUltimate
+                          ? 'bg-gradient-to-r from-amber-500/30 via-rose-500/30 to-purple-600/30 border-yellow-300 text-white shadow'
+                          : 'bg-slate-800/90 hover:bg-slate-800 border-white/25 text-white'
+                        : 'bg-slate-950/70 border-slate-800 text-slate-500'
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        {isUnlocked ? (
+                          <span className="text-sm font-black text-yellow-300">
+                            {skill.isUltimate ? '👑究極' : `Lv.${skill.unlockLevel}`}
+                          </span>
+                        ) : (
+                          <Lock className="w-4 h-4 text-slate-500 shrink-0" />
+                        )}
+                        <span className="text-sm sm:text-base font-black truncate">
+                          {isUnlocked ? skill.name : `🔒 Lv.${skill.unlockLevel} で おぼえる！`}
+                        </span>
+                      </div>
+                      <p className="text-xs font-bold text-slate-300 truncate mt-0.5">
+                        {isUnlocked ? skill.description : 'レベルアップすると 強力な わざが つかえるぞ！'}
+                      </p>
+                    </div>
+
+                    {isUnlocked && (
+                      <div className="text-right shrink-0">
+                        <div className="text-xs font-black text-cyan-300 tabular-nums">
+                          MP {skill.mpCost}
+                        </div>
+                        <div className="text-xs font-black text-amber-300 tabular-nums">
+                          💥威力 {skill.power}
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* せつめい文 */}
-          <p className="relative z-10 text-sm font-bold text-slate-200 mt-3 leading-relaxed bg-slate-800/70 rounded-xl p-3 border border-white/10">
+          <p className="relative z-10 text-xs sm:text-sm font-bold text-slate-200 leading-relaxed bg-slate-800/70 rounded-xl p-3 border border-white/10">
             {kaiju.description}
           </p>
 
           {/* アクションボタン（60px以上の特大タップ領域） */}
-          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <button
               type="button"
-              onClick={handlePlayVoiceAndAttack}
-              className="min-h-[62px] w-full rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-lg flex items-center justify-center gap-2 shadow-[0_5px_0_#b45309] transition-all cursor-pointer px-4 whitespace-nowrap shrink-0"
+              onClick={() => handlePlaySkillAttack()}
+              className="min-h-[60px] w-full rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-lg flex items-center justify-center gap-2 shadow-[0_5px_0_#b45309] transition-all cursor-pointer px-4 whitespace-nowrap shrink-0"
             >
               <Volume2 className="w-6 h-6 shrink-0" />
               <span>ひっさつわざ！</span>
@@ -158,7 +482,7 @@ export function KaijuHeroCard({
               <button
                 type="button"
                 onClick={onClose}
-                className="min-h-[62px] w-full rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-black text-lg flex items-center justify-center gap-2 border-2 border-white/25 transition-all cursor-pointer px-4 whitespace-nowrap shrink-0"
+                className="min-h-[60px] w-full rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-black text-lg flex items-center justify-center gap-2 border-2 border-white/25 transition-all cursor-pointer px-4 whitespace-nowrap shrink-0"
               >
                 <span>{closeButtonLabel}</span>
               </button>

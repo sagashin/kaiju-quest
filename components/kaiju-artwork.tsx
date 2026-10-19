@@ -119,17 +119,23 @@ interface KaijuArtProps {
   type: KaijuTypeId;
   silhouette?: boolean;
   isAttacking?: boolean;
+  evolutionStage?: 1 | 2 | 3;
+  isDamaged?: boolean;
+  flipHorizontal?: boolean;
   className?: string;
 }
 
 /**
- * 16種類の属性×タイプに応じたカスタム怪獣SVGイラスト
+ * 属性×タイプ＋進化段階（Stage 1〜3）に応じたカスタム怪獣SVGイラスト
  */
 export function KaijuSvgIllustration({
   element,
   type,
   silhouette = false,
   isAttacking = false,
+  evolutionStage = 2,
+  isDamaged = false,
+  flipHorizontal = false,
   className = 'w-full h-full',
 }: KaijuArtProps) {
   const elMeta = getElementMeta(element);
@@ -140,48 +146,98 @@ export function KaijuSvgIllustration({
   const eyeColor = silhouette ? '#0f172a' : '#fef08a';
   const outline = silhouette ? '#475569' : '#ffffff';
 
+  const stageScaleClass =
+    evolutionStage === 1
+      ? 'scale-90'
+      : evolutionStage === 3
+      ? 'scale-105 animate-evo-glow'
+      : 'scale-100';
+
   return (
-    <div className={`relative flex items-center justify-center select-none ${className}`}>
+    <div
+      className={`relative flex items-center justify-center select-none ${
+        isDamaged ? 'animate-damage-shake' : ''
+      } ${className}`}
+    >
       {/* 背面の属性エネルギー陣 */}
       {!silhouette && (
         <div
           className={`absolute inset-2 rounded-full blur-xl transition-transform duration-300 ${
-            isAttacking ? 'scale-125 opacity-100' : 'scale-100 opacity-65'
+            isAttacking
+              ? 'scale-125 opacity-100'
+              : evolutionStage === 3
+              ? 'scale-115 opacity-95'
+              : 'scale-100 opacity-65'
           }`}
           style={{
-            background: `radial-gradient(circle, ${accent} 0%, ${primary} 65%, transparent 100%)`,
+            background:
+              evolutionStage === 3
+                ? `radial-gradient(circle, #fef08a 0%, ${accent} 40%, ${primary} 75%, transparent 100%)`
+                : `radial-gradient(circle, ${accent} 0%, ${primary} 65%, transparent 100%)`,
           }}
         />
       )}
 
-      <svg
-        viewBox="0 0 260 260"
-        className={`w-full h-full relative z-10 drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)] ${
-          isAttacking ? 'scale-110 transition-transform duration-200' : 'animate-float'
-        }`}
-      >
-        {/* 共通の属性エフェクト背景リング */}
-        {!silhouette && (
-          <g opacity="0.45">
-            <circle
-              cx="130"
-              cy="135"
-              r="96"
-              fill="none"
-              stroke={accent}
-              strokeWidth="3"
-              strokeDasharray="12 8"
-            />
-            <circle
-              cx="130"
-              cy="135"
-              r="82"
-              fill="none"
-              stroke={secondary}
-              strokeWidth="2"
-            />
-          </g>
-        )}
+      {/* Stage 1 キッズ期の可愛い新米マークバッジ */}
+      {!silhouette && evolutionStage === 1 && (
+        <div className="absolute -top-1 right-1 z-20 bg-emerald-950/90 border-2 border-emerald-300 text-emerald-200 text-xs font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5 pointer-events-none">
+          <span>🌱</span>
+          <span>キッズ</span>
+        </div>
+      )}
+
+      <div className={`w-full h-full flex items-center justify-center ${flipHorizontal ? 'scale-x-[-1]' : ''}`}>
+        <svg
+          viewBox="0 0 260 260"
+          className={`w-full h-full relative z-10 drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)] transition-transform duration-200 ${stageScaleClass} ${
+            isAttacking ? 'scale-110' : 'animate-float'
+          }`}
+        >
+          {/* Stage 2 & 3 共通の属性エフェクト背景リング */}
+          {!silhouette && evolutionStage >= 2 && (
+            <g opacity={evolutionStage === 3 ? '0.85' : '0.45'}>
+              <circle
+                cx="130"
+                cy="135"
+                r="96"
+                fill="none"
+                stroke={evolutionStage === 3 ? '#facc15' : accent}
+                strokeWidth={evolutionStage === 3 ? '4' : '3'}
+                strokeDasharray="12 8"
+              />
+              <circle
+                cx="130"
+                cy="135"
+                r="82"
+                fill="none"
+                stroke={secondary}
+                strokeWidth="2"
+              />
+            </g>
+          )}
+
+          {/* Stage 3（究極キング期）：黄金のゴッドオーラ＆多重魔法陣 */}
+          {!silhouette && evolutionStage === 3 && (
+            <g opacity="0.9">
+              <circle
+                cx="130"
+                cy="135"
+                r="112"
+                fill="none"
+                stroke="#fef08a"
+                strokeWidth="3.5"
+                strokeDasharray="6 10"
+              />
+              {/* 黄金の後光スターバースト */}
+              <polygon
+                points="130,10 144,45 180,22 162,58 205,52 175,82 218,95 178,112 130,135 82,112 42,95 85,82 55,52 98,58 80,22 116,45"
+                fill="rgba(250, 204, 21, 0.22)"
+                stroke="#facc15"
+                strokeWidth="2"
+              />
+            </g>
+          )}
+
 
         {/* ==================== 1. きょうりゅう (DINO) ==================== */}
         {type === 'dino' && (
@@ -416,16 +472,63 @@ export function KaijuSvgIllustration({
           </g>
         )}
 
-        {/* 必殺技発動中の稲妻＆キラキラエフェクト */}
-        {!silhouette && isAttacking && (
-          <g stroke="#ffffff" strokeWidth="4" fill="#fef08a">
-            <polygon points="35,45 50,20 62,48 42,60" />
-            <polygon points="215,40 235,18 228,52 205,48" />
-            <polygon points="25,195 48,180 40,212" />
-            <polygon points="225,190 245,210 212,215" />
-          </g>
-        )}
-      </svg>
+          {/* Stage 1（キッズ期）：頭上の可愛いキラキラ星 */}
+          {!silhouette && evolutionStage === 1 && (
+            <g fill="#fef08a" stroke="#f59e0b" strokeWidth="2">
+              <circle cx="52" cy="48" r="6" />
+              <circle cx="208" cy="48" r="6" />
+              <circle cx="130" cy="22" r="7" fill="#4ade80" stroke="#ffffff" />
+            </g>
+          )}
+
+          {/* Stage 3（究極キング期）：黄金のキングクラウン（王冠）＆覚醒スパーク */}
+          {!silhouette && evolutionStage === 3 && (
+            <g>
+              {/* 黄金の王冠 */}
+              <polygon
+                points="92,42 100,12 116,28 130,6 144,28 160,12 168,42"
+                fill="#facc15"
+                stroke="#ffffff"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+              />
+              <rect
+                x="92"
+                y="38"
+                width="76"
+                height="9"
+                rx="3"
+                fill="#eab308"
+                stroke="#ffffff"
+                strokeWidth="2.5"
+              />
+              {/* 中央のルビー＆左右のエメラルド宝石 */}
+              <circle cx="130" cy="30" r="5.5" fill="#ef4444" stroke="#ffffff" strokeWidth="1.8" />
+              <circle cx="109" cy="33" r="4" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
+              <circle cx="151" cy="33" r="4" fill="#10b981" stroke="#ffffff" strokeWidth="1.5" />
+
+              {/* 周囲にバチバチ光る覚醒スパーク */}
+              <g stroke="#fef08a" strokeWidth="3.5" fill="#facc15">
+                <polygon points="24,68 42,52 34,76 48,78 26,96 32,76" />
+                <polygon points="236,68 218,52 226,76 212,78 234,96 228,76" />
+                <circle cx="38" cy="185" r="5" />
+                <circle cx="222" cy="185" r="5" />
+              </g>
+            </g>
+          )}
+
+          {/* 必殺技発動中の稲妻＆キラキラエフェクト */}
+          {!silhouette && isAttacking && (
+            <g stroke="#ffffff" strokeWidth="4" fill="#fef08a">
+              <polygon points="35,45 50,20 62,48 42,60" />
+              <polygon points="215,40 235,18 228,52 205,48" />
+              <polygon points="25,195 48,180 40,212" />
+              <polygon points="225,190 245,210 212,215" />
+            </g>
+          )}
+        </svg>
+      </div>
     </div>
   );
 }
+

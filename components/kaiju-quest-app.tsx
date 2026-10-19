@@ -11,7 +11,8 @@ import {
   HelpCircle,
   Flame,
   BookOpen,
-  Egg,
+  Swords,
+  HeartHandshake,
 } from 'lucide-react';
 import {
   QUEST_LIST,
@@ -21,31 +22,39 @@ import {
   ElementId,
   KaijuTypeId,
   KaijuData,
+  KaijuProgress,
   QuestItem,
-  findKaiju,
+  findKaijuForSummon,
+  getKaijuStats,
   getElementMeta,
   getTypeMeta,
 } from '@/lib/kaiju-data';
 import { MonsterEggSvg, KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import { KaijuHeroCard } from '@/components/kaiju-card';
+import { KaijuBattle } from '@/components/kaiju-battle';
 import {
   playTapSound,
   playQuestClearSound,
   playEggChargeSound,
   playSummonExplosionAndFanfare,
   playSpecialAttackSound,
+  playLevelUpSound,
+  playEvolutionSound,
   speakJapanese,
   fireQuestConfetti,
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
 
-type ActiveTab = 'quest' | 'summon' | 'zukan';
+type ActiveTab = 'quest' | 'summon' | 'zukan' | 'battle';
 
 interface SavedAppState {
   energy: number;
   completedQuests: string[];
   unlockedKaijuIds: string[];
   soundEnabled: boolean;
+  kaijuProgress: Record<string, KaijuProgress>;
+  expOrbs: number;
+  partnerKaijuId: string | null;
 }
 
 const STORAGE_KEY = 'kaiju_oshitaku_quest_v1';
@@ -54,9 +63,17 @@ export default function KaijuQuestApp() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('quest');
   const [energy, setEnergy] = useState<number>(0);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
-  const [unlockedKaijuIds, setUnlockedKaijuIds] = useState<string[]>([]);
+  const [unlockedKaijuIds, setUnlockedKaijuIds] = useState<string[]>(['fire-dino']);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [kaijuProgress, setKaijuProgress] = useState<Record<string, KaijuProgress>>({
+    'fire-dino': { level: 1, exp: 0 },
+  });
+  const [expOrbs, setExpOrbs] = useState<number>(3);
+  const [partnerKaijuId, setPartnerKaijuId] = useState<string | null>('fire-dino');
   const [isHydrated, setIsHydrated] = useState<boolean>(false);
+
+  // ドラクエ風レベルアップトースト通知（クエスト達成であいぼうがレベルアップした時など）
+  const [dqToastMessages, setDqToastMessages] = useState<string[] | null>(null);
 
   // 召喚タブの選択ステート
   const [selectedElement, setSelectedElement] = useState<ElementId>('fire');
@@ -65,6 +82,7 @@ export default function KaijuQuestApp() {
   const [summonedKaiju, setSummonedKaiju] = useState<{
     kaiju: KaijuData;
     isNew: boolean;
+    powerUpLevel?: number;
   } | null>(null);
 
   // 図鑑タブの選択・フィルターステート
@@ -80,11 +98,42 @@ export default function KaijuQuestApp() {
           const parsed = JSON.parse(raw) as Partial<SavedAppState>;
           if (typeof parsed.energy === 'number') setEnergy(parsed.energy);
           if (Array.isArray(parsed.completedQuests)) {
-            const migrated = parsed.completedQuests.map((q) => (q === 'teeth' ? 'morning-teeth' : q));
+            const migrated = parsed.completedQuests.map((q) =>
+              q === 'teeth' ? 'morning-teeth' : q
+            );
             setCompletedQuests(migrated);
           }
-          if (Array.isArray(parsed.unlockedKaijuIds)) setUnlockedKaijuIds(parsed.unlockedKaijuIds);
+
+          const loadedUnlocked =
+            Array.isArray(parsed.unlockedKaijuIds) && parsed.unlockedKaijuIds.length > 0
+              ? parsed.unlockedKaijuIds
+              : ['fire-dino'];
+          setUnlockedKaijuIds(loadedUnlocked);
+
           if (typeof parsed.soundEnabled === 'boolean') setSoundEnabled(parsed.soundEnabled);
+
+          // kaijuProgress の初期化・補完
+          const loadedProgress: Record<string, KaijuProgress> = {
+            ...(parsed.kaijuProgress || {}),
+          };
+          loadedUnlocked.forEach((id) => {
+            if (!loadedProgress[id]) {
+              loadedProgress[id] = { level: 1, exp: 0 };
+            }
+          });
+          setKaijuProgress(loadedProgress);
+
+          if (typeof parsed.expOrbs === 'number') {
+            setExpOrbs(parsed.expOrbs);
+          } else {
+            setExpOrbs(3);
+          }
+
+          if (parsed.partnerKaijuId && KAIJU_LIST.some((k) => k.id === parsed.partnerKaijuId)) {
+            setPartnerKaijuId(parsed.partnerKaijuId);
+          } else {
+            setPartnerKaijuId(loadedUnlocked[0] || 'fire-dino');
+          }
         }
       } catch {
         // ignore localStorage read errors
@@ -103,12 +152,79 @@ export default function KaijuQuestApp() {
         completedQuests,
         unlockedKaijuIds,
         soundEnabled,
+        kaijuProgress,
+        expOrbs,
+        partnerKaijuId,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch {
       // ignore localStorage write errors
     }
-  }, [energy, completedQuests, unlockedKaijuIds, soundEnabled, isHydrated]);
+  }, [
+    energy,
+    completedQuests,
+    unlockedKaijuIds,
+    soundEnabled,
+    kaijuProgress,
+    expOrbs,
+    partnerKaijuId,
+    isHydrated,
+  ]);
+
+  // 指定した怪獣に経験値を加算し、100ごとにレベルアップさせる共通関数
+  const addExpToKaiju = (
+    kaijuId: string,
+    expAmount: number,
+    options?: { showToast?: boolean }
+  ): { leveledUp: boolean; newLevel: number; evolved: boolean } => {
+    const targetKaiju = KAIJU_LIST.find((k) => k.id === kaijuId) || KAIJU_LIST[0];
+    const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0 };
+    const oldStats = getKaijuStats(targetKaiju, currentProg);
+
+    let nextLevel = currentProg.level;
+    let nextExp = currentProg.exp + expAmount;
+
+    while (nextExp >= 100) {
+      nextExp -= 100;
+      nextLevel += 1;
+    }
+
+    const nextProg: KaijuProgress = { level: nextLevel, exp: nextExp };
+    const nextStats = getKaijuStats(targetKaiju, nextProg);
+    const leveledUp = nextLevel > currentProg.level;
+    const evolved = nextStats.stage > oldStats.stage;
+
+    setKaijuProgress((prev) => ({
+      ...prev,
+      [kaijuId]: nextProg,
+    }));
+
+    if (leveledUp && options?.showToast) {
+      const msgs: string[] = [
+        `🎺 あいぼうの ${oldStats.displayName}は レベル ${nextLevel} に あがった！`,
+      ];
+      const newSkill = nextStats.allSkills.find((s) => s.unlockLevel === nextLevel);
+      if (newSkill) {
+        msgs.push(`✨ あたらしい わざ『${newSkill.name}』を おぼえた！`);
+      }
+      if (evolved) {
+        msgs.push(`👑 『${nextStats.displayName}』に しんかしたぞ！！`);
+        playEvolutionSound();
+      } else {
+        playLevelUpSound();
+      }
+      setDqToastMessages(msgs);
+    }
+
+    return { leveledUp, newLevel: nextLevel, evolved };
+  };
+
+  // ワンタップ「🌟けいけんち玉でレベルアップ！」ハンドラ
+  const handleUseExpOrb = (kaijuId: string) => {
+    if (expOrbs <= 0) return;
+    setExpOrbs((prev) => Math.max(0, prev - 1));
+    addExpToKaiju(kaijuId, 100);
+  };
 
   // タブ切り替え処理
   const handleSelectTab = (tab: ActiveTab) => {
@@ -118,15 +234,32 @@ export default function KaijuQuestApp() {
     setSelectedZukanKaiju(null);
 
     if (tab === 'quest') {
-      speakJapanese('ブンブンハローかいじゅうクエスト！どうもヒカキンです！できたものをタップしてね！レッツゴー！', soundEnabled);
+      speakJapanese(
+        'ブンブンハローかいじゅうクエスト！できたものをタップしてね！あいぼうの かいじゅうも いっしょに つよくなるよ！',
+        soundEnabled
+      );
     } else if (tab === 'summon') {
       if (energy >= 3) {
-        speakJapanese('ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！', soundEnabled);
+        speakJapanese(
+          'ブンブン！かいじゅうしょうかんタイム！すきなパワーとタイプをえらんでね！いくぞー！',
+          soundEnabled
+        );
       } else {
-        speakJapanese(`あと ${3 - energy}こ エネルギーをためると しょうかんできるよ！いっしょにがんばろう！`, soundEnabled);
+        speakJapanese(
+          `あと ${3 - energy}こ エネルギーをためると しょうかんできるよ！いっしょにがんばろう！`,
+          soundEnabled
+        );
       }
     } else if (tab === 'zukan') {
-      speakJapanese(`かいじゅうずかん！いま ${unlockedKaijuIds.length}たい あつまったよ！やばいね！神ってるー！`, soundEnabled);
+      speakJapanese(
+        `かいじゅうずかん！いま ${unlockedKaijuIds.length}たい あつまったよ！けいけんち玉で レベルアップさせよう！`,
+        soundEnabled
+      );
+    } else if (tab === 'battle') {
+      speakJapanese(
+        'ふたりで かいじゅうバトル！むすこくんと パパで たいけつだ！レッツゴー！',
+        soundEnabled
+      );
     }
   };
 
@@ -145,18 +278,35 @@ export default function KaijuQuestApp() {
 
     setCompletedQuests(nextCompleted);
     setEnergy(nextEnergy);
+    setExpOrbs((prev) => prev + 1);
 
-    playQuestClearSound();
+    // あいぼう怪獣に経験値 +50
+    const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
+    const partnerKaiju = KAIJU_LIST.find((k) => k.id === activePartnerId) || KAIJU_LIST[0];
+    const expResult = addExpToKaiju(partnerKaiju.id, 50, { showToast: true });
+
+    if (!expResult.leveledUp) {
+      playQuestClearSound();
+    }
     fireQuestConfetti();
 
-    if (nextEnergy >= 3) {
+    if (expResult.leveledUp) {
+      const updatedPartnerStats = getKaijuStats(partnerKaiju, {
+        level: expResult.newLevel,
+        exp: 0,
+      });
       speakJapanese(
-        `キターーー！${quest.shortSpeechName} クリア！エネルギーがまんたんになったよ！かいじゅうをしょうかんしよう！レッツゴー！`,
+        `キターーー！${quest.shortSpeechName} クリア！さらに、あいぼうの ${updatedPartnerStats.displayName} が レベル ${expResult.newLevel} に レベルアップしたよ！やばすぎるー！`,
+        soundEnabled
+      );
+    } else if (nextEnergy >= 3) {
+      speakJapanese(
+        `キターーー！${quest.shortSpeechName} クリア！エネルギーがまんたんになったよ！けいけんち玉も ゲット！`,
         soundEnabled
       );
     } else {
       speakJapanese(
-        `やったー！${quest.shortSpeechName} クリア！エネルギーがたまったよ！いい感じー！`,
+        `やったー！${quest.shortSpeechName} クリア！エネルギーと けいけんち玉を ゲットしたよ！`,
         soundEnabled
       );
     }
@@ -166,16 +316,23 @@ export default function KaijuQuestApp() {
   const handleResetDailyQuests = () => {
     playTapSound(420);
     setCompletedQuests([]);
-    speakJapanese('ブンブン！あたらしい1にちのスタート！きょうもクエストがんばろう！レッツゴー！', soundEnabled);
+    setDqToastMessages(null);
+    speakJapanese(
+      'ブンブン！あたらしい1にちのスタート！きょうもクエストがんばろう！レッツゴー！',
+      soundEnabled
+    );
   };
 
-  // おためしチャージ（+3）
+  // おためしチャージ（エネルギー +3 ＆ 🌟けいけんち玉 +3）
   const handleTestCharge = () => {
     playQuestClearSound();
     fireQuestConfetti();
-    const next = energy + 3;
-    setEnergy(next);
-    speakJapanese('キターーー！エネルギーまんたんチャージ！いますぐかいじゅうをしょうかんできるよ！やばすぎるー！', soundEnabled);
+    setEnergy((prev) => prev + 3);
+    setExpOrbs((prev) => prev + 3);
+    speakJapanese(
+      'キターーー！おためしチャージ！エネルギー 3こと、けいけんち玉 3こを ゲットしたよ！やばすぎるー！',
+      soundEnabled
+    );
   };
 
   // ② 怪獣を召喚する！ボタン
@@ -196,28 +353,57 @@ export default function KaijuQuestApp() {
     setIsHatching(true);
     setSummonedKaiju(null);
     playEggChargeSound();
-    speakJapanese('うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！', soundEnabled);
+    speakJapanese(
+      'うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！',
+      soundEnabled
+    );
 
-    const targetKaiju = findKaiju(selectedElement, selectedType);
+    const targetKaiju = findKaijuForSummon(selectedElement, selectedType, unlockedKaijuIds);
     const elMeta = getElementMeta(selectedElement);
 
     setTimeout(() => {
       const isNew = !unlockedKaijuIds.includes(targetKaiju.id);
+      let powerUpLevel: number | undefined = undefined;
+
       if (isNew) {
         setUnlockedKaijuIds((prev) => [...prev, targetKaiju.id]);
+        setKaijuProgress((prev) => ({
+          ...prev,
+          [targetKaiju.id]: prev[targetKaiju.id] || { level: 1, exp: 0 },
+        }));
+      } else {
+        // すでに持っている怪獣が召喚された場合は「限界突破ボーナス」でレベル +1！
+        const currentProg = kaijuProgress[targetKaiju.id] || { level: 1, exp: 0 };
+        const nextLv = currentProg.level + 1;
+        powerUpLevel = nextLv;
+        setKaijuProgress((prev) => ({
+          ...prev,
+          [targetKaiju.id]: { level: nextLv, exp: currentProg.exp },
+        }));
       }
 
       setIsHatching(false);
-      setSummonedKaiju({ kaiju: targetKaiju, isNew });
+      setSummonedKaiju({ kaiju: targetKaiju, isNew, powerUpLevel });
 
       playSummonExplosionAndFanfare();
       fireSummonConfetti(elMeta.confettiColors);
 
-      // 登場時ボイス
-      speakJapanese(
-        `キターーー！${targetKaiju.name}のとうじょうだ！ひっさつわざは ${targetKaiju.specialMove}！これマジでやばいねー！`,
-        soundEnabled
+      const currentStats = getKaijuStats(
+        targetKaiju,
+        powerUpLevel ? { level: powerUpLevel, exp: 0 } : { level: 1, exp: 0 }
       );
+
+      if (isNew) {
+        speakJapanese(
+          `キターーー！あたらしい かいじゅう、${currentStats.displayName}のとうじょうだ！ひっさつわざは ${targetKaiju.specialMove}！これマジでやばいねー！`,
+          soundEnabled
+        );
+      } else {
+        speakJapanese(
+          `キターーー！パワーアップしょうかん！${currentStats.displayName}の レベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
+          soundEnabled
+        );
+      }
     }, 1550);
   };
 
@@ -235,10 +421,20 @@ export default function KaijuQuestApp() {
       return;
     }
 
+    const st = getKaijuStats(kaiju, kaijuProgress[kaiju.id]);
     setSelectedZukanKaiju(kaiju);
     playSpecialAttackSound();
     fireSummonConfetti(elMeta.confettiColors);
-    speakJapanese(`キターーー！${kaiju.name}！ひっさつわざ、${kaiju.specialMove}！かっこよすぎるー！`, soundEnabled);
+    speakJapanese(
+      `キターーー！レベル ${st.level}、${st.displayName}！けいけんち玉で レベルアップや しんかも できるよ！`,
+      soundEnabled
+    );
+  };
+
+  // バトル終了時のごほうび付与（🌟けいけんち玉 +2 ＆ 1P怪獣に経験値 +50）
+  const handleBattleReward = (p1Id: string) => {
+    setExpOrbs((prev) => prev + 2);
+    addExpToKaiju(p1Id, 50, { showToast: true });
   };
 
   const canSummon = energy >= 3;
@@ -248,22 +444,43 @@ export default function KaijuQuestApp() {
       ? KAIJU_LIST
       : KAIJU_LIST.filter((k) => k.element === zukanFilter);
 
+  // 現在のあいぼう怪獣データ
+  const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
+  const partnerKaiju = KAIJU_LIST.find((k) => k.id === activePartnerId) || KAIJU_LIST[0];
+  const partnerStats = getKaijuStats(partnerKaiju, kaijuProgress[partnerKaiju.id]);
+
+  // 選択中の属性×タイプに未解放の怪獣がいるかチェック
+  const hasLockedCandidateForSelection = KAIJU_LIST.some(
+    (k) =>
+      k.element === selectedElement &&
+      k.type === selectedType &&
+      !unlockedKaijuIds.includes(k.id)
+  );
+
   return (
     <div className="min-h-screen bg-slate-950 text-white pb-28">
       {/* ==================== コンパクト・トップヘッダー ==================== */}
-      <header className="sticky top-0 z-30 h-14 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-4 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-30 h-14 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
-          <span className="text-2xl" aria-hidden="true">🦖</span>
+          <span className="text-2xl" aria-hidden="true">
+            🦖
+          </span>
           <span className="text-base sm:text-lg font-black tracking-tight text-white">
             かいじゅうクエスト
           </span>
         </div>
 
-        {/* 中央：現在のエネルギー＆図鑑数 */}
-        <div className="hidden sm:flex items-center gap-3 text-sm font-black text-slate-300 tabular-nums">
-          <span>⚡ エネルギー: {energy}</span>
-          <span aria-hidden="true">·</span>
-          <span>📖 ずかん: {unlockedKaijuIds.length}/16</span>
+        {/* 中央：現在のエネルギー＆けいけんち玉＆図鑑数 */}
+        <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-black text-slate-200 tabular-nums">
+          <span className="bg-slate-800 px-2.5 py-1 rounded-lg border border-amber-400/40 text-amber-300">
+            ⚡ {energy}
+          </span>
+          <span className="bg-slate-800 px-2.5 py-1 rounded-lg border border-yellow-300/40 text-yellow-300">
+            🌟玉 {expOrbs}こ
+          </span>
+          <span className="hidden md:inline text-slate-300">
+            📖 ずかん: {unlockedKaijuIds.length}/{KAIJU_LIST.length}
+          </span>
         </div>
 
         {/* 右：音声読み上げON/OFFボタン（最小44px以上） */}
@@ -274,10 +491,10 @@ export default function KaijuQuestApp() {
             setSoundEnabled(next);
             playTapSound(next ? 660 : 400);
             if (next) {
-              speakJapanese('ブンブンハロー！どうもヒカキンです！こえがでるようになったよ！', true);
+              speakJapanese('ブンブンハロー！こえがでるようになったよ！', true);
             }
           }}
-          className={`min-h-[44px] px-3.5 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+          className={`min-h-[44px] px-3 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
             soundEnabled
               ? 'bg-amber-400 text-slate-950 border-white'
               : 'bg-slate-800 text-slate-300 border-white/20'
@@ -290,74 +507,143 @@ export default function KaijuQuestApp() {
       </header>
 
       {/* ==================== メインコンテンツコンテナ ==================== */}
-      <main className="max-w-5xl mx-auto px-4 pt-4">
+      <main className="max-w-5xl mx-auto px-4 pt-4 space-y-4">
+        {/* ドラクエ風レベルアップ通知バナー（クエスト達成等でレベルアップしたとき表示） */}
+        {dqToastMessages && (
+          <div className="dq-window p-4 text-white flex items-center justify-between gap-3 animate-bounce">
+            <div className="space-y-1">
+              {dqToastMessages.map((msg, i) => (
+                <p key={i} className="text-sm sm:text-base font-black text-yellow-300">
+                  {msg}
+                </p>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setDqToastMessages(null)}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-black text-white border border-white/30 shrink-0 cursor-pointer"
+            >
+              OK
+            </button>
+          </div>
+        )}
+
         {/* ============================================================
-            TAB 1: ⚡ クエストタブ（毎日の習慣）
+            TAB 1: ⚡ クエストタブ（毎日の習慣 ＋ あいぼう怪獣育成）
            ============================================================ */}
         {activeTab === 'quest' && (
           <section className="space-y-5">
-            {/* 画面上部：しょうかんエネルギーメーター（0〜3個） */}
-            <div
-              className={`rounded-3xl p-4 sm:p-5 border-2 transition-all ${
-                canSummon
-                  ? 'bg-gradient-to-r from-amber-500/30 via-orange-500/25 to-yellow-500/30 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.35)]'
-                  : 'bg-slate-900/90 border-white/15'
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg sm:text-xl font-black text-amber-300">
-                      ⚡ しょうかんエネルギー
-                    </span>
-                    <span className="text-sm font-black text-white/80 tabular-nums">
-                      ({energy} / 3)
-                    </span>
+            {/* 上部2カラム：左にしょうかんエネルギーメーター、右にあいぼう怪獣ステータス */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              {/* しょうかんエネルギーメーター（0〜3個） */}
+              <div
+                className={`lg:col-span-7 rounded-3xl p-4 sm:p-5 border-2 transition-all flex flex-col justify-between ${
+                  canSummon
+                    ? 'bg-gradient-to-r from-amber-500/30 via-orange-500/25 to-yellow-500/30 border-yellow-300 shadow-[0_0_30px_rgba(250,204,21,0.35)]'
+                    : 'bg-slate-900/90 border-white/15'
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg sm:text-xl font-black text-amber-300">
+                        ⚡ しょうかんエネルギー
+                      </span>
+                      <span className="text-sm font-black text-white/80 tabular-nums">
+                        ({energy} / 3)
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-slate-300 mt-0.5">
+                      {canSummon
+                        ? 'やったー！エネルギーまんたん！かいじゅうを しょうかん しよう！'
+                        : `あと ${3 - meterSlots}こ クエストを クリアすると かいじゅうが でるよ！`}
+                    </p>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-300 mt-0.5">
-                    {canSummon
-                      ? 'やったー！エネルギーまんたん！かいじゅうを しょうかん しよう！'
-                      : `あと ${3 - meterSlots}こ クエストを クリアすると かいじゅうが でるよ！`}
-                  </p>
+
+                  {/* 3つの特大エネルギー稲妻アイコン */}
+                  <div className="flex items-center justify-center gap-3 py-1">
+                    {[0, 1, 2].map((slotIdx) => {
+                      const isFilled = slotIdx < meterSlots;
+                      return (
+                        <div
+                          key={slotIdx}
+                          className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${
+                            isFilled
+                              ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 border-white scale-105 shadow-[0_0_22px_rgba(250,204,21,0.9)]'
+                              : 'bg-slate-950/80 border-slate-700 opacity-50'
+                          }`}
+                        >
+                          <Zap
+                            className={`w-9 h-9 transition-transform duration-300 ${
+                              isFilled
+                                ? 'text-slate-950 fill-slate-950 scale-110'
+                                : 'text-slate-600'
+                            }`}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
-                {/* 3つの特大エネルギー稲妻アイコン */}
-                <div className="flex items-center justify-center gap-3 py-1">
-                  {[0, 1, 2].map((slotIdx) => {
-                    const isFilled = slotIdx < meterSlots;
-                    return (
-                      <div
-                        key={slotIdx}
-                        className={`w-16 h-16 sm:w-18 sm:h-18 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${
-                          isFilled
-                            ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 border-white scale-105 shadow-[0_0_22px_rgba(250,204,21,0.9)]'
-                            : 'bg-slate-950/80 border-slate-700 opacity-50'
-                        }`}
-                      >
-                        <Zap
-                          className={`w-10 h-10 transition-transform duration-300 ${
-                            isFilled
-                              ? 'text-slate-950 fill-slate-950 scale-110'
-                              : 'text-slate-600'
-                          }`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                {/* 3つ貯まったときの特大召喚ショートカットボタン */}
+                {canSummon && (
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTab('summon')}
+                    className="mt-4 w-full min-h-[60px] rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base sm:text-lg flex items-center justify-center gap-2 shadow-[0_6px_0_#b45309] border-2 border-white transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  >
+                    <span className="text-2xl">🥚</span>
+                    <span>いますぐ かいじゅうを しょうかんする！</span>
+                  </button>
+                )}
               </div>
 
-              {/* 3つ貯まったときの特大召喚ショートカットボタン */}
-              {canSummon && (
-                <button
-                  type="button"
-                  onClick={() => handleSelectTab('summon')}
-                  className="mt-4 w-full min-h-[64px] rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 hover:brightness-110 active:scale-95 text-slate-950 font-black text-lg sm:text-xl flex items-center justify-center gap-2.5 shadow-[0_6px_0_#b45309] border-2 border-white transition-all cursor-pointer whitespace-nowrap shrink-0"
-                >
-                  <span className="text-2xl">🥚</span>
-                  <span>いますぐ かいじゅうを しょうかんする！</span>
-                </button>
-              )}
+              {/* 🤝 あいぼう怪獣ミニステータスボックス（クエストクリアで一緒にレベルアップ！） */}
+              <button
+                type="button"
+                onClick={() => {
+                  playTapSound(600);
+                  setSelectedZukanKaiju(partnerKaiju);
+                }}
+                className="lg:col-span-5 dq-window p-4 text-left text-white flex items-center gap-3.5 hover:border-yellow-300 transition-all active:scale-95 cursor-pointer"
+              >
+                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-900/90 rounded-2xl border border-white/20 p-1">
+                  <KaijuSvgIllustration
+                    element={partnerKaiju.element}
+                    type={partnerKaiju.type}
+                    evolutionStage={partnerStats.stage}
+                  />
+                </div>
+                <div className="min-w-0 flex-1 space-y-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded-full border border-emerald-400/50">
+                      <HeartHandshake className="w-3.5 h-3.5" />
+                      <span>あいぼう</span>
+                    </span>
+                    <span className="text-sm font-black text-yellow-300 tabular-nums">
+                      Lv.{partnerStats.level}
+                    </span>
+                  </div>
+                  <div className="text-base sm:text-lg font-black text-white truncate">
+                    {partnerStats.displayName}
+                  </div>
+                  <div className="text-[11px] font-bold text-slate-300">
+                    クエストクリアで けいけんち＋50！
+                  </div>
+                  {/* EXPバー */}
+                  <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-white/25">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 transition-all duration-300"
+                      style={{ width: `${Math.min(100, partnerStats.exp)}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-black text-amber-300">
+                    <span>🌟 けいけんち玉: {expOrbs}こ</span>
+                    <span className="underline">タップで そだてる▶</span>
+                  </div>
+                </div>
+              </button>
             </div>
 
             {/* 9つのクエストカードグリッド（スマホ1〜2列、PC3列） */}
@@ -388,10 +674,10 @@ export default function KaijuQuestApp() {
                         {isDone ? (
                           <>
                             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <span className="text-emerald-300">クリア！ ⚡+1</span>
+                            <span className="text-emerald-300">クリア！ ⚡+1 🌟+1</span>
                           </>
                         ) : (
-                          <span>タップして クリア！</span>
+                          <span>タップして クリア！（あいぼうEXP+50）</span>
                         )}
                       </div>
                       <div className="text-xl sm:text-2xl font-black text-white leading-snug">
@@ -414,32 +700,63 @@ export default function KaijuQuestApp() {
             </div>
 
             {/* 親向け：画面の隅に小さく「日付リセット（スタンプを戻す）」ボタン */}
-            <div className="pt-2 flex items-center justify-between border-t border-white/10 text-xs text-slate-400">
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 text-xs text-slate-400">
               <span>おうちのかたへ：スタンプは毎日リセットできます</span>
-              <button
-                type="button"
-                onClick={handleResetDailyQuests}
-                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-slate-300 border border-white/15 flex items-center gap-1.5 font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>日付リセット（スタンプを戻す）</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleTestCharge}
+                  className="min-h-[44px] px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-amber-300 border border-amber-400/30 flex items-center gap-1 font-bold cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>おためしチャージ（⚡+3 🌟+3）</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetDailyQuests}
+                  className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-slate-300 border border-white/15 flex items-center gap-1.5 font-bold transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>日付リセット（スタンプを戻す）</span>
+                </button>
+              </div>
             </div>
           </section>
         )}
 
         {/* ============================================================
-            TAB 2: 🥚 しょうかんタブ（怪獣クリエイト）
+            TAB 2: 🥚 しょうかんタブ（怪獣クリエイト＆ダブり限界突破）
            ============================================================ */}
         {activeTab === 'summon' && (
           <section className="space-y-5">
             {/* 召喚結果カードが出ている場合 */}
             {summonedKaiju ? (
               <div className="py-2 space-y-4">
+                {/* ダブり召喚でレベルアップしたときのドラクエ風お祝いバナー */}
+                {summonedKaiju.powerUpLevel && (
+                  <div className="max-w-md mx-auto dq-window p-3.5 text-center text-white animate-bounce">
+                    <div className="text-base sm:text-lg font-black text-yellow-300">
+                      ⚡ パワーアップしょうかん せいこう！！
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-slate-200 mt-0.5">
+                      すでに なかまの かいじゅうだったから、限界突破で{' '}
+                      <span className="text-amber-300 font-black">
+                        Lv.{summonedKaiju.powerUpLevel}
+                      </span>{' '}
+                      に レベルアップしたぞ！
+                    </p>
+                  </div>
+                )}
+
                 <KaijuHeroCard
                   kaiju={summonedKaiju.kaiju}
                   soundEnabled={soundEnabled}
                   isNewUnlock={summonedKaiju.isNew}
+                  progress={kaijuProgress[summonedKaiju.kaiju.id]}
+                  expOrbs={expOrbs}
+                  isPartner={partnerKaijuId === summonedKaiju.kaiju.id}
+                  onLevelUp={handleUseExpOrb}
+                  onSelectPartner={(id) => setPartnerKaijuId(id)}
                   onClose={() => {
                     playTapSound(520);
                     setSummonedKaiju(null);
@@ -477,14 +794,13 @@ export default function KaijuQuestApp() {
                     </div>
                   </div>
 
-                  {/* テストしやすいように「おためしチャージ（+3）」の隠しボタンも小さく配置 */}
                   <button
                     type="button"
                     onClick={handleTestCharge}
                     className="min-h-[44px] px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 text-xs font-extrabold flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>おためしチャージ（+3）</span>
+                    <span>おためしチャージ（⚡+3 🌟+3）</span>
                   </button>
                 </div>
 
@@ -590,9 +906,9 @@ export default function KaijuQuestApp() {
                     <p className="text-sm font-extrabold text-slate-300 mb-3">
                       {isHatching
                         ? '⚡ ガタガタッ！うまれるぞーーっ！！'
-                        : unlockedKaijuIds.includes(findKaiju(selectedElement, selectedType).id)
-                        ? '✨ この組み合わせは ずかんに いるよ！もういちど よぶ？'
-                        : '❓ まだ みつかっていない 新種のかいじゅう だ！'}
+                        : hasLockedCandidateForSelection
+                        ? '❓ まだ みつかっていない 新種のかいじゅう が でるぞ！'
+                        : '⚡ もういちど しょうかんすると レベルが +1 あがるよ！'}
                     </p>
 
                     {/* 「しょうかんする！」特大ボタン（最小76px高） */}
@@ -617,18 +933,23 @@ export default function KaijuQuestApp() {
         )}
 
         {/* ============================================================
-            TAB 3: 📖 ずかんタブ（コレクション＆音声再生）
+            TAB 3: 📖 ずかんタブ（コレクション＆レベルアップ育成）
            ============================================================ */}
         {activeTab === 'zukan' && (
           <section className="space-y-5">
-            {/* 図鑑ヘッダー＆コンプリート進捗メーター */}
-            <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4 sm:p-5">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            {/* 図鑑ヘッダー＆コンプリート進捗メーター＆けいけんち玉残数 */}
+            <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4 sm:p-5 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                  <span>📖 かいじゅう ずかん</span>
+                  <span>📖 かいじゅう ずかん＆いくせい</span>
                 </h2>
-                <div className="text-lg sm:text-xl font-black text-amber-300 tabular-nums">
-                  {unlockedKaijuIds.length} / {KAIJU_LIST.length} たい ゲット！
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-yellow-300 font-black text-sm sm:text-base">
+                    🌟 けいけんち玉: {expOrbs}こ
+                  </span>
+                  <span className="text-base sm:text-xl font-black text-amber-300 tabular-nums">
+                    {unlockedKaijuIds.length} / {KAIJU_LIST.length} たい
+                  </span>
                 </div>
               </div>
 
@@ -642,8 +963,8 @@ export default function KaijuQuestApp() {
                 />
               </div>
 
-              {/* 属性フィルターボタン（インタラクティブ） */}
-              <div className="grid grid-cols-5 gap-2 mt-4">
+              {/* 属性フィルターボタン */}
+              <div className="grid grid-cols-5 gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -686,6 +1007,8 @@ export default function KaijuQuestApp() {
                 const isUnlocked = unlockedKaijuIds.includes(kaiju.id);
                 const elMeta = getElementMeta(kaiju.element);
                 const typeMeta = getTypeMeta(kaiju.type);
+                const stats = getKaijuStats(kaiju, kaijuProgress[kaiju.id]);
+                const isCurrentPartner = activePartnerId === kaiju.id;
 
                 return (
                   <button
@@ -703,16 +1026,29 @@ export default function KaijuQuestApp() {
                         <div className="pointer-events-none absolute inset-0 animate-holo opacity-25" />
                       )}
 
-                      {/* ナンバー＆属性・タイプヒント */}
+                      {/* ナンバー＆Lv・進化段階バッジ */}
                       <div className="flex items-center justify-between gap-1 text-xs font-black">
                         <span className="text-amber-300 tabular-nums">
                           No.{String(kaiju.dexNumber).padStart(2, '0')}
                         </span>
-                        <span className="text-base">
-                          {elMeta.emoji}
-                          {typeMeta.emoji}
-                        </span>
+                        {isUnlocked ? (
+                          <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full text-[11px] font-black tabular-nums">
+                            Lv.{stats.level} {'★'.repeat(stats.stage)}
+                          </span>
+                        ) : (
+                          <span className="text-base">
+                            {elMeta.emoji}
+                            {typeMeta.emoji}
+                          </span>
+                        )}
                       </div>
+
+                      {/* あいぼうバッジ */}
+                      {isUnlocked && isCurrentPartner && (
+                        <div className="mt-1 inline-flex items-center gap-1 self-start bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
+                          🤝 あいぼう
+                        </div>
+                      )}
 
                       {/* イラストまたは未発見シルエット */}
                       <div className="relative w-full h-32 sm:h-36 my-1.5 flex items-center justify-center">
@@ -720,6 +1056,7 @@ export default function KaijuQuestApp() {
                           <KaijuSvgIllustration
                             element={kaiju.element}
                             type={kaiju.type}
+                            evolutionStage={isUnlocked ? stats.stage : 2}
                             silhouette={!isUnlocked}
                           />
                         </div>
@@ -733,25 +1070,24 @@ export default function KaijuQuestApp() {
                         )}
                       </div>
 
-                      {/* 名前＆星マーク */}
+                      {/* 名前＆ステータス概要 */}
                       {isUnlocked ? (
                         <div>
-                          <div className="text-xs text-yellow-400 font-black tracking-tight leading-none mb-1">
-                            {'★'.repeat(kaiju.stars)}
-                          </div>
                           <div className="text-sm sm:text-base font-black text-white truncate">
-                            {kaiju.name}
+                            {stats.displayName}
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] font-black text-slate-300 mt-0.5">
+                            <span className="text-emerald-300">HP {stats.maxHp}</span>
+                            <span className="text-orange-300">⚔️ {stats.attack}</span>
                           </div>
                           <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-amber-300">
-                            <Volume2 className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">タップで しゃべる！</span>
+                            <Zap className="w-3.5 h-3.5 fill-amber-300 shrink-0" />
+                            <span className="truncate">タップで レベルアップ！</span>
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <div className="text-sm font-black text-slate-400">
-                            ？？？
-                          </div>
+                          <div className="text-sm font-black text-slate-400">？？？</div>
                           <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-slate-500">
                             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                             <span className="truncate">
@@ -767,37 +1103,51 @@ export default function KaijuQuestApp() {
             </div>
           </section>
         )}
+
+        {/* ============================================================
+            TAB 4: ⚔️ バトルタブ（パパ vs むすこ 2P対戦モード）
+           ============================================================ */}
+        {activeTab === 'battle' && (
+          <KaijuBattle
+            unlockedKaijuIds={unlockedKaijuIds}
+            kaijuProgress={kaijuProgress}
+            soundEnabled={soundEnabled}
+            onBattleComplete={handleBattleReward}
+          />
+        )}
       </main>
 
-      {/* ==================== 図鑑の怪獣拡大モーダル ==================== */}
+      {/* ==================== 図鑑の怪獣拡大＆育成モーダル ==================== */}
       {selectedZukanKaiju && (
         <div
           className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md p-4 flex items-center justify-center overflow-y-auto"
           onClick={() => setSelectedZukanKaiju(null)}
         >
-          <div
-            className="w-full max-w-md my-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-full max-w-md my-auto py-4" onClick={(e) => e.stopPropagation()}>
             <KaijuHeroCard
               kaiju={selectedZukanKaiju}
               soundEnabled={soundEnabled}
+              progress={kaijuProgress[selectedZukanKaiju.id]}
+              expOrbs={expOrbs}
+              isPartner={activePartnerId === selectedZukanKaiju.id}
+              onLevelUp={handleUseExpOrb}
+              onSelectPartner={(id) => setPartnerKaijuId(id)}
               onClose={() => {
                 playTapSound(480);
                 setSelectedZukanKaiju(null);
               }}
-              closeButtonLabel="ずかんに もどる"
+              closeButtonLabel="とじる"
             />
           </div>
         </div>
       )}
 
-      {/* ==================== 画面下部：3つの大きな切り替えタブ ==================== */}
+      {/* ==================== 画面下部：4つの大きな切り替えタブ ==================== */}
       <nav
         aria-label="メインメニュー"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t-2 border-white/15 px-3 py-2"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t-2 border-white/15 px-2 sm:px-3 py-2"
       >
-        <div className="max-w-lg mx-auto grid grid-cols-3 gap-2.5">
+        <div className="max-w-xl mx-auto grid grid-cols-4 gap-2">
           {/* ① ⚡クエスト */}
           <button
             type="button"
@@ -809,7 +1159,7 @@ export default function KaijuQuestApp() {
             }`}
           >
             <span className="text-2xl leading-none">⚡</span>
-            <span className="text-sm sm:text-base mt-1">クエスト</span>
+            <span className="text-xs sm:text-sm mt-1">クエスト</span>
           </button>
 
           {/* ② 🥚しょうかん（エネルギー3つ以上のときピカピカ光る演出） */}
@@ -825,28 +1175,47 @@ export default function KaijuQuestApp() {
             }`}
           >
             {canSummon && activeTab !== 'summon' && (
-              <span className="absolute -top-2.5 right-2 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full border border-white shadow">
+              <span className="absolute -top-2.5 right-1 bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full border border-white shadow">
                 OK!
               </span>
             )}
             <span className="text-2xl leading-none">🥚</span>
-            <span className="text-sm sm:text-base mt-1">しょうかん</span>
+            <span className="text-xs sm:text-sm mt-1">しょうかん</span>
           </button>
 
           {/* ③ 📖ずかん */}
           <button
             type="button"
             onClick={() => handleSelectTab('zukan')}
-            className={`min-h-[64px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`relative min-h-[64px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'zukan'
                 ? 'bg-gradient-to-b from-cyan-400 to-blue-600 text-white border-white shadow-[0_0_20px_rgba(56,189,248,0.6)]'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
             }`}
           >
+            {expOrbs > 0 && activeTab !== 'zukan' && (
+              <span className="absolute -top-2.5 right-1 bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full border border-white shadow">
+                🌟{expOrbs}
+              </span>
+            )}
             <span className="text-2xl leading-none">📖</span>
-            <span className="text-sm sm:text-base mt-1">
+            <span className="text-xs sm:text-sm mt-1">
               ずかん ({unlockedKaijuIds.length})
             </span>
+          </button>
+
+          {/* ④ ⚔️バトル */}
+          <button
+            type="button"
+            onClick={() => handleSelectTab('battle')}
+            className={`min-h-[64px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+              activeTab === 'battle'
+                ? 'bg-gradient-to-b from-purple-500 to-rose-600 text-white border-white shadow-[0_0_20px_rgba(168,85,247,0.7)]'
+                : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
+            }`}
+          >
+            <Swords className="w-6 h-6 leading-none text-amber-300" />
+            <span className="text-xs sm:text-sm mt-1">バトル</span>
           </button>
         </div>
       </nav>

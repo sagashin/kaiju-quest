@@ -198,6 +198,39 @@ export const KAIJU_TYPE_OPTIONS: KaijuTypeOption[] = [
   },
 ];
 
+export type EvolutionStage = 1 | 2 | 3; // 1:キッズ期(Lv1-2), 2:成長期(Lv3-4), 3:究極キング期(Lv5+)
+
+export interface KaijuSkill {
+  id: string;
+  name: string;
+  unlockLevel: number; // 1, 2, 3, 5
+  mpCost: number;      // 例: 0, 10, 20, 35
+  power: number;       // 例: 28, 50, 80, 130
+  description: string;
+  isUltimate?: boolean;
+}
+
+export interface KaijuProgress {
+  level: number;
+  exp: number;
+}
+
+export interface KaijuComputedStats {
+  level: number;
+  exp: number;
+  nextLevelExp: number;
+  stage: EvolutionStage;
+  displayName: string;
+  stageTitle: string;
+  maxHp: number;
+  maxMp: number;
+  attack: number;
+  defense: number;
+  speed: number;
+  unlockedSkills: KaijuSkill[];
+  allSkills: KaijuSkill[];
+}
+
 export interface KaijuData {
   id: string;
   dexNumber: number;
@@ -209,7 +242,28 @@ export interface KaijuData {
   stars: number;
   titleBadge: string;
   description: string;
+  stageNames?: [string, string, string];
+  baseStats?: { hp: number; mp: number; atk: number; def: number; spd: number };
+  skills?: KaijuSkill[];
 }
+
+/**
+ * 今後のモンスター追加を簡単にするヘルパー関数
+ */
+export function createCustomKaiju(
+  partial: Partial<KaijuData> & Pick<KaijuData, 'id' | 'name' | 'element' | 'type' | 'specialMove'>
+): KaijuData {
+  return {
+    dexNumber: partial.dexNumber ?? 99,
+    roar: partial.roar ?? 'ガオーッ！',
+    stars: partial.stars ?? 5,
+    titleBadge: partial.titleBadge ?? 'でんせつの かいじゅう',
+    description: partial.description ?? 'すごい パワーを ひめた まぼろしの かいじゅうだ！',
+    ...partial,
+  };
+}
+
+export const defineKaiju = createCustomKaiju;
 
 export const KAIJU_LIST: KaijuData[] = [
   // 🔥 ほのお × 4タイプ
@@ -411,13 +465,221 @@ export const KAIJU_LIST: KaijuData[] = [
     titleBadge: 'もりの 剛腕キング',
     description: '両手で むねを 叩くと 大地が ゆれる！やさしい 心と 怪力を もつ 王様！',
   },
+
+  // 🌟 追加モンスター No.17〜20（createCustomKaiju による拡張）
+  createCustomKaiju({
+    id: 'fire-dragon-2',
+    dexNumber: 17,
+    element: 'fire',
+    type: 'dragon',
+    name: 'メテオレックスドラゴ',
+    roar: 'ドゴォォーン！ギャオー！',
+    specialMove: 'コズミック・メテオストライク',
+    stars: 5,
+    titleBadge: 'うちゅう ほのお竜',
+    description: 'うちゅうから いんせきと いっしょに やってきた 超パワフルな ほのおドラゴン！',
+  }),
+  createCustomKaiju({
+    id: 'water-robot-2',
+    dexNumber: 18,
+    element: 'water',
+    type: 'robot',
+    name: 'アビスポセイドンロボ',
+    roar: 'ピピピ・アクアバースト！',
+    specialMove: 'ディープオーシャン・トライデント',
+    stars: 5,
+    titleBadge: 'しんかい 王様ロボ',
+    description: 'うみの そこから あらわれた 黄金のトライデントを もつ 最強クラスの水中ロボ！',
+  }),
+  createCustomKaiju({
+    id: 'thunder-beast-2',
+    dexNumber: 19,
+    element: 'thunder',
+    type: 'beast',
+    name: 'ゴッドサンダーフェンリル',
+    roar: 'バリバリ・アオォォーン！',
+    specialMove: 'プラズマ・ファングラッシュ',
+    stars: 5,
+    titleBadge: 'しんわの 雷狼',
+    description: '神話に でてくる カミナリの オオカミ！ひとっとびで 雲の上まで かけあがるぞ！',
+  }),
+  createCustomKaiju({
+    id: 'nature-dino-2',
+    dexNumber: 20,
+    element: 'nature',
+    type: 'dino',
+    name: 'エンシェントガイアレックス',
+    roar: 'ズシィィーン！ガオーッ！',
+    specialMove: 'ジュラシック・フォレストロア',
+    stars: 5,
+    titleBadge: 'こだい 森林王ティラノ',
+    description: '何億年も 生きる 森の 巨大ティラノ！せなかに 大きな クリスタルツリーが そびえるぞ！',
+  }),
 ];
+
+/**
+ * レベルに応じた進化段階（1:キッズ期, 2:せいちょう期, 3:究極キング期）を返す
+ */
+export function getEvolutionStage(level: number): EvolutionStage {
+  if (level <= 2) return 1;
+  if (level <= 4) return 2;
+  return 3;
+}
+
+/**
+ * 怪獣の4つの習得技リストを返す（未指定の場合は属性×タイプから自動生成）
+ */
+export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
+  if (kaiju.skills && kaiju.skills.length > 0) {
+    return kaiju.skills;
+  }
+
+  const basicByType: Record<KaijuTypeId, { name: string; desc: string }> = {
+    dino: { name: 'メガかみつき', desc: 'おおきな アゴで ガブッと かみつく 基本わざ！' },
+    dragon: { name: 'ドラゴンクロー', desc: 'するどい ツメで シュバッと きりさく 基本わざ！' },
+    robot: { name: 'ロケットナックル', desc: '鋼鉄の パンチを うちこむ 基本わざ！' },
+    beast: { name: 'スピードひっかき', desc: '目にも とまらぬ 速さで ひっかく 基本わざ！' },
+  };
+
+  const elemSkillByElement: Record<ElementId, { name: string; desc: string }> = {
+    fire: { name: 'メラメラ火炎弾', desc: 'あつい ほのおの タマを 連続で はっしゃする！' },
+    water: { name: 'ザブーン水流砲', desc: 'うずまく みずの レーザーで 相手を 吹きとばす！' },
+    thunder: { name: 'ビリビリ電撃波', desc: 'しびれる カミナリを まわりに 放電する！' },
+    nature: { name: 'リーフカッター', desc: '光る はっぱの カッターを 竜巻にして とばす！' },
+  };
+
+  const ultimateByElement: Record<ElementId, { name: string; desc: string }> = {
+    fire: {
+      name: 'ギガ・プロミネンス・ノヴァ',
+      desc: 'たいようの ような 超巨大ファイヤーボールで すべてを やきつくす 究極奥義！',
+    },
+    water: {
+      name: 'アルティメット・タイダルストーム',
+      desc: '大津波の うずしおで すべてを のみこむ 水の究極奥義！',
+    },
+    thunder: {
+      name: '神雷・ファイナルサンダー',
+      desc: '空から 1億ボルトの 黄金イナズマを おとす 雷の究極奥義！',
+    },
+    nature: {
+      name: 'ガイア・エメラルド・バースト',
+      desc: '地球すべての 自然エネルギーを 爆発させる 森の究極奥義！',
+    },
+  };
+
+  const tBasic = basicByType[kaiju.type];
+  const eMid = elemSkillByElement[kaiju.element];
+  const eUlt = ultimateByElement[kaiju.element];
+
+  return [
+    {
+      id: `${kaiju.id}-skill-1`,
+      name: tBasic.name,
+      unlockLevel: 1,
+      mpCost: 0,
+      power: 28,
+      description: tBasic.desc,
+    },
+    {
+      id: `${kaiju.id}-skill-2`,
+      name: eMid.name,
+      unlockLevel: 2,
+      mpCost: 10,
+      power: 50,
+      description: eMid.desc,
+    },
+    {
+      id: `${kaiju.id}-skill-3`,
+      name: kaiju.specialMove,
+      unlockLevel: 3,
+      mpCost: 20,
+      power: 80,
+      description: `${kaiju.name} だけの ちょうきょうりょくな 必殺技だ！`,
+    },
+    {
+      id: `${kaiju.id}-skill-4`,
+      name: eUlt.name,
+      unlockLevel: 5,
+      mpCost: 35,
+      power: 130,
+      description: eUlt.desc,
+      isUltimate: true,
+    },
+  ];
+}
+
+/**
+ * 怪獣の現在のレベル・進化段階・ドラクエ風ステータス・習得技を計算する
+ */
+export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): KaijuComputedStats {
+  const level = Math.max(1, progress?.level ?? 1);
+  const exp = Math.max(0, progress?.exp ?? 0);
+  const nextLevelExp = 100;
+  const stage = getEvolutionStage(level);
+
+  let displayName = kaiju.name;
+  if (stage === 1) {
+    displayName = kaiju.stageNames?.[0] ?? `プチ${kaiju.name}`;
+  } else if (stage === 2) {
+    displayName = kaiju.stageNames?.[1] ?? kaiju.name;
+  } else {
+    displayName = kaiju.stageNames?.[2] ?? `キング${kaiju.name}`;
+  }
+
+  const stageTitle =
+    stage === 1 ? '★ キッズ形態' : stage === 2 ? '★★ せいちょう形態' : '★★★ 究極キング形態';
+
+  const maxHp = 80 + kaiju.stars * 12 + (level - 1) * 28 + (stage - 1) * 35;
+  const maxMp = 30 + kaiju.stars * 6 + (level - 1) * 12 + (stage - 1) * 15;
+  const attack = 25 + kaiju.stars * 5 + (level - 1) * 11 + (stage - 1) * 15;
+  const defense = 20 + kaiju.stars * 4 + (level - 1) * 9 + (stage - 1) * 12;
+  const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 12 : 5) + (level - 1) * 8;
+
+  const allSkills = getKaijuSkills(kaiju);
+  const unlockedSkills = allSkills.filter((s) => s.unlockLevel <= level);
+
+  return {
+    level,
+    exp,
+    nextLevelExp,
+    stage,
+    displayName,
+    stageTitle,
+    maxHp,
+    maxMp,
+    attack,
+    defense,
+    speed,
+    unlockedSkills,
+    allSkills,
+  };
+}
 
 export function findKaiju(element: ElementId, type: KaijuTypeId): KaijuData {
   return (
     KAIJU_LIST.find((k) => k.element === element && k.type === type) ||
     KAIJU_LIST[0]
   );
+}
+
+/**
+ * 召喚時に同じ属性×タイプの怪獣から、未解放のものを優先して返す（すべて解放済みならランダム抽選）
+ */
+export function findKaijuForSummon(
+  element: ElementId,
+  type: KaijuTypeId,
+  unlockedIds: string[]
+): KaijuData {
+  const candidates = KAIJU_LIST.filter((k) => k.element === element && k.type === type);
+  if (candidates.length === 0) return KAIJU_LIST[0];
+
+  const lockedCandidates = candidates.filter((k) => !unlockedIds.includes(k.id));
+  if (lockedCandidates.length > 0) {
+    return lockedCandidates[0];
+  }
+
+  const randomIndex = Math.floor(Math.random() * candidates.length);
+  return candidates[randomIndex];
 }
 
 export function getElementMeta(element: ElementId): ElementOption {
@@ -427,3 +689,4 @@ export function getElementMeta(element: ElementId): ElementOption {
 export function getTypeMeta(type: KaijuTypeId): KaijuTypeOption {
   return KAIJU_TYPE_OPTIONS.find((t) => t.id === type) || KAIJU_TYPE_OPTIONS[0];
 }
+
