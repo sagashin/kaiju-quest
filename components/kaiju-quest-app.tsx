@@ -40,6 +40,8 @@ import {
   playSpecialAttackSound,
   playLevelUpSound,
   playEvolutionSound,
+  playBeatboxIntroSound,
+  playYoutuberAirhornSound,
   speakJapanese,
   fireQuestConfetti,
   fireSummonConfetti,
@@ -228,20 +230,25 @@ export default function KaijuQuestApp() {
 
   // タブ切り替え処理
   const handleSelectTab = (tab: ActiveTab) => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
     playTapSound(580);
     setActiveTab(tab);
     setSummonedKaiju(null);
     setSelectedZukanKaiju(null);
 
     if (tab === 'quest') {
+      playBeatboxIntroSound();
       speakJapanese(
-        'ブンブンハローかいじゅうクエスト！できたものをタップしてね！あいぼうの かいじゅうも いっしょに つよくなるよ！',
+        'ブンブンハローかいじゅうクエスト！どうもヒカキンです！できたものをタップしてね！レッツゴー！',
         soundEnabled
       );
     } else if (tab === 'summon') {
+      playBeatboxIntroSound();
       if (energy >= 3) {
         speakJapanese(
-          'ブンブン！かいじゅうしょうかんタイム！すきなパワーとタイプをえらんでね！いくぞー！',
+          'ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！',
           soundEnabled
         );
       } else {
@@ -252,10 +259,11 @@ export default function KaijuQuestApp() {
       }
     } else if (tab === 'zukan') {
       speakJapanese(
-        `かいじゅうずかん！いま ${unlockedKaijuIds.length}たい あつまったよ！けいけんち玉で レベルアップさせよう！`,
+        `かいじゅうずかん！いま ${unlockedKaijuIds.length}たい あつまったよ！やばいね！神ってるー！`,
         soundEnabled
       );
     } else if (tab === 'battle') {
+      playBeatboxIntroSound();
       speakJapanese(
         'ふたりで かいじゅうバトル！むすこくんと パパで たいけつだ！レッツゴー！',
         soundEnabled
@@ -386,6 +394,7 @@ export default function KaijuQuestApp() {
       setSummonedKaiju({ kaiju: targetKaiju, isNew, powerUpLevel });
 
       playSummonExplosionAndFanfare();
+      playYoutuberAirhornSound();
       fireSummonConfetti(elMeta.confettiColors);
 
       const currentStats = getKaijuStats(
@@ -777,19 +786,19 @@ export default function KaijuQuestApp() {
               </div>
             ) : (
               <>
-                {/* 上部：エネルギー残量＆テスト用「おためしチャージ（+3）」ボタン */}
-                <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5 bg-slate-950 px-3.5 py-2 rounded-2xl border border-amber-400/50">
-                      <Zap className="w-6 h-6 text-yellow-400 fill-yellow-400" />
-                      <span className="text-xl font-black text-amber-300 tabular-nums">
+                {/* 1行コンパクトエネルギーバー＆テスト用チャージボタン */}
+                <div className="rounded-2xl bg-slate-900/90 border border-white/15 px-3 py-2 flex items-center justify-between gap-2 shadow">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center gap-1 bg-slate-950 px-2.5 py-1 rounded-xl border border-amber-400/50 shrink-0">
+                      <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      <span className="text-base font-black text-amber-300 tabular-nums">
                         {energy}
                       </span>
-                      <span className="text-xs font-bold text-slate-400">/ 3</span>
+                      <span className="text-[10px] font-bold text-slate-400">/ 3</span>
                     </div>
-                    <div className="text-sm sm:text-base font-black text-white">
+                    <div className="text-xs sm:text-sm font-black text-white truncate">
                       {canSummon
-                        ? '⚡ エネルギーOK！すきな かいじゅうを つくろう！'
+                        ? '⚡ エネルギーOK！しょうかんできるよ！'
                         : `あと ${3 - energy}こ エネルギーが いるよ`}
                     </div>
                   </div>
@@ -797,105 +806,102 @@ export default function KaijuQuestApp() {
                   <button
                     type="button"
                     onClick={handleTestCharge}
-                    className="min-h-[44px] px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 text-xs font-extrabold flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
+                    className="min-h-[38px] px-2.5 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>おためしチャージ（⚡+3 🌟+3）</span>
+                    <Sparkles className="w-3 h-3" />
+                    <span>チャージ（+3）</span>
                   </button>
                 </div>
 
-                {/* 2カラム対応レイアウト：左に2ステップ選択、右（スマホでは下）にタマゴ＆召喚ボタン */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-                  {/* 左カラム：2ステップ選択ボタン */}
-                  <div className="lg:col-span-7 space-y-5">
-                    {/* ステップ1：属性をえらぶ */}
-                    <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 font-black text-base flex items-center justify-center shrink-0">
-                          1
-                        </span>
-                        <h2 className="text-lg sm:text-xl font-black text-white">
-                          パワー（ぞくせい）を えらぼう！
-                        </h2>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        {ELEMENT_OPTIONS.map((el) => {
-                          const isSelected = selectedElement === el.id;
-                          return (
-                            <button
-                              key={el.id}
-                              type="button"
-                              onClick={() => {
-                                playTapSound(540);
-                                setSelectedElement(el.id);
-                                speakJapanese(el.speechLabel, soundEnabled);
-                              }}
-                              className={`min-h-[74px] rounded-2xl p-3 flex items-center gap-3 border-2 transition-all active:scale-95 cursor-pointer ${
-                                isSelected
-                                  ? `bg-gradient-to-r ${el.bgGradient} border-white ${el.activeRing} text-white`
-                                  : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
-                              }`}
-                            >
-                              <span className="text-4xl shrink-0">{el.emoji}</span>
-                              <span className="text-xl font-black tracking-tight whitespace-nowrap">
-                                {el.label}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
+                {/* 1画面完結：縦スクロールなしでステップ1・ステップ2・タマゴ・召喚ボタンが並ぶレイアウト */}
+                <div className="space-y-2.5">
+                  {/* ステップ1：属性（横1列・4分割ボタン） */}
+                  <div className="rounded-2xl bg-slate-900/90 border border-white/15 p-2.5">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shrink-0">
+                        1
+                      </span>
+                      <h2 className="text-xs sm:text-sm font-black text-white">
+                        パワー（ぞくせい）を えらぼう！
+                      </h2>
                     </div>
 
-                    {/* ステップ2：タイプをえらぶ */}
-                    <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="w-8 h-8 rounded-full bg-cyan-400 text-slate-950 font-black text-base flex items-center justify-center shrink-0">
-                          2
-                        </span>
-                        <h2 className="text-lg sm:text-xl font-black text-white">
-                          かいじゅうの タイプを えらぼう！
-                        </h2>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        {KAIJU_TYPE_OPTIONS.map((tp) => {
-                          const isSelected = selectedType === tp.id;
-                          return (
-                            <button
-                              key={tp.id}
-                              type="button"
-                              onClick={() => {
-                                playTapSound(620);
-                                setSelectedType(tp.id);
-                                speakJapanese(tp.speechLabel, soundEnabled);
-                              }}
-                              className={`min-h-[74px] rounded-2xl p-3 flex items-center gap-3 border-2 transition-all active:scale-95 cursor-pointer ${
-                                isSelected
-                                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 border-white ring-4 ring-cyan-300 shadow-[0_0_25px_rgba(56,189,248,0.75)] text-white'
-                                  : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
-                              }`}
-                            >
-                              <span className="text-4xl shrink-0">{tp.emoji}</span>
-                              <span className="text-lg sm:text-xl font-black tracking-tight whitespace-nowrap">
-                                {tp.label}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
+                    <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                      {ELEMENT_OPTIONS.map((el) => {
+                        const isSelected = selectedElement === el.id;
+                        return (
+                          <button
+                            key={el.id}
+                            type="button"
+                            onClick={() => {
+                              playTapSound(540);
+                              setSelectedElement(el.id);
+                              speakJapanese(el.speechLabel, soundEnabled);
+                            }}
+                            className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
+                              isSelected
+                                ? `bg-gradient-to-r ${el.bgGradient} border-white ${el.activeRing} text-white`
+                                : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
+                            }`}
+                          >
+                            <span className="text-2xl sm:text-3xl leading-none">{el.emoji}</span>
+                            <span className="text-[11px] sm:text-xs font-black mt-1 truncate">
+                              {el.label}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* 右カラム：タマゴ召喚ステージ＆「しょうかんする！」特大ボタン */}
-                  <div className="lg:col-span-5 rounded-3xl bg-slate-900/95 border-2 border-white/20 p-5 flex flex-col items-center justify-between text-center relative overflow-hidden">
-                    <div className="text-sm font-black text-amber-300 bg-slate-950/80 px-4 py-1.5 rounded-full border border-amber-400/40">
+                  {/* ステップ2：タイプ（横1列・4分割ボタン） */}
+                  <div className="rounded-2xl bg-slate-900/90 border border-white/15 p-2.5">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="w-5 h-5 rounded-full bg-cyan-400 text-slate-950 font-black text-xs flex items-center justify-center shrink-0">
+                        2
+                      </span>
+                      <h2 className="text-xs sm:text-sm font-black text-white">
+                        かいじゅうの タイプを えらぼう！
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                      {KAIJU_TYPE_OPTIONS.map((tp) => {
+                        const isSelected = selectedType === tp.id;
+                        return (
+                          <button
+                            key={tp.id}
+                            type="button"
+                            onClick={() => {
+                              playTapSound(620);
+                              setSelectedType(tp.id);
+                              speakJapanese(tp.speechLabel, soundEnabled);
+                            }}
+                            className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 border-white ring-2 ring-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.7)] text-white'
+                                : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
+                            }`}
+                          >
+                            <span className="text-2xl sm:text-3xl leading-none">{tp.emoji}</span>
+                            <span className="text-[11px] sm:text-xs font-black mt-1 truncate">
+                              {tp.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* タマゴ＆「しょうかんする！」ボタンエリア */}
+                  <div className="rounded-2xl bg-slate-900/95 border-2 border-white/20 p-3 sm:p-4 flex flex-col items-center text-center relative overflow-hidden shadow-xl">
+                    <div className="text-xs font-black text-amber-300 bg-slate-950/80 px-3 py-1 rounded-full border border-amber-400/40">
                       {getElementMeta(selectedElement).emoji} {getElementMeta(selectedElement).label} ×{' '}
                       {getTypeMeta(selectedType).emoji} {getTypeMeta(selectedType).label}
                     </div>
 
                     {/* タマゴSVG */}
-                    <div className="my-4">
+                    <div className="my-2 max-h-36 sm:max-h-44 flex items-center justify-center">
                       <MonsterEggSvg
                         element={selectedElement}
                         type={selectedType}
@@ -903,7 +909,7 @@ export default function KaijuQuestApp() {
                       />
                     </div>
 
-                    <p className="text-sm font-extrabold text-slate-300 mb-3">
+                    <p className="text-xs font-extrabold text-slate-300 mb-2">
                       {isHatching
                         ? '⚡ ガタガタッ！うまれるぞーーっ！！'
                         : hasLockedCandidateForSelection
@@ -911,18 +917,18 @@ export default function KaijuQuestApp() {
                         : '⚡ もういちど しょうかんすると レベルが +1 あがるよ！'}
                     </p>
 
-                    {/* 「しょうかんする！」特大ボタン（最小76px高） */}
+                    {/* 「しょうかんする！」特大ボタン */}
                     <button
                       type="button"
                       onClick={handleSummonKaiju}
                       disabled={isHatching}
-                      className={`min-h-[78px] w-full rounded-3xl font-black text-2xl flex items-center justify-center gap-3 border-4 transition-all active:scale-95 cursor-pointer px-4 whitespace-nowrap shrink-0 ${
+                      className={`min-h-[68px] w-full rounded-2xl font-black text-xl sm:text-2xl flex items-center justify-center gap-2.5 border-4 transition-all active:scale-95 cursor-pointer px-4 whitespace-nowrap shrink-0 ${
                         canSummon
-                          ? 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_8px_0_#b45309,0_0_35px_rgba(250,204,21,0.85)]'
+                          ? 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_6px_0_#b45309,0_0_30px_rgba(250,204,21,0.85)]'
                           : 'bg-slate-800 text-slate-300 border-slate-600'
                       }`}
                     >
-                      <Flame className="w-8 h-8 shrink-0 fill-current" />
+                      <Flame className="w-7 h-7 shrink-0 fill-current" />
                       <span>{isHatching ? 'しょうかんちゅう…！' : 'しょうかんする！'}</span>
                     </button>
                   </div>

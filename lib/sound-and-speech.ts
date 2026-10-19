@@ -257,7 +257,169 @@ export function playSpecialAttackSound() {
 }
 
 /**
- * Web Speech API で元気よく日本語を読み上げる
+ * 軽快なヒューマンビートボックス風リズム音（バスドラム 80Hz → ハイハット → スネア 0.35秒）
+ */
+export function playBeatboxIntroSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // 1. バスドラム（ドンッ！95Hz -> 32Hz）
+  const kick = ctx.createOscillator();
+  const kickGain = ctx.createGain();
+  kick.type = 'sine';
+  kick.frequency.setValueAtTime(95, now);
+  kick.frequency.exponentialRampToValueAtTime(32, now + 0.08);
+
+  kickGain.gain.setValueAtTime(0.45, now);
+  kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+  kick.connect(kickGain);
+  kickGain.connect(ctx.destination);
+  kick.start(now);
+  kick.stop(now + 0.095);
+
+  // 2. ハイハット（チッ！ノイズ 0.11秒付近）
+  const hhTime = now + 0.11;
+  const bufferSize = Math.floor(ctx.sampleRate * 0.04);
+  const hhBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const hhData = hhBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    hhData[i] = Math.random() * 2 - 1;
+  }
+  const hhSource = ctx.createBufferSource();
+  hhSource.buffer = hhBuffer;
+
+  const hhFilter = ctx.createBiquadFilter();
+  hhFilter.type = 'highpass';
+  hhFilter.frequency.setValueAtTime(8000, hhTime);
+
+  const hhGain = ctx.createGain();
+  hhGain.gain.setValueAtTime(0.25, hhTime);
+  hhGain.gain.exponentialRampToValueAtTime(0.001, hhTime + 0.038);
+
+  hhSource.connect(hhFilter);
+  hhFilter.connect(hhGain);
+  hhGain.connect(ctx.destination);
+  hhSource.start(hhTime);
+  hhSource.stop(hhTime + 0.04);
+
+  // 3. スネア（パァン！トーン+ノイズ 0.22秒付近）
+  const snTime = now + 0.22;
+  const snOsc = ctx.createOscillator();
+  const snOscGain = ctx.createGain();
+  snOsc.type = 'triangle';
+  snOsc.frequency.setValueAtTime(220, snTime);
+  snOsc.frequency.exponentialRampToValueAtTime(80, snTime + 0.1);
+
+  snOscGain.gain.setValueAtTime(0.3, snTime);
+  snOscGain.gain.exponentialRampToValueAtTime(0.001, snTime + 0.11);
+  snOsc.connect(snOscGain);
+  snOscGain.connect(ctx.destination);
+  snOsc.start(snTime);
+  snOsc.stop(snTime + 0.12);
+
+  const snBufSize = Math.floor(ctx.sampleRate * 0.12);
+  const snBuffer = ctx.createBuffer(1, snBufSize, ctx.sampleRate);
+  const snData = snBuffer.getChannelData(0);
+  for (let i = 0; i < snBufSize; i++) {
+    snData[i] = Math.random() * 2 - 1;
+  }
+  const snSource = ctx.createBufferSource();
+  snSource.buffer = snBuffer;
+
+  const snFilter = ctx.createBiquadFilter();
+  snFilter.type = 'bandpass';
+  snFilter.frequency.setValueAtTime(2500, snTime);
+
+  const snGain = ctx.createGain();
+  snGain.gain.setValueAtTime(0.35, snTime);
+  snGain.gain.exponentialRampToValueAtTime(0.001, snTime + 0.12);
+
+  snSource.connect(snFilter);
+  snFilter.connect(snGain);
+  snGain.connect(ctx.destination);
+  snSource.start(snTime);
+  snSource.stop(snTime + 0.13);
+}
+
+/**
+ * YouTuber定番エアホーンサウンド（プァー！プァー！プァーーー！）
+ */
+export function playYoutuberAirhornSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  // エアホーンの代表的な和音ピッチ（F#5, A5, C#6）
+  const chord = [739.99, 880.0, 1108.73];
+
+  const bursts = [
+    { start: 0.0, dur: 0.08, vol: 0.28 },
+    { start: 0.11, dur: 0.08, vol: 0.32 },
+    { start: 0.22, dur: 0.36, vol: 0.38 },
+  ];
+
+  bursts.forEach(({ start, dur, vol }) => {
+    const t = now + start;
+    chord.forEach((freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(vol / chord.length, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.02);
+    });
+  });
+}
+
+/**
+ * ドラクエ定番ホイミ風回復サウンド（E5→G5→B5→E6→G6の上昇アルペジオ）
+ */
+export function playHealSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const notes = [659.25, 783.99, 987.77, 1318.51, 1567.98]; // E5, G5, B5, E6, G6
+
+  notes.forEach((freq, idx) => {
+    const start = now + idx * 0.07;
+    const dur = 0.28;
+    const osc = ctx.createOscillator();
+    const sub = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    sub.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, start);
+    sub.frequency.setValueAtTime(freq * 0.5, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.24, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    sub.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    sub.start(start);
+    osc.stop(start + dur + 0.02);
+    sub.stop(start + dur + 0.02);
+  });
+}
+
+/**
+ * Web Speech API でヒカキン風の抑揚をつけて日本語を読み上げる
  */
 export function speakJapanese(text: string, soundEnabled = true) {
   if (!soundEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) {
@@ -266,12 +428,6 @@ export function speakJapanese(text: string, soundEnabled = true) {
 
   try {
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
-    // ヒカキン風のハイテンションで親しみやすい男性YouTuberボイス設定
-    utterance.rate = 1.22; // テンポよくノリのいいYouTuberトーク速度
-    utterance.pitch = 0.92; // 男性らしい声帯の響きを保ちつつハリのあるトーン
-    utterance.volume = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
     // 男性ボイス（Otoya, Ichiro, Hattori, Keita 等）を最優先で選択
@@ -288,11 +444,40 @@ export function speakJapanese(text: string, soundEnabled = true) {
       voices.find((v) => v.lang.includes('ja') && v.name.includes('Google')) ||
       voices.find((v) => v.lang.includes('ja'));
 
-    if (hikakinVoice) {
-      utterance.voice = hikakinVoice;
-    }
+    // 感嘆詞（「ブンブン！」「キターーー！」「うおおおー！」等）が含まれる場合、前半と後半に分割して抑揚をつける
+    const exclamationMatch = text.match(/^([^！!]+[！!]+)\s*(.+)$/);
 
-    window.speechSynthesis.speak(utterance);
+    if (exclamationMatch && exclamationMatch[1] && exclamationMatch[2]) {
+      const part1 = exclamationMatch[1].trim();
+      const part2 = exclamationMatch[2].trim();
+
+      // 1つ目の感嘆詞Utterance（ハイテンションな高めの声）
+      const u1 = new SpeechSynthesisUtterance(part1);
+      u1.lang = 'ja-JP';
+      u1.pitch = 1.18;
+      u1.rate = 1.35;
+      u1.volume = 1.0;
+      if (hikakinVoice) u1.voice = hikakinVoice;
+
+      // 2つ目の本文Utterance（聞き取りやすくノリの良い男性トーン）
+      const u2 = new SpeechSynthesisUtterance(part2);
+      u2.lang = 'ja-JP';
+      u2.pitch = 0.95;
+      u2.rate = 1.22;
+      u2.volume = 1.0;
+      if (hikakinVoice) u2.voice = hikakinVoice;
+
+      window.speechSynthesis.speak(u1);
+      window.speechSynthesis.speak(u2);
+    } else {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      utterance.rate = 1.22;
+      utterance.pitch = 0.95;
+      utterance.volume = 1.0;
+      if (hikakinVoice) utterance.voice = hikakinVoice;
+      window.speechSynthesis.speak(utterance);
+    }
   } catch {
     // Web Speech API 非対応環境でもエラーにしない
   }

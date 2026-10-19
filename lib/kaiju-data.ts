@@ -629,10 +629,10 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
   const stageTitle =
     stage === 1 ? '★ キッズ形態' : stage === 2 ? '★★ せいちょう形態' : '★★★ 究極キング形態';
 
-  const maxHp = 80 + kaiju.stars * 12 + (level - 1) * 28 + (stage - 1) * 35;
-  const maxMp = 30 + kaiju.stars * 6 + (level - 1) * 12 + (stage - 1) * 15;
-  const attack = 25 + kaiju.stars * 5 + (level - 1) * 11 + (stage - 1) * 15;
-  const defense = 20 + kaiju.stars * 4 + (level - 1) * 9 + (stage - 1) * 12;
+  const maxHp = 220 + kaiju.stars * 25 + (level - 1) * 65 + (stage - 1) * 80;
+  const maxMp = 40 + kaiju.stars * 8 + (level - 1) * 15 + (stage - 1) * 20;
+  const attack = 28 + kaiju.stars * 5 + (level - 1) * 12 + (stage - 1) * 16;
+  const defense = 22 + kaiju.stars * 4 + (level - 1) * 10 + (stage - 1) * 14;
   const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 12 : 5) + (level - 1) * 8;
 
   const allSkills = getKaijuSkills(kaiju);
@@ -689,4 +689,29 @@ export function getElementMeta(element: ElementId): ElementOption {
 export function getTypeMeta(type: KaijuTypeId): KaijuTypeOption {
   return KAIJU_TYPE_OPTIONS.find((t) => t.id === type) || KAIJU_TYPE_OPTIONS[0];
 }
+
+/**
+ * 属性相性判定関数
+ * 相性ループ：fire（🔥ほのお）＞ nature（🌿しぜん）＞ thunder（⚡かみなり）＞ water（💧みず）＞ fire（🔥ほのお）
+ */
+export function getElementAdvantage(
+  attackerEl: ElementId,
+  defenderEl: ElementId
+): { multiplier: number; label: string } {
+  const winMap: Record<ElementId, ElementId> = {
+    fire: 'nature',
+    nature: 'thunder',
+    thunder: 'water',
+    water: 'fire',
+  };
+
+  if (winMap[attackerEl] === defenderEl) {
+    return { multiplier: 1.3, label: '⚡ こうかは ばつぐんだ！！' };
+  }
+  if (winMap[defenderEl] === attackerEl) {
+    return { multiplier: 0.8, label: '🛡️ いまひとつの ようだ…' };
+  }
+  return { multiplier: 1.0, label: '' };
+}
+
 
