@@ -553,6 +553,7 @@ export function KaijuBattle({
                   <KaijuSvgIllustration
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
+                    kaijuId={p1Kaiju.id}
                     evolutionStage={p1Stats.stage}
                   />
                 </div>
@@ -598,6 +599,7 @@ export function KaijuBattle({
                         <KaijuSvgIllustration
                           element={k.element}
                           type={k.type}
+                          kaijuId={k.id}
                           evolutionStage={stats.stage}
                         />
                       </div>
@@ -684,6 +686,7 @@ export function KaijuBattle({
                   <KaijuSvgIllustration
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
+                    kaijuId={p2Kaiju.id}
                     evolutionStage={p2Stats.stage}
                     flipHorizontal
                   />
@@ -729,6 +732,7 @@ export function KaijuBattle({
                         <KaijuSvgIllustration
                           element={k.element}
                           type={k.type}
+                          kaijuId={k.id}
                           evolutionStage={p2Stats.stage}
                         />
                       </div>
@@ -878,6 +882,7 @@ export function KaijuBattle({
                   <KaijuSvgIllustration
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
+                    kaijuId={p1Kaiju.id}
                     evolutionStage={p1Stats.stage}
                     isAttacking={p1Attacking}
                     isDamaged={p1Damaged}
@@ -912,6 +917,7 @@ export function KaijuBattle({
                   <KaijuSvgIllustration
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
+                    kaijuId={p2Kaiju.id}
                     evolutionStage={p2Stats.stage}
                     isAttacking={p2Attacking}
                     isDamaged={p2Damaged}
@@ -1120,6 +1126,7 @@ export function KaijuBattle({
               <KaijuSvgIllustration
                 element={winner === 1 ? p1Kaiju.element : p2Kaiju.element}
                 type={winner === 1 ? p1Kaiju.type : p2Kaiju.type}
+                kaijuId={winner === 1 ? p1Kaiju.id : p2Kaiju.id}
                 evolutionStage={winner === 1 ? p1Stats.stage : p2Stats.stage}
               />
             </div>

@@ -621,6 +621,7 @@ export default function KaijuQuestApp() {
                   <KaijuSvgIllustration
                     element={partnerKaiju.element}
                     type={partnerKaiju.type}
+                    kaijuId={partnerKaiju.id}
                     evolutionStage={partnerStats.stage}
                   />
                 </div>
@@ -1062,6 +1063,7 @@ export default function KaijuQuestApp() {
                           <KaijuSvgIllustration
                             element={kaiju.element}
                             type={kaiju.type}
+                            kaijuId={kaiju.id}
                             evolutionStage={isUnlocked ? stats.stage : 2}
                             silhouette={!isUnlocked}
                           />

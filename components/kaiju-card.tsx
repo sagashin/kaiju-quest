@@ -244,6 +244,7 @@ export function KaijuHeroCard({
               <KaijuSvgIllustration
                 element={kaiju.element}
                 type={kaiju.type}
+                kaijuId={kaiju.id}
                 evolutionStage={displayedStage}
                 isAttacking={isAttacking}
               />
