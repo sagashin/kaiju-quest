@@ -57,6 +57,15 @@ export const QUEST_LIST: QuestItem[] = [
     iconBg: 'bg-yellow-400/30',
   },
   {
+    id: 'morning-milk',
+    emoji: '🥛',
+    title: 'あさ ぎゅうにゅうを のむ',
+    shortSpeechName: 'あさの ぎゅうにゅう',
+    cardBg: 'from-sky-400/25 to-blue-500/15',
+    borderAccent: 'border-sky-300/60',
+    iconBg: 'bg-sky-400/30',
+  },
+  {
     id: 'breakfast',
     emoji: '🍙',
     title: 'あさごはんを たべる',
@@ -154,6 +163,15 @@ export const QUEST_LIST: QuestItem[] = [
     cardBg: 'from-indigo-500/25 to-blue-500/15',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-500/30',
+  },
+  {
+    id: 'night-toilet',
+    emoji: '🚽',
+    title: 'ねるまえ トイレに いく',
+    shortSpeechName: 'ねるまえの トイレ',
+    cardBg: 'from-indigo-600/30 to-purple-800/25',
+    borderAccent: 'border-indigo-400/60',
+    iconBg: 'bg-indigo-600/30',
   },
   {
     id: 'sleep',

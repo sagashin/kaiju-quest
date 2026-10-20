@@ -704,7 +704,7 @@ export default function KaijuQuestApp() {
               </button>
             </div>
 
-            {/* 13のクエストカードグリッド（スマホ1〜2列、PC3列） */}
+            {/* 15のお支度クエストカードグリッド（スマホ1〜2列、PC3列） */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
               {QUEST_LIST.map((quest) => {
                 const isDone = completedQuests.includes(quest.id);
