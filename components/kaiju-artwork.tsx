@@ -1140,6 +1140,323 @@ function GodThunderFenrirSvg({ primary, secondary, accent, eyeColor, outline, si
 }
 
 /* ==========================================================================
+   💥 鳥山明風コラボ怪獣 (TORIYAMA-STYLE MONSTERS)
+   ========================================================================== */
+
+/** No.21 スーパーティラノ (超サイヤ人風の逆立つ金髪炎ヘア、気功波ポーズ、武道着の青帯) */
+function SuperTyrannoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 尻尾 */}
+      <path d="M75 185 Q22 175, 20 120 Q38 142, 78 152 Z" fill={primary} />
+      {/* 尾先の金髪トゲ */}
+      <polygon points="20,122 5,105 24,95 18,75 38,115" fill="#facc15" />
+
+      {/* 強靭な二足ティラノ胴体 */}
+      <ellipse cx="116" cy="162" rx="52" ry="46" fill={primary} />
+      <ellipse cx="126" cy="164" rx="30" ry="32" fill={secondary} stroke="none" />
+
+      {/* ★ 武道着の青い帯 (MARTIAL ARTS OBI SASH) ★ */}
+      {!silhouette && (
+        <g>
+          <rect x="74" y="160" width="84" height="12" rx="4" fill="#1d4ed8" stroke={outline} strokeWidth="2.5" />
+          <path d="M78 166 Q65 185, 60 210 L70 212 Q75 190, 84 172 Z" fill="#1d4ed8" stroke={outline} strokeWidth="2" />
+          <path d="M84 168 Q75 192, 74 218 L82 220 Q84 195, 90 172 Z" fill="#2563eb" stroke={outline} strokeWidth="2" />
+        </g>
+      )}
+
+      {/* 足と青いリストバンド風アンクル */}
+      <rect x="76" y="192" width="28" height="34" rx="8" fill={secondary} />
+      <rect x="130" y="192" width="28" height="34" rx="8" fill={secondary} />
+      {!silhouette && (
+        <g fill="#1d4ed8" stroke="none">
+          <rect x="76" y="192" width="28" height="8" rx="2" />
+          <rect x="130" y="192" width="28" height="8" rx="2" />
+        </g>
+      )}
+      <polygon points="72,226 82,216 88,226" fill={accent} />
+      <polygon points="86,226 96,216 102,226" fill={accent} />
+      <polygon points="126,226 136,216 142,226" fill={accent} />
+      <polygon points="140,226 150,216 156,226" fill={accent} />
+
+      {/* ★ 超サイヤ人風の黄金に逆立つ大迫力ヘア (SUPER SAIYAN SPIKY HAIR) ★ */}
+      <polygon
+        points="95,70 65,25 90,40 75,5 112,30 115,-5 138,25 152,0 160,32 188,10 178,45 208,35 185,68"
+        fill="#facc15"
+      />
+      {!silhouette && (
+        <polygon
+          points="102,65 82,30 98,42 88,18 116,35 120,8 136,30 148,12 152,36 172,22 165,48 185,42 172,66"
+          fill="#fef08a"
+          stroke="none"
+        />
+      )}
+
+      {/* ティラノヘッド */}
+      <path
+        d="M86 115 C82 65, 126 50, 175 58 C212 65, 222 92, 212 110 L160 114 L205 130 C194 148, 150 152, 114 138 Z"
+        fill={primary}
+      />
+
+      {/* 鋭いキバ */}
+      {!silhouette && (
+        <g fill="#ffffff" stroke="#0f172a" strokeWidth="2">
+          <polygon points="166,110 173,122 180,110" />
+          <polygon points="183,110 190,123 197,110" />
+          <polygon points="199,109 205,121 211,109" />
+        </g>
+      )}
+
+      {/* ★ ドラゴンボール風の鋭い目元 (DBZ EYE) ★ */}
+      {!silhouette && (
+        <g>
+          {/* 太い眉ライン */}
+          <polygon points="132,66 172,74 165,80 134,74" fill="#0f172a" stroke="none" />
+          {/* 目と瞳 */}
+          <polygon points="138,75 166,80 145,92" fill="#22d3ee" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="154" cy="82" r="3.5" fill="#0f172a" stroke="none" />
+        </g>
+      )}
+
+      {/* ★ かめはめ波ポーズの両手 ＆ 輝く気功波エネルギー弾 ★ */}
+      <path d="M125 140 L160 142 L168 158 L130 155 Z" fill={secondary} />
+      {!silhouette && (
+        <g>
+          <circle cx="182" cy="148" r="22" fill="#38bdf8" opacity="0.45" stroke="none" />
+          <circle cx="182" cy="148" r="15" fill="#06b6d4" stroke="#ffffff" strokeWidth="3" />
+          <circle cx="182" cy="148" r="8" fill="#ffffff" stroke="none" />
+          <polygon points="182,120 186,130 178,130" fill="#fef08a" stroke="none" />
+          <polygon points="182,176 186,166 178,166" fill="#fef08a" stroke="none" />
+          <polygon points="208,148 198,152 198,144" fill="#fef08a" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.22 カプセルポッポ (Dr.スランプ アラレちゃん風の天使の羽つきキャップ、丸型レトロメカ、んちゃ砲) */
+function CapsulePoppoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 背面のゼンマイネジまたは排気管 */}
+      <rect x="52" y="130" width="16" height="24" rx="4" fill={secondary} />
+      <circle cx="44" cy="142" r="10" fill={accent} stroke={outline} strokeWidth="3" />
+
+      {/* 丸っこい足＆赤いスニーカー風シューズ */}
+      <rect x="85" y="188" width="28" height="26" rx="8" fill={secondary} />
+      <rect x="145" y="188" width="28" height="26" rx="8" fill={secondary} />
+      <ellipse cx="98" cy="218" rx="20" ry="10" fill="#ef4444" />
+      <ellipse cx="160" cy="218" rx="20" ry="10" fill="#ef4444" />
+      {!silhouette && (
+        <g fill="#ffffff" stroke="none">
+          <ellipse cx="98" cy="218" rx="14" ry="4" opacity="0.6" />
+          <ellipse cx="160" cy="218" rx="14" ry="4" opacity="0.6" />
+        </g>
+      )}
+
+      {/* ★ まるっこいカプセル型の胴体 (Chubby Capsule Body) ★ */}
+      <ellipse cx="130" cy="154" rx="55" ry="44" fill={primary} />
+      <circle cx="130" cy="154" r="24" fill="#0f172a" stroke={outline} strokeWidth="3" />
+      <circle cx="130" cy="154" r="18" fill="#38bdf8" stroke="none" />
+      {!silhouette && (
+        <g stroke="none" fill="#ffffff">
+          <ellipse cx="124" cy="148" rx="6" ry="4" opacity="0.8" />
+          <circle cx="138" cy="162" r="3" opacity="0.7" />
+          <circle cx="125" cy="164" r="2" opacity="0.7" />
+        </g>
+      )}
+
+      {/* ★ 左腕：白いアニメ手袋で元気に「んちゃ！」バイバイ ★ */}
+      <path d="M175 145 Q198 135, 205 115" stroke={primary} strokeWidth="12" strokeLinecap="round" />
+      <circle cx="206" cy="112" r="16" fill="#ffffff" stroke={outline} strokeWidth="3" />
+      <circle cx="216" cy="108" r="6" fill="#ffffff" stroke={outline} strokeWidth="2.5" />
+
+      {/* ★ 右腕：ラッパ型の「んちゃ砲」ウォーターバズーカ ★ */}
+      <rect x="42" y="142" width="38" height="22" rx="6" fill={secondary} />
+      <polygon points="42,136 18,124 18,172 42,160" fill={accent} />
+      {!silhouette && (
+        <g stroke="#38bdf8" strokeWidth="3" fill="none" opacity="0.85">
+          <ellipse cx="14" cy="148" rx="4" ry="16" />
+          <ellipse cx="6" cy="148" rx="4" ry="22" />
+        </g>
+      )}
+
+      {/* ★ 丸型ヘッド (Round Head) ★ */}
+      <circle cx="130" cy="80" r="38" fill={primary} />
+
+      {/* ★ アラレちゃん風の天使の羽つきキャップ (ARALE WING CAP) ★ */}
+      <path d="M94 65 C94 30, 166 30, 166 65 Z" fill="#ec4899" />
+      <path d="M88 65 C88 56, 172 56, 172 65 L178 72 C178 75, 82 75, 82 72 Z" fill="#f43f5e" />
+      {!silhouette && (
+        <circle cx="130" cy="46" r="6" fill="#facc15" stroke={outline} strokeWidth="1.5" />
+      )}
+      <g fill="#ffffff">
+        <path d="M96 52 C65 42, 60 22, 85 25 C75 32, 82 42, 94 48 Z" />
+        <path d="M164 52 C195 42, 200 22, 175 25 C185 32, 178 42, 166 48 Z" />
+      </g>
+
+      {/* ★ アラレちゃん風のクリクリ大きな丸目 ＆ 笑顔 ★ */}
+      {!silhouette && (
+        <g>
+          <circle cx="114" cy="82" r="10" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="115" cy="82" r="5" fill="#0f172a" stroke="none" />
+          <circle cx="117" cy="80" r="2" fill="#ffffff" stroke="none" />
+
+          <circle cx="146" cy="82" r="10" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="145" cy="82" r="5" fill="#0f172a" stroke="none" />
+          <circle cx="147" cy="80" r="2" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="104" cy="94" rx="6" ry="4" fill="#fb7185" stroke="none" opacity="0.7" />
+          <ellipse cx="156" cy="94" rx="6" ry="4" fill="#fb7185" stroke="none" opacity="0.7" />
+
+          <path d="M120 95 Q130 110, 140 95 Z" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.23 スカウタードラゴ (神龍シェンロン風東洋龍、赤いスカウター、筋斗雲風の雷雲、ドラゴンボール) */
+function ScouterDragoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 筋斗雲・雷雲のふわふわ台座 */}
+      <g fill="#fef08a" opacity="0.95">
+        <circle cx="70" cy="205" r="22" />
+        <circle cx="105" cy="215" r="26" />
+        <circle cx="145" cy="215" r="26" />
+        <circle cx="185" cy="205" r="22" />
+        <circle cx="130" cy="195" r="24" />
+      </g>
+
+      {/* 東洋龍の波打つ胴体 */}
+      <path
+        d="M60 170 Q130 140, 150 185 Q170 215, 205 175"
+        fill="none"
+        stroke={primary}
+        strokeWidth="32"
+        strokeLinecap="round"
+      />
+      {!silhouette && (
+        <path
+          d="M60 170 Q130 140, 150 185 Q170 215, 205 175"
+          fill="none"
+          stroke={accent}
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
+      )}
+
+      {/* 2本の神龍の鹿角 */}
+      <path d="M105 60 L75 15 L95 35 L75 8 L105 48 Z" fill="#facc15" />
+      <path d="M155 60 L185 15 L165 35 L185 8 L155 48 Z" fill="#facc15" />
+
+      {/* ドラゴンヘッド */}
+      <path
+        d="M92 78 C92 48, 168 48, 168 78 L180 106 C158 126, 102 126, 80 106 Z"
+        fill={primary}
+      />
+      <polygon points="130,28 118,52 142,52" fill={accent} />
+
+      {/* 神龍のヒゲ */}
+      <path d="M92 105 Q45 95, 20 125" fill="none" stroke="#facc15" strokeWidth="5" strokeLinecap="round" />
+      <path d="M168 105 Q215 95, 240 125" fill="none" stroke="#facc15" strokeWidth="5" strokeLinecap="round" />
+
+      {/* 右目 */}
+      {!silhouette && (
+        <g>
+          <polygon points="98,82 122,88 102,96" fill="#ef4444" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="112" cy="88" r="3" fill="#0f172a" stroke="none" />
+        </g>
+      )}
+
+      {/* ★ 鳥山明名物：左目の赤いスカウター (SAIYAN SCOUTER) ★ */}
+      {!silhouette && (
+        <g>
+          <rect x="172" y="70" width="16" height="24" rx="4" fill="#0f172a" stroke="#ffffff" strokeWidth="2" />
+          <circle cx="180" cy="82" r="4" fill="#facc15" stroke="none" />
+          <line x1="180" y1="70" x2="195" y2="48" stroke="#0f172a" strokeWidth="3" />
+          <polygon
+            points="140,75 174,74 170,102 138,98"
+            fill="#ef4444"
+            opacity="0.88"
+            stroke="#ffffff"
+            strokeWidth="2.5"
+          />
+          <circle cx="152" cy="86" r="4" fill="#ffffff" opacity="0.8" stroke="none" />
+          <line x1="144" y1="86" x2="160" y2="86" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+        </g>
+      )}
+
+      {/* ドラゴンボール */}
+      <circle cx="130" cy="165" r="18" fill="#f97316" stroke="#ffffff" strokeWidth="3" />
+      {!silhouette && (
+        <g fill="#ef4444" stroke="none">
+          <polygon points="130,158 132,163 137,163 133,166 135,171 130,168 125,171 127,166 123,163 128,163" />
+          <ellipse cx="124" cy="160" rx="4" ry="2" fill="#ffffff" opacity="0.75" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.24 ガッチャビースト (Dr.スランプ ガッちゃん風の天使の輪、妖精の羽、うんちステッキ、なんでも食べるキバ) */
+function GatchaBeastSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 天使の黄金の輪っか */}
+      <ellipse cx="130" cy="38" rx="28" ry="8" fill="none" stroke="#facc15" strokeWidth="4.5" />
+
+      {/* 背中の小さな妖精ウイング */}
+      <path d="M96 125 C65 105, 52 125, 74 146 Z" fill="#c084fc" />
+      <path d="M164 125 C195 105, 208 125, 186 146 Z" fill="#c084fc" />
+
+      {/* まるまるボディ */}
+      <ellipse cx="130" cy="165" rx="55" ry="46" fill={primary} />
+      <ellipse cx="130" cy="168" rx="34" ry="32" fill={accent} stroke="none" opacity="0.9" />
+
+      {/* まるい足 */}
+      <ellipse cx="90" cy="208" rx="16" ry="12" fill={secondary} />
+      <ellipse cx="170" cy="208" rx="16" ry="12" fill={secondary} />
+
+      {/* ★ 右手：アラレちゃん名物「ピンクのうんちステッキ」 ★ */}
+      <line x1="58" y1="185" x2="38" y2="120" stroke="#f59e0b" strokeWidth="5" strokeLinecap="round" />
+      <path
+        d="M38 120 C24 120, 22 100, 38 100 C28 92, 48 85, 42 78 C38 88, 54 94, 52 105 C58 115, 48 120, 38 120 Z"
+        fill="#f43f5e"
+      />
+      <circle cx="38" cy="148" r="10" fill={secondary} />
+
+      {/* 左手 */}
+      <circle cx="182" cy="158" r="10" fill={secondary} />
+
+      {/* 大きくて丸い顔 */}
+      <circle cx="130" cy="95" r="44" fill={primary} />
+      <polygon points="130,52 118,28 130,42 142,28" fill={accent} />
+
+      {!silhouette && (
+        <g>
+          <ellipse cx="112" cy="88" rx="12" ry="14" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <ellipse cx="114" cy="88" rx="7" ry="9" fill="#0f172a" stroke="none" />
+          <circle cx="116" cy="84" r="3" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="148" cy="88" rx="12" ry="14" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <ellipse cx="146" cy="88" rx="7" ry="9" fill="#0f172a" stroke="none" />
+          <circle cx="148" cy="84" r="3" fill="#ffffff" stroke="none" />
+
+          <circle cx="98" cy="104" r="7" fill="#fb7185" stroke="none" opacity="0.75" />
+          <circle cx="162" cy="104" r="7" fill="#fb7185" stroke="none" opacity="0.75" />
+
+          <path d="M116 108 Q130 126, 144 108 Z" fill="#0f172a" stroke="none" />
+          <polygon points="120,108 125,116 130,108" fill="#ffffff" stroke="none" />
+          <polygon points="130,108 135,116 140,108" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* ==========================================================================
    怪獣イラストディスパッチャーコンポーネント
    ========================================================================== */
 function KaijuSpecificSvgDispatcher({
@@ -1197,6 +1514,16 @@ function KaijuSpecificSvgDispatcher({
       return <JungleKongSvg {...partProps} />;
     case 'thunder-beast-2':
       return <GodThunderFenrirSvg {...partProps} />;
+
+    // 💥 鳥山明風コラボ怪獣
+    case 'fire-db-tyranno':
+      return <SuperTyrannoSvg {...partProps} />;
+    case 'water-arale-robo':
+      return <CapsulePoppoSvg {...partProps} />;
+    case 'thunder-db-dragon':
+      return <ScouterDragoSvg {...partProps} />;
+    case 'nature-arale-gatchan':
+      return <GatchaBeastSvg {...partProps} />;
 
     default:
       // フォールバック
