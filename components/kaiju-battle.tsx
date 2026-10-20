@@ -60,15 +60,20 @@ export function KaijuBattle({
   soundEnabled,
   onBattleComplete,
 }: KaijuBattleProps) {
-  // 1Pが選べる怪獣リスト（未解放が0体の場合は先頭4体をレンタル解放）
+  // 1P・2Pが選べる怪獣リスト（解放済みの怪獣のみ！）
   const p1AvailableList =
     unlockedKaijuIds.length > 0
       ? KAIJU_LIST.filter((k) => unlockedKaijuIds.includes(k.id))
       : KAIJU_LIST.slice(0, 4);
 
+  // パパ（2P）も解放済みの怪獣のみから選択可能
+  const p2AvailableList = p1AvailableList;
+
   const [phase, setPhase] = useState<BattlePhase>('select');
   const [p1KaijuId, setP1KaijuId] = useState<string>(p1AvailableList[0]?.id ?? KAIJU_LIST[0].id);
-  const [p2KaijuId, setP2KaijuId] = useState<string>(KAIJU_LIST[9]?.id ?? KAIJU_LIST[1].id);
+  const [p2KaijuId, setP2KaijuId] = useState<string>(
+    p2AvailableList[1]?.id ?? p2AvailableList[0]?.id ?? KAIJU_LIST[0].id
+  );
   // 初期値を 'normal'（1Pと同じレベルで白熱）に設定
   const [papaDifficulty, setPapaDifficulty] = useState<PapaDifficulty>('normal');
   const [p2ManualLevel, setP2ManualLevel] = useState<number | null>(null);
@@ -131,7 +136,7 @@ export function KaijuBattle({
   const hpMult = papaDifficulty === 'easy' ? 0.85 : papaDifficulty === 'hard' ? 1.4 : 1.0;
   const p2Stats: KaijuComputedStats = {
     ...p2BaseStats,
-    maxHp: Math.max(140, Math.round(p2BaseStats.maxHp * hpMult)),
+    maxHp: Math.max(80, Math.round(p2BaseStats.maxHp * hpMult)),
   };
 
   // スクロールトップ移動ヘルパー
@@ -256,7 +261,7 @@ export function KaijuBattle({
     setIsAnimatingAction(true);
     playHealSound();
 
-    const healAmount = Math.round(actorStats.maxHp * 0.35);
+    const healAmount = Math.round(actorStats.maxHp * 0.25);
     const nextHp = Math.min(actorStats.maxHp, actorHp + healAmount);
     const nextMp = Math.max(0, actorMp - HEAL_MP_COST);
 
@@ -376,13 +381,13 @@ export function KaijuBattle({
     // 属性相性判定
     const adv = getElementAdvantage(attackerKaiju.element, defenderKaiju.element);
 
-    // ワンパン防止の3〜5ターンバランス計算式
+    // 約3ターンでサクサク決着がつくスピーディなバトル計算式（1撃でHP30%〜45%前後を削る）
     const baseDmg =
-      skill.power * 0.85 + attackerStats.attack * 0.55 - defenderStats.defense * 0.25;
-    const variance = 0.94 + Math.random() * 0.12;
-    const critMult = isCritical ? 1.45 : 1.0;
+      skill.power * 0.95 + attackerStats.attack * 0.75 - defenderStats.defense * 0.28;
+    const variance = 0.95 + Math.random() * 0.1;
+    const critMult = isCritical ? 1.5 : 1.0;
     const rawDamage = Math.max(
-      18,
+      28,
       Math.round(baseDmg * adv.multiplier * critMult * variance)
     );
     const nextDefenderHp = Math.max(0, defenderHp - rawDamage);
@@ -699,11 +704,13 @@ export function KaijuBattle({
                 </div>
               </div>
 
-              {/* 2P 怪獣リスト */}
+              {/* 2P 怪獣リスト（解放済みのみ） */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto pr-1">
-                {KAIJU_LIST.map((k) => {
+                {p2AvailableList.map((k) => {
                   const isSelected = k.id === p2Kaiju.id;
                   const el = getElementMeta(k.element);
+                  const prog = kaijuProgress[k.id];
+                  const stats = getKaijuStats(k, prog);
                   return (
                     <button
                       key={k.id}
@@ -726,8 +733,10 @@ export function KaijuBattle({
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[10px] font-black text-cyan-300">{el.emoji}</div>
-                        <div className="text-xs font-black truncate">{k.name}</div>
+                        <div className="text-[10px] font-black text-cyan-300">
+                          Lv.{p2Level} {el.emoji}
+                        </div>
+                        <div className="text-xs font-black truncate">{stats.displayName}</div>
                       </div>
                     </button>
                   );

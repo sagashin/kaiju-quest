@@ -13,6 +13,15 @@ export interface QuestItem {
 
 export const QUEST_LIST: QuestItem[] = [
   {
+    id: 'wake-up',
+    emoji: '☀️',
+    title: 'あさ おきる',
+    shortSpeechName: 'あさ おきる',
+    cardBg: 'from-yellow-400/25 to-amber-500/15',
+    borderAccent: 'border-yellow-400/60',
+    iconBg: 'bg-yellow-400/30',
+  },
+  {
     id: 'breakfast',
     emoji: '🍙',
     title: 'あさごはんを たべる',
@@ -47,6 +56,24 @@ export const QUEST_LIST: QuestItem[] = [
     cardBg: 'from-emerald-500/25 to-teal-500/15',
     borderAccent: 'border-emerald-400/60',
     iconBg: 'bg-emerald-500/30',
+  },
+  {
+    id: 'go-nursery',
+    emoji: '🎒',
+    title: 'ほいくえんに いく',
+    shortSpeechName: 'ほいくえんに いく',
+    cardBg: 'from-lime-500/25 to-green-500/15',
+    borderAccent: 'border-lime-400/60',
+    iconBg: 'bg-lime-500/30',
+  },
+  {
+    id: 'return-nursery',
+    emoji: '🏠',
+    title: 'ほいくえんから かえる',
+    shortSpeechName: 'ほいくえんから かえる',
+    cardBg: 'from-teal-500/25 to-cyan-500/15',
+    borderAccent: 'border-teal-400/60',
+    iconBg: 'bg-teal-500/30',
   },
   {
     id: 'toys',
@@ -92,6 +119,15 @@ export const QUEST_LIST: QuestItem[] = [
     cardBg: 'from-indigo-500/25 to-blue-500/15',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-500/30',
+  },
+  {
+    id: 'sleep',
+    emoji: '🛌',
+    title: 'お布団で ねる',
+    shortSpeechName: 'おやすみ',
+    cardBg: 'from-slate-700/40 to-indigo-900/30',
+    borderAccent: 'border-indigo-400/60',
+    iconBg: 'bg-indigo-600/30',
   },
 ];
 
@@ -629,10 +665,11 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
   const stageTitle =
     stage === 1 ? '★ キッズ形態' : stage === 2 ? '★★ せいちょう形態' : '★★★ 究極キング形態';
 
-  const maxHp = 220 + kaiju.stars * 25 + (level - 1) * 65 + (stage - 1) * 80;
-  const maxMp = 40 + kaiju.stars * 8 + (level - 1) * 15 + (stage - 1) * 20;
-  const attack = 28 + kaiju.stars * 5 + (level - 1) * 12 + (stage - 1) * 16;
-  const defense = 22 + kaiju.stars * 4 + (level - 1) * 10 + (stage - 1) * 14;
+  // 3ターン前後で白熱してサクッと決着がつくスピーディなバトルバランス
+  const maxHp = 130 + kaiju.stars * 12 + (level - 1) * 35 + (stage - 1) * 45;
+  const maxMp = 35 + kaiju.stars * 6 + (level - 1) * 10 + (stage - 1) * 15;
+  const attack = 32 + kaiju.stars * 6 + (level - 1) * 14 + (stage - 1) * 18;
+  const defense = 16 + kaiju.stars * 3 + (level - 1) * 7 + (stage - 1) * 10;
   const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 12 : 5) + (level - 1) * 8;
 
   const allSkills = getKaijuSkills(kaiju);
