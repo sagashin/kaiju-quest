@@ -554,6 +554,9 @@ export function KaijuBattle({
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
                     kaijuId={p1Kaiju.id}
+                    category={p1Kaiju.category}
+                    realColors={p1Kaiju.realColors}
+                    insectStyle={p1Kaiju.insectStyle}
                     evolutionStage={p1Stats.stage}
                   />
                 </div>
@@ -600,6 +603,9 @@ export function KaijuBattle({
                           element={k.element}
                           type={k.type}
                           kaijuId={k.id}
+                          category={k.category}
+                          realColors={k.realColors}
+                          insectStyle={k.insectStyle}
                           evolutionStage={stats.stage}
                         />
                       </div>
@@ -687,6 +693,9 @@ export function KaijuBattle({
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
                     kaijuId={p2Kaiju.id}
+                    category={p2Kaiju.category}
+                    realColors={p2Kaiju.realColors}
+                    insectStyle={p2Kaiju.insectStyle}
                     evolutionStage={p2Stats.stage}
                     flipHorizontal
                   />
@@ -733,6 +742,9 @@ export function KaijuBattle({
                           element={k.element}
                           type={k.type}
                           kaijuId={k.id}
+                          category={k.category}
+                          realColors={k.realColors}
+                          insectStyle={k.insectStyle}
                           evolutionStage={p2Stats.stage}
                         />
                       </div>
@@ -883,6 +895,9 @@ export function KaijuBattle({
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
                     kaijuId={p1Kaiju.id}
+                    category={p1Kaiju.category}
+                    realColors={p1Kaiju.realColors}
+                    insectStyle={p1Kaiju.insectStyle}
                     evolutionStage={p1Stats.stage}
                     isAttacking={p1Attacking}
                     isDamaged={p1Damaged}
@@ -918,6 +933,9 @@ export function KaijuBattle({
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
                     kaijuId={p2Kaiju.id}
+                    category={p2Kaiju.category}
+                    realColors={p2Kaiju.realColors}
+                    insectStyle={p2Kaiju.insectStyle}
                     evolutionStage={p2Stats.stage}
                     isAttacking={p2Attacking}
                     isDamaged={p2Damaged}
@@ -1127,6 +1145,9 @@ export function KaijuBattle({
                 element={winner === 1 ? p1Kaiju.element : p2Kaiju.element}
                 type={winner === 1 ? p1Kaiju.type : p2Kaiju.type}
                 kaijuId={winner === 1 ? p1Kaiju.id : p2Kaiju.id}
+                category={winner === 1 ? p1Kaiju.category : p2Kaiju.category}
+                realColors={winner === 1 ? p1Kaiju.realColors : p2Kaiju.realColors}
+                insectStyle={winner === 1 ? p1Kaiju.insectStyle : p2Kaiju.insectStyle}
                 evolutionStage={winner === 1 ? p1Stats.stage : p2Stats.stage}
               />
             </div>

@@ -54,6 +54,7 @@ export function KaijuHeroCard({
   const elMeta = getElementMeta(kaiju.element);
   const typeMeta = getTypeMeta(kaiju.type);
   const stats = getKaijuStats(kaiju, progress);
+  const isInsect = kaiju.category === 'insect';
 
   // プレビュー選択中ならその形態、未選択なら現在のレベルの進化形態を表示
   const displayedStage: EvolutionStage =
@@ -61,10 +62,10 @@ export function KaijuHeroCard({
 
   const displayedName =
     displayedStage === 1
-      ? kaiju.stageNames?.[0] ?? `プチ${kaiju.name}`
+      ? kaiju.stageNames?.[0] ?? (isInsect ? `ちび${kaiju.name}` : `プチ${kaiju.name}`)
       : displayedStage === 2
       ? kaiju.stageNames?.[1] ?? kaiju.name
-      : kaiju.stageNames?.[2] ?? `キング${kaiju.name}`;
+      : kaiju.stageNames?.[2] ?? (isInsect ? `ギネス級${kaiju.name}` : `キング${kaiju.name}`);
 
   const handlePlaySkillAttack = (skill?: KaijuSkill) => {
     const moveName = skill ? skill.name : kaiju.specialMove;
@@ -154,7 +155,7 @@ export function KaijuHeroCard({
         {/* NEWバッジ */}
         {isNewUnlock && (
           <div className="absolute -top-4 -right-2 z-30 bg-amber-400 text-slate-950 font-black text-base px-4 py-1.5 rounded-full border-2 border-white shadow-lg animate-bounce">
-            ✨ あたらしい かいじゅう！
+            {isInsect ? '✨ あたらしい こんちゅう！' : '✨ あたらしい かいじゅう！'}
           </div>
         )}
 
@@ -196,7 +197,17 @@ export function KaijuHeroCard({
               {([1, 2, 3] as EvolutionStage[]).map((st) => {
                 const isUnlockedStage = st <= stats.stage;
                 const isSelected = displayedStage === st;
-                const label = st === 1 ? '★キッズ' : st === 2 ? '★★せいちょう' : '★★★キング';
+                const label = isInsect
+                  ? st === 1
+                    ? '🌱ちび'
+                    : st === 2
+                    ? '🪲成虫'
+                    : '👑ギネス級'
+                  : st === 1
+                  ? '★キッズ'
+                  : st === 2
+                  ? '★★せいちょう'
+                  : '★★★キング';
                 return (
                   <button
                     key={st}
@@ -245,6 +256,9 @@ export function KaijuHeroCard({
                 element={kaiju.element}
                 type={kaiju.type}
                 kaijuId={kaiju.id}
+                category={kaiju.category}
+                insectStyle={kaiju.insectStyle}
+                realColors={kaiju.realColors}
                 evolutionStage={displayedStage}
                 isAttacking={isAttacking}
               />
@@ -467,6 +481,57 @@ export function KaijuHeroCard({
           <p className="relative z-10 text-xs sm:text-sm font-bold text-slate-200 leading-relaxed bg-slate-800/70 rounded-xl p-3 border border-white/10">
             {kaiju.description}
           </p>
+
+          {/* 🎓 こんちゅう はかせメモ（昆虫モード時のみ出現） */}
+          {kaiju.insectInfo && (
+            <div className="relative z-10 rounded-2xl bg-gradient-to-br from-emerald-950/90 to-slate-900/95 border-2 border-emerald-400/50 p-3.5 space-y-2 text-white shadow-lg">
+              <div className="flex items-center justify-between border-b border-emerald-500/30 pb-1.5">
+                <div className="flex items-center gap-1.5 text-emerald-300 font-black text-xs sm:text-sm">
+                  <span>🎓</span>
+                  <span>こんちゅう はかせメモ（ほんものの知識）</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapSound(600);
+                    speakJapanese(
+                      `${kaiju.name}の はかせメモ！ すんでいる場所は、${kaiju.insectInfo!.habitat}！ すきな食べ物は、${kaiju.insectInfo!.food}！ 大きさは、${kaiju.insectInfo!.realSize}！ はかせのヒミツ！ ${kaiju.insectInfo!.trivia}`,
+                      soundEnabled
+                    );
+                  }}
+                  className="px-2.5 py-1 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-1 shadow cursor-pointer active:scale-95 transition-all"
+                >
+                  <Volume2 className="w-3.5 h-3.5" />
+                  <span>はかせメモを きく！</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+                <div className="bg-slate-900/80 rounded-xl p-2 border border-emerald-500/20">
+                  <span className="text-emerald-400 font-black">🌍 すんでいる場所: </span>
+                  <span className="text-slate-200 font-bold">{kaiju.insectInfo.habitat}</span>
+                </div>
+                <div className="bg-slate-900/80 rounded-xl p-2 border border-emerald-500/20">
+                  <span className="text-amber-300 font-black">🍯 すきな食べ物: </span>
+                  <span className="text-slate-200 font-bold">{kaiju.insectInfo.food}</span>
+                </div>
+                <div className="bg-slate-900/80 rounded-xl p-2 border border-emerald-500/20 sm:col-span-2">
+                  <span className="text-cyan-300 font-black">📏 ほんものの大きさ: </span>
+                  <span className="text-slate-200 font-bold">{kaiju.insectInfo.realSize}</span>
+                </div>
+              </div>
+
+              <div className="bg-emerald-900/40 rounded-xl p-2.5 border border-emerald-400/30">
+                <div className="text-xs font-black text-yellow-300 flex items-center gap-1 mb-1">
+                  <span>💡</span>
+                  <span>はかせのヒミツ！</span>
+                </div>
+                <p className="text-xs sm:text-sm font-bold text-emerald-100 leading-relaxed">
+                  {kaiju.insectInfo.trivia}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* アクションボタン（60px以上の特大タップ領域） */}
           <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

@@ -1,17 +1,117 @@
 'use client';
 
 import React from 'react';
-import { ElementId, KaijuTypeId, getElementMeta } from '@/lib/kaiju-data';
+import { ElementId, KaijuTypeId, CreatureCategory, InsectVisualStyle, getElementMeta } from '@/lib/kaiju-data';
 
 interface EggProps {
   element: ElementId;
   type: KaijuTypeId;
+  category?: CreatureCategory;
   isShaking?: boolean;
 }
 
-export function MonsterEggSvg({ element, type, isShaking = false }: EggProps) {
+export function MonsterEggSvg({ element, type, category = 'kaiju', isShaking = false }: EggProps) {
   const elMeta = getElementMeta(element);
 
+  // 🪲 昆虫モードのときは「🌳 甘い黄金の樹液が光るクヌギのご神木」を描画
+  if (category === 'insect') {
+    return (
+      <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : 'animate-float'}`}>
+        {/* 背面の森のオーラ発光 */}
+        <div
+          className="absolute w-48 h-48 rounded-full blur-2xl opacity-75 transition-all duration-300"
+          style={{
+            background: `radial-gradient(circle, #fde047 0%, ${elMeta.accentHex} 40%, ${elMeta.primaryHex} 70%, transparent 100%)`,
+          }}
+        />
+
+        <svg
+          viewBox="0 0 220 240"
+          className="w-44 h-48 relative z-10 drop-shadow-[0_12px_20px_rgba(0,0,0,0.65)]"
+          aria-label="クヌギのご神木"
+        >
+          <defs>
+            <linearGradient id="treeTrunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#451a03" />
+              <stop offset="50%" stopColor="#78350f" />
+              <stop offset="100%" stopColor="#291102" />
+            </linearGradient>
+            <radialGradient id="goldenSapGrad" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="30%" stopColor="#fef08a" />
+              <stop offset="70%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#b45309" />
+            </radialGradient>
+            <radialGradient id="leavesGrad" cx="40%" cy="30%" r="70%">
+              <stop offset="0%" stopColor="#86efac" />
+              <stop offset="50%" stopColor="#22c55e" />
+              <stop offset="100%" stopColor="#14532d" />
+            </radialGradient>
+          </defs>
+
+          {/* 大地・コケ台座 */}
+          <ellipse cx="110" cy="216" rx="72" ry="14" fill="rgba(15,23,42,0.8)" stroke="#22c55e" strokeWidth="2.5" />
+          <ellipse cx="110" cy="216" rx="52" ry="8" fill="#15803d" opacity="0.6" />
+
+          {/* クヌギの太い幹 */}
+          <path
+            d="M86 215 C82 170, 75 140, 68 115 C95 125, 125 125, 152 115 C145 140, 138 170, 134 215 Z"
+            fill="url(#treeTrunkGrad)"
+            stroke="#1c1917"
+            strokeWidth="3.5"
+          />
+          {/* 樹皮のゴツゴツ溝模様 */}
+          <path d="M96 212 Q94 165, 88 128" fill="none" stroke="#291102" strokeWidth="3" />
+          <path d="M110 210 Q112 160, 108 125" fill="none" stroke="#291102" strokeWidth="2.5" />
+          <path d="M124 212 Q126 168, 132 128" fill="none" stroke="#291102" strokeWidth="3" />
+
+          {/* クヌギの豊かな緑の葉（樹冠） */}
+          <g fill="url(#leavesGrad)" stroke="#052e16" strokeWidth="3.5">
+            <circle cx="68" cy="88" r="38" />
+            <circle cx="152" cy="88" r="38" />
+            <circle cx="110" cy="58" r="46" />
+            <circle cx="82" cy="52" r="34" />
+            <circle cx="138" cy="52" r="34" />
+          </g>
+
+          {/* 幹からとろ〜り溢れ出る黄金の樹液（SAP DROPLET） */}
+          <g>
+            <circle cx="112" cy="165" r="20" fill="#fde047" opacity="0.35" />
+            <path
+              d="M112 140 C104 150, 98 162, 98 172 C98 184, 104 192, 112 192 C120 192, 126 184, 126 172 C126 162, 120 150, 112 140 Z"
+              fill="url(#goldenSapGrad)"
+              stroke="#ffffff"
+              strokeWidth="2.5"
+            />
+            <ellipse cx="107" cy="166" rx="3.5" ry="8" transform="rotate(-15 107 166)" fill="#ffffff" opacity="0.9" />
+            <circle cx="118" cy="180" r="2.5" fill="#ffffff" opacity="0.8" />
+          </g>
+
+          {/* 揺れているときの葉っぱ＆樹液しぶき飛び散りエフェクト */}
+          {isShaking && (
+            <g>
+              <circle cx="48" cy="120" r="5" fill="#facc15" stroke="#ffffff" strokeWidth="1.5" />
+              <circle cx="172" cy="130" r="4.5" fill="#facc15" stroke="#ffffff" strokeWidth="1.5" />
+              <path d="M52 65 C40 55, 35 70, 52 75 Z" fill="#4ade80" />
+              <path d="M168 65 C180 55, 185 70, 168 75 Z" fill="#4ade80" />
+              <polygon points="110,18 116,28 104,28" fill="#facc15" />
+            </g>
+          )}
+        </svg>
+
+        {/* 昆虫タイプバッジ */}
+        <div className="absolute -bottom-1 right-2 z-20 w-14 h-14 rounded-2xl bg-slate-900/95 border-2 border-emerald-400 shadow-xl flex items-center justify-center text-3xl">
+          {type === 'kabuto' && '🪲'}
+          {type === 'kuwagata' && '✂️'}
+          {type === 'hunter' && '🐝'}
+          {type === 'flier' && '🦋'}
+          {type !== 'kabuto' && type !== 'kuwagata' && type !== 'hunter' && type !== 'flier' && '🪲'}
+        </div>
+      </div>
+    );
+  }
+
+  // 🦖 怪獣モードのタマゴ表示
   return (
     <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : 'animate-float'}`}>
       {/* 背面の属性オーラ発光 */}
@@ -118,6 +218,9 @@ export interface KaijuArtProps {
   element: ElementId;
   type: KaijuTypeId;
   kaijuId?: string;
+  category?: CreatureCategory;
+  insectStyle?: InsectVisualStyle;
+  realColors?: { primary: string; secondary: string; accent: string };
   silhouette?: boolean;
   isAttacking?: boolean;
   evolutionStage?: 1 | 2 | 3;
@@ -1457,15 +1560,641 @@ function GatchaBeastSvg({ primary, secondary, accent, eyeColor, outline, silhoue
 }
 
 /* ==========================================================================
+   🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
+   ========================================================================== */
+
+/** 1. y-horn：日本のカブトムシ型（Y字4叉の頭角＋胸角、ツヤのある鞘翅） */
+function YHornBeetleSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 6本の脚 */}
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q50 120, 35 95 L25 105" />
+        <path d="M175 130 Q210 120, 225 95 L235 105" />
+        <path d="M80 155 Q45 155, 30 145 L22 155" />
+        <path d="M180 155 Q215 155, 230 145 L238 155" />
+        <path d="M85 180 Q55 195, 45 220 L35 225" />
+        <path d="M175 180 Q205 195, 215 220 L225 225" />
+      </g>
+      {/* どっしりした腹部・鞘翅（Elytra） */}
+      <ellipse cx="130" cy="165" rx="55" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      {!silhouette && (
+        <path d="M100 135 Q115 175, 105 200" stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.35" strokeLinecap="round" />
+      )}
+      {/* 前胸背板（Pronotum） */}
+      <path d="M88 126 C88 95, 172 95, 172 126 Z" fill={secondary} />
+      {/* 小さな胸角 */}
+      <polygon points="124,106 130,82 136,106" fill={secondary} />
+      {/* 頭部 */}
+      <circle cx="130" cy="100" r="18" fill={primary} />
+      {/* ★ 先端がY字（4叉）に分かれた立派な頭角 (Y-HORN) ★ */}
+      <path d="M130 96 L130 36 L112 16 L104 22 L112 16 L110 8 L114 16 L130 32 L146 16 L148 8 L150 16 L158 22 L146 16 L130 36 Z" fill={secondary} />
+      {!silhouette && (
+        <g fill="#ef4444" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="118" cy="98" r="3.5" />
+          <circle cx="142" cy="98" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 2. long-horn：ヘラクレス・サタン型（超ロング胸角＆毛の生えた挟み角） */
+function LongHornBeetleSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 脚 */}
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q50 115, 30 85 L20 95" />
+        <path d="M175 130 Q210 115, 230 85 L240 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      {/* 鞘翅（ヘラクレスの黄色・斑点、またはサタンの黒） */}
+      <ellipse cx="130" cy="165" rx="55" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      {/* ヘラクレスの黒い斑点模様 */}
+      {!silhouette && (
+        <g fill="#1e293b" opacity="0.75" stroke="none">
+          <circle cx="105" cy="150" r="5" />
+          <circle cx="115" cy="175" r="6" />
+          <circle cx="102" cy="190" r="4" />
+          <circle cx="155" cy="150" r="5" />
+          <circle cx="145" cy="175" r="6" />
+          <circle cx="158" cy="190" r="4" />
+        </g>
+      )}
+      {/* 前胸背板 */}
+      <path d="M88 126 C88 95, 172 95, 172 126 Z" fill={secondary} />
+      {/* 頭部 */}
+      <circle cx="130" cy="100" r="18" fill={secondary} />
+      {/* ★ 下の頭角（内側にトゲのある受け角） ★ */}
+      <path d="M126 95 Q115 60, 128 35 Q130 55, 134 95 Z" fill={secondary} />
+      <polygon points="126,52 136,55 128,62" fill={secondary} />
+      {/* ★ 胸から前方へ長く伸びる超巨大胸角 (LONG HORN) ＆ オレンジ毛 ★ */}
+      <path d="M125 110 Q122 35, 130 8 Q138 35, 135 110 Z" fill={secondary} />
+      {!silhouette && (
+        <path d="M124 45 Q125 75, 126 95" stroke="#f97316" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.9" />
+      )}
+      {!silhouette && (
+        <g fill="#ef4444" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="118" cy="100" r="3.5" />
+          <circle cx="142" cy="100" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 3. three-horn：コーカサス・アトラス型（左右の湾曲長角＋頭角の合計3〜5本角） */
+function ThreeHornBeetleSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q45 115, 25 85 L15 95" />
+        <path d="M175 130 Q215 115, 235 85 L245 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      <ellipse cx="130" cy="165" rx="56" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      <path d="M86 126 C86 92, 174 92, 174 126 Z" fill={secondary} />
+      <circle cx="130" cy="100" r="18" fill={primary} />
+      {/* ★ 左右の鋭い湾曲胸角 ★ */}
+      <path d="M96 102 C70 65, 82 25, 108 18 C95 35, 102 70, 110 98 Z" fill={secondary} />
+      <path d="M164 102 C190 65, 178 25, 152 18 C165 35, 158 70, 150 98 Z" fill={secondary} />
+      {/* ★ 中央の長い頭角 ★ */}
+      <path d="M125 96 Q122 45, 130 12 Q138 45, 135 96 Z" fill={secondary} />
+      <polygon points="126,45 134,48 128,55" fill={secondary} />
+      {!silhouette && (
+        <g fill="#facc15" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="118" cy="98" r="3.5" />
+          <circle cx="142" cy="98" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 4. heavy-beetle：ゾウカブト・ゴライアス型（重戦車ボディ＆模様） */
+function HeavyBeetleSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="6" strokeLinecap="round" fill="none">
+        <path d="M78 135 Q40 120, 22 95 L15 105" />
+        <path d="M182 135 Q220 120, 238 95 L245 105" />
+        <path d="M75 160 Q38 160, 24 150 L16 160" />
+        <path d="M185 160 Q222 160, 236 150 L244 160" />
+        <path d="M78 185 Q48 200, 38 225 L28 230" />
+        <path d="M182 185 Q212 200, 222 225 L232 230" />
+      </g>
+      {/* 重戦車級の極太ボディ */}
+      <ellipse cx="130" cy="165" rx="64" ry="50" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="215" stroke={secondary} strokeWidth="3.5" />
+      {/* ゴライアスの白黒ストライプまたはゾウカブトの毛並み */}
+      {!silhouette && (
+        <g fill={accent} opacity="0.8" stroke="none">
+          <path d="M90 135 Q110 170, 95 205 Q85 170, 90 135 Z" />
+          <path d="M170 135 Q150 170, 165 205 Q175 170, 170 135 Z" />
+        </g>
+      )}
+      <path d="M80 125 C80 88, 180 88, 180 125 Z" fill={secondary} />
+      <circle cx="130" cy="98" r="22" fill={secondary} />
+      {/* ゾウカブトの前方二叉シャベル角 */}
+      <path d="M124 94 L120 45 L106 32 L114 26 L128 42 L132 42 L146 26 L154 32 L140 45 L136 94 Z" fill={secondary} />
+      {!silhouette && (
+        <g fill="#ef4444" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="116" cy="98" r="4" />
+          <circle cx="144" cy="98" r="4" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 5. o-jaw：オオクワガタ・パラワン型（極太内湾曲大アゴ＋内歯） */
+function OJawStagSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q45 115, 25 85 L15 95" />
+        <path d="M175 130 Q215 115, 235 85 L245 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      <ellipse cx="130" cy="165" rx="55" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      <rect x="85" y="105" width="90" height="25" rx="6" fill={secondary} />
+      {/* 幅広いクワガタ頭部 */}
+      <rect x="92" y="80" width="76" height="30" rx="8" fill={secondary} />
+      {/* 触角 */}
+      <path d="M96 82 L82 72 L72 74" fill="none" stroke={secondary} strokeWidth="3" />
+      <path d="M164 82 L178 72 L188 74" fill="none" stroke={secondary} strokeWidth="3" />
+      {/* ★ 太く内側に丸く湾曲する大アゴ (O-JAW) ＆ 内歯 ★ */}
+      <path d="M102 85 C82 55, 82 22, 118 18 C102 32, 105 58, 116 85 Z" fill={secondary} />
+      <polygon points="98,42 114,48 104,56" fill={secondary} />
+      <path d="M158 85 C178 55, 178 22, 142 18 C158 32, 155 58, 144 85 Z" fill={secondary} />
+      <polygon points="162,42 146,48 156,56" fill={secondary} />
+      {!silhouette && (
+        <g fill="#facc15" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="100" cy="94" r="3.5" />
+          <circle cx="160" cy="94" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 6. long-jaw：ギラファ・オウゴンオニ型（超ロングギザギザ大アゴ） */
+function LongJawStagSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q45 115, 25 85 L15 95" />
+        <path d="M175 130 Q215 115, 235 85 L245 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      <ellipse cx="130" cy="165" rx="52" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      <rect x="88" y="105" width="84" height="24" rx="6" fill={secondary} />
+      <rect x="94" y="80" width="72" height="28" rx="8" fill={secondary} />
+      {/* ★ 前方へ非常に長く伸びる大アゴ (LONG JAW) ＆ ギザギザ内歯 ★ */}
+      <path d="M104 82 L76 10 L88 8 L114 82 Z" fill={secondary} />
+      <polygon points="86,30 96,32 88,38" fill={secondary} />
+      <polygon points="90,46 100,48 92,54" fill={secondary} />
+      <polygon points="94,62 104,64 96,70" fill={secondary} />
+      <path d="M156 82 L184 10 L172 8 L146 82 Z" fill={secondary} />
+      <polygon points="174,30 164,32 172,38" fill={secondary} />
+      <polygon points="170,46 160,48 168,54" fill={secondary} />
+      <polygon points="166,62 156,64 164,70" fill={secondary} />
+      {!silhouette && (
+        <g fill="#facc15" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="102" cy="94" r="3.5" />
+          <circle cx="158" cy="94" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 7. curved-jaw：ノコギリ・ニジイロ型（水牛型湾曲アゴ） */
+function CurvedJawStagSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q45 115, 25 85 L15 95" />
+        <path d="M175 130 Q215 115, 235 85 L245 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      {/* 虹色・赤褐色ボディ */}
+      <ellipse cx="130" cy="165" rx="54" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      {!silhouette && (
+        <ellipse cx="130" cy="165" rx="36" ry="32" fill={accent} opacity="0.3" stroke="none" />
+      )}
+      <rect x="88" y="105" width="84" height="24" rx="6" fill={secondary} />
+      <rect x="94" y="80" width="72" height="28" rx="8" fill={secondary} />
+      {/* ★ 水牛の角のように大きく湾曲する大アゴ ★ */}
+      <path d="M102 85 C70 58, 80 16, 122 12 C96 22, 94 56, 114 85 Z" fill={secondary} />
+      <path d="M158 85 C190 58, 180 16, 138 12 C164 22, 166 56, 146 85 Z" fill={secondary} />
+      {!silhouette && (
+        <g fill="#ef4444" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="102" cy="94" r="3.5" />
+          <circle cx="158" cy="94" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 8. crown-jaw：ミヤマクワガタ型（頭部王冠突起＋大アゴ＋微毛） */
+function CrownJawStagSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q45 115, 25 85 L15 95" />
+        <path d="M175 130 Q215 115, 235 85 L245 95" />
+        <path d="M80 155 Q45 155, 28 145 L20 155" />
+        <path d="M180 155 Q215 155, 232 145 L240 155" />
+        <path d="M85 180 Q55 195, 42 225 L32 230" />
+        <path d="M175 180 Q205 195, 218 225 L228 230" />
+      </g>
+      <ellipse cx="130" cy="165" rx="54" ry="48" fill={primary} />
+      <line x1="130" y1="120" x2="130" y2="213" stroke={secondary} strokeWidth="3" />
+      <rect x="88" y="105" width="84" height="24" rx="6" fill={secondary} />
+      {/* ★ ミヤマ特有の王冠突起（頭の後ろの耳状突起） ★ */}
+      <polygon points="90,105 82,78 108,82 130,86 152,82 178,78 170,105" fill={secondary} />
+      <rect x="96" y="78" width="68" height="26" rx="6" fill={primary} />
+      {/* 大アゴ */}
+      <path d="M104 80 C80 50, 90 20, 116 18 C102 30, 102 55, 114 80 Z" fill={secondary} />
+      <path d="M156 80 C180 50, 170 20, 144 18 C158 30, 158 55, 146 80 Z" fill={secondary} />
+      {!silhouette && (
+        <g fill="#facc15" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="100" cy="92" r="3.5" />
+          <circle cx="160" cy="92" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 9. mantis：カマキリ型（逆三角形頭＋巨大な2本カマ） */
+function MantisSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 4本の中後脚 */}
+      <g stroke={secondary} strokeWidth="4" strokeLinecap="round" fill="none">
+        <path d="M110 145 Q70 160, 45 205" />
+        <path d="M150 145 Q190 160, 215 205" />
+        <path d="M115 175 Q80 200, 60 235" />
+        <path d="M145 175 Q180 200, 200 235" />
+      </g>
+      {/* 細長い胸・腹部と翅 */}
+      <ellipse cx="130" cy="180" rx="34" ry="45" fill={primary} />
+      <path d="M124 100 L122 145 L138 145 L136 100 Z" fill={secondary} />
+      {/* ★ 2本の巨大な捕獲カマ (RAPTORIAL FORELEGS) ★ */}
+      <g fill={secondary}>
+        {/* 左カマ（画面向かって左） */}
+        <path d="M122 105 L85 85 L70 120 L80 135 L90 105 Z" />
+        <polygon points="70,120 55,100 68,110" fill={accent} />
+        {/* 右カマ（画面向かって右） */}
+        <path d="M138 105 L175 85 L190 120 L180 135 L170 105 Z" />
+        <polygon points="190,120 205,100 192,110" fill={accent} />
+      </g>
+      {/* 逆三角形の頭部 */}
+      <polygon points="110,65 150,65 130,95" fill={primary} />
+      {/* 長い触角 */}
+      <line x1="122" y1="65" x2="105" y2="25" stroke={secondary} strokeWidth="2.5" />
+      <line x1="138" y1="65" x2="155" y2="25" stroke={secondary} strokeWidth="2.5" />
+      {/* 巨大な複眼 */}
+      {!silhouette && (
+        <g fill="#22c55e" stroke="#0f172a" strokeWidth="2">
+          <circle cx="112" cy="68" r="8" />
+          <circle cx="148" cy="68" r="8" />
+          <circle cx="112" cy="68" r="3" fill="#0f172a" stroke="none" />
+          <circle cx="148" cy="68" r="3" fill="#0f172a" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 10. hornet：スズメバチ型（縞模様腹部＋毒針＋高速翅） */
+function HornetSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 透明な4枚翅 */}
+      <g fill="#fef08a" opacity="0.65" stroke={outline} strokeWidth="2">
+        <path d="M115 105 C70 55, 30 50, 20 70 C40 95, 80 110, 115 110 Z" />
+        <path d="M145 105 C190 55, 230 50, 240 70 C220 95, 180 110, 145 110 Z" />
+        <path d="M115 115 C75 105, 45 115, 40 130 C65 140, 95 135, 115 120 Z" />
+        <path d="M145 115 C185 105, 215 115, 220 130 C195 140, 165 135, 145 120 Z" />
+      </g>
+      {/* 脚 */}
+      <g stroke={secondary} strokeWidth="4" strokeLinecap="round" fill="none">
+        <path d="M110 120 Q80 140, 65 170" />
+        <path d="M150 120 Q180 140, 195 170" />
+      </g>
+      {/* ★ 黄黒のしま模様腹部 ＆ 毒針 ★ */}
+      <ellipse cx="130" cy="165" rx="38" ry="46" fill={primary} />
+      {!silhouette && (
+        <g fill="#0f172a" stroke="none">
+          <ellipse cx="130" cy="142" rx="34" ry="7" />
+          <ellipse cx="130" cy="162" rx="37" ry="8" />
+          <ellipse cx="130" cy="182" rx="33" ry="8" />
+        </g>
+      )}
+      {/* 鋭い毒針 */}
+      <polygon points="126,208 134,208 130,230" fill="#0f172a" />
+      {/* 胸部 */}
+      <circle cx="130" cy="112" r="22" fill="#0f172a" />
+      {/* 頭部 */}
+      <circle cx="130" cy="74" r="22" fill={primary} />
+      {/* 触角 */}
+      <path d="M124 60 L112 40 L104 44" fill="none" stroke="#0f172a" strokeWidth="3" />
+      <path d="M136 60 L148 40 L156 44" fill="none" stroke="#0f172a" strokeWidth="3" />
+      {/* 三日月型の黒い複眼 */}
+      {!silhouette && (
+        <g fill="#0f172a">
+          <path d="M116 66 C112 72, 112 80, 118 84 C115 80, 115 72, 116 66 Z" />
+          <path d="M144 66 C148 72, 148 80, 142 84 C145 80, 145 72, 144 66 Z" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 11. aquatic：タガメ・ゲンゴロウ型（水生流線型ボディ＋捕獲脚・遊泳脚） */
+function AquaticBugSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* オール状の毛深い遊泳脚 */}
+      <g stroke={secondary} strokeWidth="6" strokeLinecap="round" fill="none">
+        <path d="M90 170 Q55 195, 30 220" />
+        <path d="M170 170 Q205 195, 230 220" />
+      </g>
+      {/* 流線型ボディ */}
+      <ellipse cx="130" cy="155" rx="54" ry="50" fill={primary} />
+      <line x1="130" y1="108" x2="130" y2="204" stroke={secondary} strokeWidth="3" />
+      {/* 呼吸管（タガメ） */}
+      <rect x="126" y="202" width="8" height="22" rx="3" fill={secondary} />
+      {/* 前胸背板 */}
+      <path d="M88 116 C88 88, 172 88, 172 116 Z" fill={secondary} />
+      {/* ★ タガメの強力な捕獲前足 ★ */}
+      <path d="M96 95 C65 80, 55 50, 75 40 C65 60, 80 75, 105 85 Z" fill={secondary} />
+      <path d="M164 95 C195 80, 205 50, 185 40 C195 60, 180 75, 155 85 Z" fill={secondary} />
+      <circle cx="130" cy="85" r="16" fill={primary} />
+      {!silhouette && (
+        <g fill="#38bdf8" stroke="#0f172a" strokeWidth="1.5">
+          <circle cx="120" cy="84" r="4" />
+          <circle cx="140" cy="84" r="4" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 12. ladybug-jewel：テントウムシ・タマムシ・プラチナコガネ型（丸殻・星・鏡面反射） */
+function LadybugJewelSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 脚 */}
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M85 130 Q55 115, 38 98" />
+        <path d="M175 130 Q205 115, 222 98" />
+        <path d="M80 155 Q50 155, 32 150" />
+        <path d="M180 155 Q210 155, 228 150" />
+        <path d="M85 180 Q58 200, 48 220" />
+        <path d="M175 180 Q202 200, 212 220" />
+      </g>
+      {/* まあるい甲殻 */}
+      <ellipse cx="130" cy="155" rx="60" ry="54" fill={primary} />
+      <line x1="130" y1="104" x2="130" y2="208" stroke="#0f172a" strokeWidth="3.5" />
+      {/* ナナホシテントウの7つの星、またはタマムシのストライプ */}
+      {!silhouette && (
+        <g fill="#0f172a" stroke="none">
+          <circle cx="102" cy="135" r="8" />
+          <circle cx="158" cy="135" r="8" />
+          <circle cx="92" cy="165" r="9" />
+          <circle cx="168" cy="165" r="9" />
+          <circle cx="108" cy="190" r="7.5" />
+          <circle cx="152" cy="190" r="7.5" />
+          <circle cx="130" cy="116" r="6" />
+        </g>
+      )}
+      {/* 光沢ハイライト */}
+      {!silhouette && (
+        <path d="M85 130 Q105 165, 88 185" stroke="#ffffff" strokeWidth="4" fill="none" opacity="0.6" strokeLinecap="round" />
+      )}
+      {/* 頭部 */}
+      <path d="M96 106 C96 80, 164 80, 164 106 Z" fill="#0f172a" />
+      {!silhouette && (
+        <g fill="#ffffff" stroke="none">
+          <circle cx="106" cy="98" r="4" />
+          <circle cx="154" cy="98" r="4" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 13. dragonfly：オニヤンマ・ギンヤンマ型（水平4枚長翅＋複眼＋細長腹） */
+function DragonflySvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 水平に広がる4枚の透明網目翅 (DRAGONFLY WINGS) ★ */}
+      <g fill="#e0f2fe" opacity="0.75" stroke={outline} strokeWidth="2">
+        <path d="M120 95 C75 75, 10 75, 4 90 C15 105, 75 105, 120 100 Z" />
+        <path d="M140 95 C185 75, 250 75, 256 90 C245 105, 185 105, 140 100 Z" />
+        <path d="M122 104 C80 110, 20 115, 16 128 C30 138, 85 125, 122 110 Z" />
+        <path d="M138 104 C180 110, 240 115, 244 128 C230 138, 175 125, 138 110 Z" />
+      </g>
+      {/* 細長い縞模様の腹部 */}
+      <rect x="124" y="110" width="12" height="120" rx="6" fill={primary} />
+      {!silhouette && (
+        <g fill={secondary} stroke="none">
+          <rect x="124" y="130" width="12" height="8" />
+          <rect x="124" y="150" width="12" height="8" />
+          <rect x="124" y="170" width="12" height="8" />
+          <rect x="124" y="190" width="12" height="8" />
+          <rect x="124" y="210" width="12" height="8" />
+        </g>
+      )}
+      {/* 胸部 */}
+      <ellipse cx="130" cy="100" rx="16" ry="18" fill={secondary} />
+      {/* ★ 巨大なエメラルドグリーンの複眼 ★ */}
+      <circle cx="120" cy="76" r="14" fill={accent} />
+      <circle cx="140" cy="76" r="14" fill={accent} />
+      {!silhouette && (
+        <g fill="#ffffff" opacity="0.6" stroke="none">
+          <circle cx="118" cy="72" r="4" />
+          <circle cx="138" cy="72" r="4" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 14. butterfly：モルフォ・トリバネ・オオムラサキ型（華麗な大羽） */
+function ButterflySvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 前翅（左右） */}
+      <path d="M125 110 C95 40, 30 15, 15 45 C5 75, 45 120, 120 125 Z" fill={primary} />
+      <path d="M135 110 C165 40, 230 15, 245 45 C255 75, 215 120, 140 125 Z" fill={primary} />
+      {/* 後翅（左右・尾状突起） */}
+      <path d="M125 125 C85 130, 45 155, 60 195 C75 220, 115 195, 125 160 Z" fill={secondary} />
+      <path d="M135 125 C175 130, 215 155, 200 195 C185 220, 145 195, 135 160 Z" fill={secondary} />
+      {/* 翅の紋様・輝き */}
+      {!silhouette && (
+        <g fill={accent} opacity="0.75" stroke="none">
+          <ellipse cx="80" cy="80" rx="28" ry="16" transform="rotate(-30 80 80)" />
+          <ellipse cx="180" cy="80" rx="28" ry="16" transform="rotate(30 180 80)" />
+          <circle cx="85" cy="175" r="8" />
+          <circle cx="175" cy="175" r="8" />
+        </g>
+      )}
+      {/* チョウの胴体 */}
+      <rect x="126" y="90" width="8" height="75" rx="4" fill="#0f172a" />
+      {/* 頭部＆ストロー口・触角 */}
+      <circle cx="130" cy="85" r="7" fill="#0f172a" />
+      <path d="M127 80 Q112 50, 95 42" fill="none" stroke="#0f172a" strokeWidth="2.5" />
+      <circle cx="94" cy="42" r="3" fill="#0f172a" />
+      <path d="M133 80 Q148 50, 165 42" fill="none" stroke="#0f172a" strokeWidth="2.5" />
+      <circle cx="166" cy="42" r="3" fill="#0f172a" />
+    </g>
+  );
+}
+
+/** 15. hopper：トノサマバッタ型（強靭なジャンプ後脚＋バッタ頭） */
+function GrasshopperSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 前中脚 */}
+      <g stroke={secondary} strokeWidth="4" strokeLinecap="round" fill="none">
+        <path d="M110 145 Q80 165, 65 195" />
+        <path d="M135 145 Q165 165, 180 195" />
+      </g>
+      {/* 翅と胴体 */}
+      <path d="M115 110 L95 195 L145 195 L135 110 Z" fill={primary} />
+      {/* ★ 巨大な跳躍後脚 (POWERFUL JUMPING LEGS) ★ */}
+      <g fill={primary} stroke={outline} strokeWidth="3.5">
+        <path d="M105 145 Q75 90, 68 70 Q82 95, 102 155 Z" />
+        <path d="M68 70 Q60 135, 45 220" fill="none" stroke={secondary} strokeWidth="4" strokeLinecap="round" />
+        <path d="M145 145 Q175 90, 182 70 Q168 95, 148 155 Z" />
+        <path d="M182 70 Q190 135, 205 220" fill="none" stroke={secondary} strokeWidth="4" strokeLinecap="round" />
+      </g>
+      {/* 頭部 */}
+      <path d="M112 115 L110 82 L150 82 L148 115 Z" fill={secondary} />
+      <line x1="122" y1="82" x2="108" y2="45" stroke={secondary} strokeWidth="2.5" />
+      <line x1="138" y1="82" x2="152" y2="45" stroke={secondary} strokeWidth="2.5" />
+      {!silhouette && (
+        <g fill="#facc15" stroke="#0f172a" strokeWidth="2">
+          <ellipse cx="118" cy="92" rx="5" ry="7" />
+          <ellipse cx="142" cy="92" rx="5" ry="7" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** 16. cicada：クマゼミ型（透明翅脈羽＋幅広い頭部） */
+function CicadaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      <g stroke={secondary} strokeWidth="5" strokeLinecap="round" fill="none">
+        <path d="M90 130 Q60 135, 42 125" />
+        <path d="M170 130 Q200 135, 218 125" />
+        <path d="M92 150 Q65 170, 50 185" />
+        <path d="M168 150 Q195 170, 210 185" />
+      </g>
+      {/* がっしりした腹部 */}
+      <ellipse cx="130" cy="155" rx="42" ry="46" fill="#0f172a" />
+      {/* ★ 屋根型に畳まれた大きな透明翅 (CICADA WINGS) ★ */}
+      <g fill="#38bdf8" opacity="0.55" stroke={outline} strokeWidth="2.5">
+        <path d="M125 105 C75 115, 50 160, 68 215 C85 225, 120 180, 126 135 Z" />
+        <path d="M135 105 C185 115, 210 160, 192 215 C175 225, 140 180, 134 135 Z" />
+      </g>
+      {/* 幅広い頭部 */}
+      <path d="M95 108 L90 85 L170 85 L165 108 Z" fill={primary} />
+      {/* 左右に離れた大きな複眼 */}
+      <circle cx="92" cy="92" r="12" fill={secondary} />
+      <circle cx="168" cy="92" r="12" fill={secondary} />
+      {!silhouette && (
+        <g fill="#ef4444" stroke="none">
+          <circle cx="124" cy="88" r="2" />
+          <circle cx="130" cy="86" r="2" />
+          <circle cx="136" cy="88" r="2" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* ==========================================================================
    怪獣イラストディスパッチャーコンポーネント
    ========================================================================== */
 function KaijuSpecificSvgDispatcher({
   resolvedId,
   partProps,
+  insectStyle,
 }: {
   resolvedId: string;
   partProps: SvgPartProps;
+  insectStyle?: InsectVisualStyle;
 }) {
+  // 🪲 昆虫スタイルの判定（16スタイル）
+  if (insectStyle) {
+    switch (insectStyle) {
+      case 'y-horn':
+        return <YHornBeetleSvg {...partProps} />;
+      case 'long-horn':
+        return <LongHornBeetleSvg {...partProps} />;
+      case 'three-horn':
+        return <ThreeHornBeetleSvg {...partProps} />;
+      case 'heavy-beetle':
+        return <HeavyBeetleSvg {...partProps} />;
+      case 'o-jaw':
+        return <OJawStagSvg {...partProps} />;
+      case 'long-jaw':
+        return <LongJawStagSvg {...partProps} />;
+      case 'curved-jaw':
+        return <CurvedJawStagSvg {...partProps} />;
+      case 'crown-jaw':
+        return <CrownJawStagSvg {...partProps} />;
+      case 'mantis':
+        return <MantisSvg {...partProps} />;
+      case 'hornet':
+        return <HornetSvg {...partProps} />;
+      case 'aquatic':
+        return <AquaticBugSvg {...partProps} />;
+      case 'ladybug-jewel':
+        return <LadybugJewelSvg {...partProps} />;
+      case 'dragonfly':
+        return <DragonflySvg {...partProps} />;
+      case 'butterfly':
+        return <ButterflySvg {...partProps} />;
+      case 'hopper':
+        return <GrasshopperSvg {...partProps} />;
+      case 'cicada':
+        return <CicadaSvg {...partProps} />;
+    }
+  }
+
+  // 🦖 怪獣・鳥山明コラボの判定（No.1〜No.24）
   switch (resolvedId) {
     // 🦖 きょうりゅう
     case 'fire-dino':
@@ -1526,7 +2255,10 @@ function KaijuSpecificSvgDispatcher({
       return <GatchaBeastSvg {...partProps} />;
 
     default:
-      // フォールバック
+      if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;
+      if (resolvedId.includes('kuwagata')) return <OJawStagSvg {...partProps} />;
+      if (resolvedId.includes('hunter')) return <MantisSvg {...partProps} />;
+      if (resolvedId.includes('flier')) return <DragonflySvg {...partProps} />;
       if (resolvedId.includes('dino')) return <MagmaTyrannoSvg {...partProps} />;
       if (resolvedId.includes('dragon')) return <BurningDragoSvg {...partProps} />;
       if (resolvedId.includes('robot')) return <BlazeKaiserSvg {...partProps} />;
@@ -1541,6 +2273,9 @@ export function KaijuSvgIllustration({
   element,
   type,
   kaijuId,
+  category,
+  insectStyle,
+  realColors,
   silhouette = false,
   isAttacking = false,
   evolutionStage = 2,
@@ -1550,9 +2285,15 @@ export function KaijuSvgIllustration({
 }: KaijuArtProps) {
   const elMeta = getElementMeta(element);
 
-  const primary = silhouette ? '#1e293b' : elMeta.primaryHex;
-  const secondary = silhouette ? '#334155' : elMeta.secondaryHex;
-  const accent = silhouette ? '#475569' : elMeta.accentHex;
+  const primary = silhouette
+    ? '#1e293b'
+    : realColors?.primary ?? elMeta.primaryHex;
+  const secondary = silhouette
+    ? '#334155'
+    : realColors?.secondary ?? elMeta.secondaryHex;
+  const accent = silhouette
+    ? '#475569'
+    : realColors?.accent ?? elMeta.accentHex;
   const eyeColor = silhouette ? '#0f172a' : '#fef08a';
   const outline = silhouette ? '#475569' : '#ffffff';
 
@@ -1660,7 +2401,7 @@ export function KaijuSvgIllustration({
           )}
 
           {/* 各怪獣専用のグラフィックを描画 */}
-          <KaijuSpecificSvgDispatcher resolvedId={resolvedId} partProps={partProps} />
+          <KaijuSpecificSvgDispatcher resolvedId={resolvedId} partProps={partProps} insectStyle={insectStyle} />
 
           {/* Stage 1（キッズ期）：頭上の可愛いキラキラ星 */}
           {!silhouette && evolutionStage === 1 && (

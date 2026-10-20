@@ -18,9 +18,11 @@ import {
   QUEST_LIST,
   ELEMENT_OPTIONS,
   KAIJU_TYPE_OPTIONS,
+  INSECT_TYPE_OPTIONS,
   KAIJU_LIST,
   ElementId,
   KaijuTypeId,
+  CreatureCategory,
   KaijuData,
   KaijuProgress,
   QuestItem,
@@ -78,6 +80,7 @@ export default function KaijuQuestApp() {
   const [dqToastMessages, setDqToastMessages] = useState<string[] | null>(null);
 
   // 召喚タブの選択ステート
+  const [summonCategory, setSummonCategory] = useState<CreatureCategory>('kaiju');
   const [selectedElement, setSelectedElement] = useState<ElementId>('fire');
   const [selectedType, setSelectedType] = useState<KaijuTypeId>('dino');
   const [isHatching, setIsHatching] = useState<boolean>(false);
@@ -88,6 +91,7 @@ export default function KaijuQuestApp() {
   } | null>(null);
 
   // 図鑑タブの選択・フィルターステート
+  const [zukanCategoryFilter, setZukanCategoryFilter] = useState<'all' | CreatureCategory>('all');
   const [zukanFilter, setZukanFilter] = useState<'all' | ElementId>('all');
   const [selectedZukanKaiju, setSelectedZukanKaiju] = useState<KaijuData | null>(null);
 
@@ -247,13 +251,22 @@ export default function KaijuQuestApp() {
     } else if (tab === 'summon') {
       playBeatboxIntroSound();
       if (energy >= 3) {
-        speakJapanese(
-          'ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！',
-          soundEnabled
-        );
+        if (summonCategory === 'insect') {
+          speakJapanese(
+            'ブンブン！こんちゅう つかまえるタイム！クヌギの木にしゅうごうだ！いくぞー！',
+            soundEnabled
+          );
+        } else {
+          speakJapanese(
+            'ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！',
+            soundEnabled
+          );
+        }
       } else {
         speakJapanese(
-          `あと ${3 - energy}こ エネルギーをためると しょうかんできるよ！いっしょにがんばろう！`,
+          `あと ${3 - energy}こ エネルギーをためると ${
+            summonCategory === 'insect' ? 'こんちゅうを つかまえられるよ' : 'しょうかんできるよ'
+          }！いっしょにがんばろう！`,
           soundEnabled
         );
       }
@@ -361,12 +374,24 @@ export default function KaijuQuestApp() {
     setIsHatching(true);
     setSummonedKaiju(null);
     playEggChargeSound();
-    speakJapanese(
-      'うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！',
-      soundEnabled
-    );
+    if (summonCategory === 'insect') {
+      speakJapanese(
+        'うおおおー！クヌギの木が ゆれてるぞ！なにがでてくるかな！？ドキドキするねー！',
+        soundEnabled
+      );
+    } else {
+      speakJapanese(
+        'うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！',
+        soundEnabled
+      );
+    }
 
-    const targetKaiju = findKaijuForSummon(selectedElement, selectedType, unlockedKaijuIds);
+    const targetKaiju = findKaijuForSummon(
+      selectedElement,
+      selectedType,
+      unlockedKaijuIds,
+      summonCategory
+    );
     const elMeta = getElementMeta(selectedElement);
 
     setTimeout(() => {
@@ -403,15 +428,29 @@ export default function KaijuQuestApp() {
       );
 
       if (isNew) {
-        speakJapanese(
-          `キターーー！あたらしい かいじゅう、${currentStats.displayName}のとうじょうだ！ひっさつわざは ${targetKaiju.specialMove}！これマジでやばいねー！`,
-          soundEnabled
-        );
+        if (targetKaiju.category === 'insect') {
+          speakJapanese(
+            `キターーー！ほんものの こんちゅう、${currentStats.displayName}を つかまえたぞ！${targetKaiju.specialMove}！やばいねー！`,
+            soundEnabled
+          );
+        } else {
+          speakJapanese(
+            `キターーー！あたらしい かいじゅう、${currentStats.displayName}のとうじょうだ！ひっさつわざは ${targetKaiju.specialMove}！これマジでやばいねー！`,
+            soundEnabled
+          );
+        }
       } else {
-        speakJapanese(
-          `キターーー！パワーアップしょうかん！${currentStats.displayName}の レベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
-          soundEnabled
-        );
+        if (targetKaiju.category === 'insect') {
+          speakJapanese(
+            `キターーー！${currentStats.displayName}の こたいレベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
+            soundEnabled
+          );
+        } else {
+          speakJapanese(
+            `キターーー！パワーアップしょうかん！${currentStats.displayName}の レベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
+            soundEnabled
+          );
+        }
       }
     }, 1550);
   };
@@ -448,10 +487,15 @@ export default function KaijuQuestApp() {
 
   const canSummon = energy >= 3;
   const meterSlots = Math.min(3, energy);
+  const categoryFilteredZukanList =
+    zukanCategoryFilter === 'all'
+      ? KAIJU_LIST
+      : KAIJU_LIST.filter((k) => (k.category || 'kaiju') === zukanCategoryFilter);
+
   const filteredZukanList =
     zukanFilter === 'all'
-      ? KAIJU_LIST
-      : KAIJU_LIST.filter((k) => k.element === zukanFilter);
+      ? categoryFilteredZukanList
+      : categoryFilteredZukanList.filter((k) => k.element === zukanFilter);
 
   // 現在のあいぼう怪獣データ
   const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
@@ -461,6 +505,7 @@ export default function KaijuQuestApp() {
   // 選択中の属性×タイプに未解放の怪獣がいるかチェック
   const hasLockedCandidateForSelection = KAIJU_LIST.some(
     (k) =>
+      (k.category || 'kaiju') === summonCategory &&
       k.element === selectedElement &&
       k.type === selectedType &&
       !unlockedKaijuIds.includes(k.id)
@@ -623,6 +668,9 @@ export default function KaijuQuestApp() {
                     type={partnerKaiju.type}
                     kaijuId={partnerKaiju.id}
                     evolutionStage={partnerStats.stage}
+                    category={partnerKaiju.category}
+                    insectStyle={partnerKaiju.insectStyle}
+                    realColors={partnerKaiju.realColors}
                   />
                 </div>
                 <div className="min-w-0 flex-1 space-y-1">
@@ -816,20 +864,78 @@ export default function KaijuQuestApp() {
 
                 {/* 1画面完結：縦スクロールなしでステップ1・ステップ2・タマゴ・召喚ボタンが並ぶレイアウト */}
                 <div className="space-y-2.5">
-                  {/* ステップ1：属性（横1列・4分割ボタン） */}
+                  {/* しょうかんモード切り替え（🦖 かいじゅう を しょうかん ⇄ 🪲 こんちゅう を つかまえる） */}
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-900/90 rounded-2xl border border-white/15">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTapSound(500);
+                        setSummonCategory('kaiju');
+                        if (!['dino', 'dragon', 'robot', 'beast'].includes(selectedType)) {
+                          setSelectedType('dino');
+                        }
+                        speakJapanese('かいじゅうしょうかんモード！', soundEnabled);
+                      }}
+                      className={`min-h-[50px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        summonCategory === 'kaiju'
+                          ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-lg border-2 border-white'
+                          : 'text-slate-400 hover:text-white bg-slate-950/60'
+                      }`}
+                    >
+                      <span className="text-xl">🦖</span>
+                      <span>かいじゅう (24種)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTapSound(500);
+                        setSummonCategory('insect');
+                        if (!['kabuto', 'kuwagata', 'hunter', 'flier'].includes(selectedType)) {
+                          setSelectedType('kabuto');
+                        }
+                        speakJapanese('こんちゅう つかまえるモード！クヌギの木にしゅうごうだ！', soundEnabled);
+                      }}
+                      className={`min-h-[50px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        summonCategory === 'insect'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-lg border-2 border-white'
+                          : 'text-slate-400 hover:text-white bg-slate-950/60'
+                      }`}
+                    >
+                      <span className="text-xl">🪲</span>
+                      <span>ほんもの昆虫 (36種)</span>
+                    </button>
+                  </div>
+
+                  {/* ステップ1：属性/むしとりフィールド（横1列・4分割ボタン） */}
                   <div className="rounded-2xl bg-slate-900/90 border border-white/15 p-2.5">
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shrink-0">
                         1
                       </span>
                       <h2 className="text-xs sm:text-sm font-black text-white">
-                        パワー（ぞくせい）を えらぼう！
+                        {summonCategory === 'insect'
+                          ? 'むしとりフィールド（ばしょ）を えらぼう！'
+                          : 'パワー（ぞくせい）を えらぼう！'}
                       </h2>
                     </div>
 
                     <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                       {ELEMENT_OPTIONS.map((el) => {
                         const isSelected = selectedElement === el.id;
+                        const icon =
+                          summonCategory === 'insect' && el.insectFieldEmoji
+                            ? el.insectFieldEmoji
+                            : el.emoji;
+                        const labelText =
+                          summonCategory === 'insect' && el.insectFieldLabel
+                            ? el.insectFieldLabel
+                            : el.label;
+                        const speechText =
+                          summonCategory === 'insect' && el.insectFieldLabel
+                            ? `${el.insectFieldLabel}フィールド！`
+                            : el.speechLabel;
+
                         return (
                           <button
                             key={el.id}
@@ -837,7 +943,7 @@ export default function KaijuQuestApp() {
                             onClick={() => {
                               playTapSound(540);
                               setSelectedElement(el.id);
-                              speakJapanese(el.speechLabel, soundEnabled);
+                              speakJapanese(speechText, soundEnabled);
                             }}
                             className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
                               isSelected
@@ -845,9 +951,9 @@ export default function KaijuQuestApp() {
                                 : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
                             }`}
                           >
-                            <span className="text-2xl sm:text-3xl leading-none">{el.emoji}</span>
+                            <span className="text-2xl sm:text-3xl leading-none">{icon}</span>
                             <span className="text-[11px] sm:text-xs font-black mt-1 truncate">
-                              {el.label}
+                              {labelText}
                             </span>
                           </button>
                         );
@@ -862,75 +968,112 @@ export default function KaijuQuestApp() {
                         2
                       </span>
                       <h2 className="text-xs sm:text-sm font-black text-white">
-                        かいじゅうの タイプを えらぼう！
+                        {summonCategory === 'insect'
+                          ? 'こんちゅうの なかまを えらぼう！'
+                          : 'かいじゅうの タイプを えらぼう！'}
                       </h2>
                     </div>
 
                     <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                      {KAIJU_TYPE_OPTIONS.map((tp) => {
-                        const isSelected = selectedType === tp.id;
-                        return (
-                          <button
-                            key={tp.id}
-                            type="button"
-                            onClick={() => {
-                              playTapSound(620);
-                              setSelectedType(tp.id);
-                              speakJapanese(tp.speechLabel, soundEnabled);
-                            }}
-                            className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
-                              isSelected
-                                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 border-white ring-2 ring-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.7)] text-white'
-                                : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
-                            }`}
-                          >
-                            <span className="text-2xl sm:text-3xl leading-none">{tp.emoji}</span>
-                            <span className="text-[11px] sm:text-xs font-black mt-1 truncate">
-                              {tp.label}
-                            </span>
-                          </button>
-                        );
-                      })}
+                      {(summonCategory === 'insect' ? INSECT_TYPE_OPTIONS : KAIJU_TYPE_OPTIONS).map(
+                        (tp) => {
+                          const isSelected = selectedType === tp.id;
+                          return (
+                            <button
+                              key={tp.id}
+                              type="button"
+                              onClick={() => {
+                                playTapSound(620);
+                                setSelectedType(tp.id);
+                                speakJapanese(tp.speechLabel, soundEnabled);
+                              }}
+                              className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
+                                isSelected
+                                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 border-white ring-2 ring-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.7)] text-white'
+                                  : 'bg-slate-950/90 border-slate-700 text-slate-200 hover:border-slate-500'
+                              }`}
+                            >
+                              <span className="text-2xl sm:text-3xl leading-none">{tp.emoji}</span>
+                              <span className="text-[11px] sm:text-xs font-black mt-1 truncate">
+                                {tp.label}
+                              </span>
+                            </button>
+                          );
+                        }
+                      )}
                     </div>
                   </div>
 
                   {/* タマゴ＆「しょうかんする！」ボタンエリア */}
                   <div className="rounded-2xl bg-slate-900/95 border-2 border-white/20 p-3 sm:p-4 flex flex-col items-center text-center relative overflow-hidden shadow-xl">
                     <div className="text-xs font-black text-amber-300 bg-slate-950/80 px-3 py-1 rounded-full border border-amber-400/40">
-                      {getElementMeta(selectedElement).emoji} {getElementMeta(selectedElement).label} ×{' '}
-                      {getTypeMeta(selectedType).emoji} {getTypeMeta(selectedType).label}
+                      {summonCategory === 'insect' ? (
+                        <>
+                          {getElementMeta(selectedElement).insectFieldEmoji ||
+                            getElementMeta(selectedElement).emoji}{' '}
+                          {getElementMeta(selectedElement).insectFieldLabel ||
+                            getElementMeta(selectedElement).label}{' '}
+                          × {getTypeMeta(selectedType).emoji} {getTypeMeta(selectedType).label}
+                        </>
+                      ) : (
+                        <>
+                          {getElementMeta(selectedElement).emoji} {getElementMeta(selectedElement).label}{' '}
+                          × {getTypeMeta(selectedType).emoji} {getTypeMeta(selectedType).label}
+                        </>
+                      )}
                     </div>
 
-                    {/* タマゴSVG */}
+                    {/* タマゴまたはクヌギの御神木SVG */}
                     <div className="my-2 max-h-36 sm:max-h-44 flex items-center justify-center">
                       <MonsterEggSvg
                         element={selectedElement}
                         type={selectedType}
                         isShaking={isHatching}
+                        category={summonCategory}
                       />
                     </div>
 
                     <p className="text-xs font-extrabold text-slate-300 mb-2">
                       {isHatching
-                        ? '⚡ ガタガタッ！うまれるぞーーっ！！'
+                        ? summonCategory === 'insect'
+                          ? '🌳 ガサガサッ！木から なにか が でてくるぞー！！'
+                          : '⚡ ガタガタッ！うまれるぞーーっ！！'
                         : hasLockedCandidateForSelection
-                        ? '❓ まだ みつかっていない 新種のかいじゅう が でるぞ！'
+                        ? summonCategory === 'insect'
+                          ? '❓ まだ つかまえていない ほんものの昆虫 が でるぞ！'
+                          : '❓ まだ みつかっていない 新種のかいじゅう が でるぞ！'
+                        : summonCategory === 'insect'
+                        ? '⚡ もういちど つかまえると 個体レベルが +1 あがるよ！'
                         : '⚡ もういちど しょうかんすると レベルが +1 あがるよ！'}
                     </p>
 
-                    {/* 「しょうかんする！」特大ボタン */}
+                    {/* 「しょうかんする！ / むしをつかまえる！」特大ボタン */}
                     <button
                       type="button"
                       onClick={handleSummonKaiju}
                       disabled={isHatching}
                       className={`min-h-[68px] w-full rounded-2xl font-black text-xl sm:text-2xl flex items-center justify-center gap-2.5 border-4 transition-all active:scale-95 cursor-pointer px-4 whitespace-nowrap shrink-0 ${
                         canSummon
-                          ? 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_6px_0_#b45309,0_0_30px_rgba(250,204,21,0.85)]'
+                          ? summonCategory === 'insect'
+                            ? 'bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 text-slate-950 border-white shadow-[0_6px_0_#065f46,0_0_30px_rgba(52,211,153,0.85)]'
+                            : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_6px_0_#b45309,0_0_30px_rgba(250,204,21,0.85)]'
                           : 'bg-slate-800 text-slate-300 border-slate-600'
                       }`}
                     >
-                      <Flame className="w-7 h-7 shrink-0 fill-current" />
-                      <span>{isHatching ? 'しょうかんちゅう…！' : 'しょうかんする！'}</span>
+                      {summonCategory === 'insect' ? (
+                        <span className="text-2xl">🪲</span>
+                      ) : (
+                        <Flame className="w-7 h-7 shrink-0 fill-current" />
+                      )}
+                      <span>
+                        {isHatching
+                          ? summonCategory === 'insect'
+                            ? 'つかまえちゅう…！'
+                            : 'しょうかんちゅう…！'
+                          : summonCategory === 'insect'
+                          ? '🌳 むしを つかまえる！'
+                          : 'しょうかんする！'}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -948,14 +1091,21 @@ export default function KaijuQuestApp() {
             <div className="rounded-3xl bg-slate-900/90 border-2 border-white/15 p-4 sm:p-5 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                  <span>📖 かいじゅう ずかん＆いくせい</span>
+                  <span>📖 大図鑑＆いくせい</span>
                 </h2>
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-yellow-300 font-black text-sm sm:text-base">
                     🌟 けいけんち玉: {expOrbs}こ
                   </span>
                   <span className="text-base sm:text-xl font-black text-amber-300 tabular-nums">
-                    {unlockedKaijuIds.length} / {KAIJU_LIST.length} たい
+                    {
+                      unlockedKaijuIds.filter((id) => {
+                        if (zukanCategoryFilter === 'all') return true;
+                        const k = KAIJU_LIST.find((item) => item.id === id);
+                        return (k?.category || 'kaiju') === zukanCategoryFilter;
+                      }).length
+                    }{' '}
+                    / {categoryFilteredZukanList.length} たい
                   </span>
                 </div>
               </div>
@@ -965,12 +1115,66 @@ export default function KaijuQuestApp() {
                 <div
                   className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 transition-all duration-500"
                   style={{
-                    width: `${Math.round((unlockedKaijuIds.length / KAIJU_LIST.length) * 100)}%`,
+                    width: `${Math.round(
+                      (unlockedKaijuIds.filter((id) => {
+                        if (zukanCategoryFilter === 'all') return true;
+                        const k = KAIJU_LIST.find((item) => item.id === id);
+                        return (k?.category || 'kaiju') === zukanCategoryFilter;
+                      }).length /
+                        Math.max(1, categoryFilteredZukanList.length)) *
+                        100
+                    )}%`,
                   }}
                 />
               </div>
 
-              {/* 属性フィルターボタン */}
+              {/* カテゴリ切り替えボタン（すべて 60種 / かいじゅう 24種 / ほんもの昆虫 36種） */}
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapSound(500);
+                    setZukanCategoryFilter('all');
+                  }}
+                  className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                    zukanCategoryFilter === 'all'
+                      ? 'bg-amber-400 text-slate-950 border-white shadow-md'
+                      : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
+                  }`}
+                >
+                  <span>🌟 すべて (60)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapSound(500);
+                    setZukanCategoryFilter('kaiju');
+                  }}
+                  className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                    zukanCategoryFilter === 'kaiju'
+                      ? 'bg-amber-400 text-slate-950 border-white shadow-md'
+                      : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
+                  }`}
+                >
+                  <span>🦖 かいじゅう (24)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapSound(500);
+                    setZukanCategoryFilter('insect');
+                  }}
+                  className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                    zukanCategoryFilter === 'insect'
+                      ? 'bg-amber-400 text-slate-950 border-white shadow-md'
+                      : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
+                  }`}
+                >
+                  <span>🪲 こんちゅう (36)</span>
+                </button>
+              </div>
+
+              {/* 属性・フィールドフィルターボタン */}
               <div className="grid grid-cols-5 gap-2 pt-1">
                 <button
                   type="button"
@@ -987,28 +1191,39 @@ export default function KaijuQuestApp() {
                   <span className="text-lg">🌟</span>
                   <span>すべて</span>
                 </button>
-                {ELEMENT_OPTIONS.map((el) => (
-                  <button
-                    key={el.id}
-                    type="button"
-                    onClick={() => {
-                      playTapSound(560);
-                      setZukanFilter(el.id);
-                    }}
-                    className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                      zukanFilter === el.id
-                        ? `bg-gradient-to-br ${el.bgGradient} text-white border-white shadow-md`
-                        : 'bg-slate-950 text-slate-300 border-white/15'
-                    }`}
-                  >
-                    <span className="text-lg">{el.emoji}</span>
-                    <span>{el.label}</span>
-                  </button>
-                ))}
+                {ELEMENT_OPTIONS.map((el) => {
+                  const icon =
+                    zukanCategoryFilter === 'insect' && el.insectFieldEmoji
+                      ? el.insectFieldEmoji
+                      : el.emoji;
+                  const label =
+                    zukanCategoryFilter === 'insect' && el.insectFieldLabel
+                      ? el.insectFieldLabel
+                      : el.label;
+
+                  return (
+                    <button
+                      key={el.id}
+                      type="button"
+                      onClick={() => {
+                        playTapSound(560);
+                        setZukanFilter(el.id);
+                      }}
+                      className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                        zukanFilter === el.id
+                          ? `bg-gradient-to-br ${el.bgGradient} text-white border-white shadow-md`
+                          : 'bg-slate-950 text-slate-300 border-white/15'
+                      }`}
+                    >
+                      <span className="text-lg">{icon}</span>
+                      <span className="truncate max-w-full px-0.5">{label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* 怪獣コレクション一覧グリッド（2列〜4列） */}
+            {/* 怪獣・昆虫コレクション一覧グリッド（2列〜4列） */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4">
               {filteredZukanList.map((kaiju) => {
                 const isUnlocked = unlockedKaijuIds.includes(kaiju.id);
@@ -1035,8 +1250,9 @@ export default function KaijuQuestApp() {
 
                       {/* ナンバー＆Lv・進化段階バッジ */}
                       <div className="flex items-center justify-between gap-1 text-xs font-black">
-                        <span className="text-amber-300 tabular-nums">
-                          No.{String(kaiju.dexNumber).padStart(2, '0')}
+                        <span className="text-amber-300 tabular-nums flex items-center gap-1">
+                          {kaiju.category === 'insect' && <span>🪲</span>}
+                          <span>No.{String(kaiju.dexNumber).padStart(2, '0')}</span>
                         </span>
                         {isUnlocked ? (
                           <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full text-[11px] font-black tabular-nums">
@@ -1044,7 +1260,9 @@ export default function KaijuQuestApp() {
                           </span>
                         ) : (
                           <span className="text-base">
-                            {elMeta.emoji}
+                            {kaiju.category === 'insect' && elMeta.insectFieldEmoji
+                              ? elMeta.insectFieldEmoji
+                              : elMeta.emoji}
                             {typeMeta.emoji}
                           </span>
                         )}
@@ -1066,6 +1284,9 @@ export default function KaijuQuestApp() {
                             kaijuId={kaiju.id}
                             evolutionStage={isUnlocked ? stats.stage : 2}
                             silhouette={!isUnlocked}
+                            category={kaiju.category}
+                            insectStyle={kaiju.insectStyle}
+                            realColors={kaiju.realColors}
                           />
                         </div>
 
@@ -1090,7 +1311,7 @@ export default function KaijuQuestApp() {
                           </div>
                           <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-amber-300">
                             <Zap className="w-3.5 h-3.5 fill-amber-300 shrink-0" />
-                            <span className="truncate">タップで レベルアップ！</span>
+                            <span className="truncate">タップで べんきょう＆育成！</span>
                           </div>
                         </div>
                       ) : (
@@ -1099,7 +1320,10 @@ export default function KaijuQuestApp() {
                           <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-slate-500">
                             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
                             <span className="truncate">
-                              {elMeta.label}×{typeMeta.label}
+                              {kaiju.category === 'insect' && elMeta.insectFieldLabel
+                                ? elMeta.insectFieldLabel
+                                : elMeta.label}
+                              ×{typeMeta.label}
                             </span>
                           </div>
                         </div>
