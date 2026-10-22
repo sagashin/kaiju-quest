@@ -418,19 +418,235 @@ export function playHealSound() {
   });
 }
 
+// --- ヒカキン風ボイス（.mp3）キャッシュ＆再生エンジン（連打対策・iOS自動アンロック） ---
+let activeVoiceAudio: HTMLAudioElement | null = null;
+const voiceAudioCache: Map<string, HTMLAudioElement> = new Map();
+let isIOSAudioUnlocked = false;
+
 /**
- * Web Speech API でヒカキン風の抑揚をつけて日本語を読み上げる
+ * iOS / Safari 対策：ユーザー操作（タップやクリック）の瞬間に音声をアンロック
  */
-export function speakJapanese(text: string, soundEnabled = true) {
-  if (!soundEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    return;
+export function unlockAudioForIOS() {
+  if (typeof window === 'undefined' || isIOSAudioUnlocked) return;
+  try {
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+    // 0.01秒の無音wavを再生してHTML5 Audioをアンロック
+    const silentAudio = new Audio(
+      'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA'
+    );
+    silentAudio.volume = 0.01;
+    silentAudio
+      .play()
+      .then(() => {
+        isIOSAudioUnlocked = true;
+      })
+      .catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+// ブラウザ環境で最初のタップ・クリックを検知して自動アンロック
+if (typeof window !== 'undefined') {
+  const events = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'click', 'keydown'];
+  const handleUnlock = () => {
+    unlockAudioForIOS();
+    events.forEach((evt) => {
+      window.removeEventListener(evt, handleUnlock);
+    });
+  };
+  events.forEach((evt) => {
+    window.addEventListener(evt, handleUnlock, { passive: true, once: true });
+  });
+}
+
+/**
+ * 現在再生中のボイスを即座に停止する（連打対策）
+ */
+export function stopVoiceAudio() {
+  if (activeVoiceAudio) {
+    try {
+      activeVoiceAudio.pause();
+      activeVoiceAudio.currentTime = 0;
+    } catch {
+      // ignore
+    }
+    activeVoiceAudio = null;
+  }
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export type VoiceId =
+  | 'tab_quest'
+  | 'tab_summon_ready_kaiju'
+  | 'tab_summon_ready_insect'
+  | 'tab_summon_wait_kaiju'
+  | 'tab_summon_wait_insect'
+  | 'tab_zukan'
+  | 'tab_battle'
+  | 'voice_toggle_on'
+  | 'mode_kaiju'
+  | 'mode_insect'
+  | 'quest_clear_wake_up'
+  | 'quest_done_wake_up'
+  | 'quest_clear_morning_milk'
+  | 'quest_done_morning_milk'
+  | 'quest_clear_breakfast'
+  | 'quest_done_breakfast'
+  | 'quest_clear_morning_teeth'
+  | 'quest_done_morning_teeth'
+  | 'quest_clear_toilet_morning'
+  | 'quest_done_toilet_morning'
+  | 'quest_clear_shoes'
+  | 'quest_done_shoes'
+  | 'quest_clear_nursery_go'
+  | 'quest_done_nursery_go'
+  | 'quest_clear_nursery_back'
+  | 'quest_done_nursery_back'
+  | 'quest_clear_tidy_toys'
+  | 'quest_done_tidy_toys'
+  | 'quest_clear_dinner'
+  | 'quest_done_dinner'
+  | 'quest_clear_bath'
+  | 'quest_done_bath'
+  | 'quest_clear_night_teeth'
+  | 'quest_done_night_teeth'
+  | 'quest_clear_clothes'
+  | 'quest_done_clothes'
+  | 'quest_clear_night_toilet'
+  | 'quest_done_night_toilet'
+  | 'quest_clear_sleep'
+  | 'quest_done_sleep'
+  | 'daily_reset'
+  | 'test_charge'
+  | 'quest_energy_full'
+  | 'quest_partner_levelup'
+  | 'el_fire'
+  | 'el_water'
+  | 'el_thunder'
+  | 'el_nature'
+  | 'field_volcano'
+  | 'field_water'
+  | 'field_thunder'
+  | 'field_forest'
+  | 'tp_dino'
+  | 'tp_dragon'
+  | 'tp_robot'
+  | 'tp_beast'
+  | 'tp_kabuto'
+  | 'tp_kuwagata'
+  | 'tp_hunter'
+  | 'tp_flier'
+  | 'summon_start_kaiju'
+  | 'summon_start_insect'
+  | 'summon_no_energy'
+  | 'summon_result_kaiju'
+  | 'summon_result_insect'
+  | 'summon_result_powerup'
+  | 'summon_result_max'
+  | 'battle_start'
+  | 'battle_no_mp'
+  | 'battle_heal_no_mp'
+  | 'battle_heal'
+  | 'battle_charge'
+  | 'battle_critical'
+  | 'battle_effective'
+  | 'battle_win_p1'
+  | 'battle_win_p2'
+  | 'zukan_locked'
+  | 'zukan_tap_kaiju'
+  | 'card_no_orbs'
+  | 'card_max_level'
+  | 'card_give_orb'
+  | 'card_level_up'
+  | 'card_evolution'
+  | 'card_max_evolution'
+  | 'card_partner'
+  | 'card_skill_locked'
+  | 'card_skill_attack';
+
+/**
+ * ヒカキン風ボイス（.mp3）を再生する
+ * - 連打対策：再生中の音声を停止し、currentTime = 0 から即座にリスタート
+ * - iOS対応：初回タップ時に自動アンロック
+ * - フォールバック：音声ファイルのロードエラー時はWeb Speech APIで読み上げ
+ */
+export function playVoiceSound(
+  voiceId: VoiceId | string,
+  soundEnabled = true,
+  fallbackText?: string
+) {
+  if (!soundEnabled || typeof window === 'undefined') return;
+
+  unlockAudioForIOS();
+  stopVoiceAudio();
+
+  const src = `/sounds/${voiceId}.mp3`;
+  let audio = voiceAudioCache.get(src);
+  if (!audio) {
+    audio = new Audio(src);
+    voiceAudioCache.set(src, audio);
   }
 
+  audio.currentTime = 0;
+  activeVoiceAudio = audio;
+
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      if (fallbackText) {
+        speakWithWebSpeech(fallbackText);
+      }
+    });
+  }
+}
+
+/**
+ * クエストIDに対応するボイスIDを取得して再生するヘルパー
+ */
+const QUEST_KEY_MAP: Record<string, string> = {
+  'wake-up': 'wake_up',
+  'morning-milk': 'morning_milk',
+  breakfast: 'breakfast',
+  'morning-teeth': 'morning_teeth',
+  toilet: 'toilet_morning',
+  shoes: 'shoes',
+  'go-nursery': 'nursery_go',
+  'return-nursery': 'nursery_back',
+  toys: 'tidy_toys',
+  dinner: 'dinner',
+  bath: 'bath',
+  'night-teeth': 'night_teeth',
+  pajamas: 'clothes',
+  'night-toilet': 'night_toilet',
+  sleep: 'sleep',
+};
+
+export function playQuestVoice(questId: string, isClear: boolean, soundEnabled = true) {
+  const key = QUEST_KEY_MAP[questId];
+  if (key) {
+    const voiceId = isClear ? `quest_clear_${key}` : `quest_done_${key}`;
+    playVoiceSound(voiceId as VoiceId, soundEnabled);
+  }
+}
+
+/**
+ * Web Speech API による読み上げ（フォールバック用）
+ */
+function speakWithWebSpeech(text: string) {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();
-
     const voices = window.speechSynthesis.getVoices();
-    // 男性ボイス（Otoya, Ichiro, Hattori, Keita 等）を最優先で選択
     const hikakinVoice =
       voices.find(
         (v) =>
@@ -444,42 +660,154 @@ export function speakJapanese(text: string, soundEnabled = true) {
       voices.find((v) => v.lang.includes('ja') && v.name.includes('Google')) ||
       voices.find((v) => v.lang.includes('ja'));
 
-    // 感嘆詞（「ブンブン！」「キターーー！」「うおおおー！」等）が含まれる場合、前半と後半に分割して抑揚をつける
-    const exclamationMatch = text.match(/^([^！!]+[！!]+)\s*(.+)$/);
-
-    if (exclamationMatch && exclamationMatch[1] && exclamationMatch[2]) {
-      const part1 = exclamationMatch[1].trim();
-      const part2 = exclamationMatch[2].trim();
-
-      // 1つ目の感嘆詞Utterance（ハイテンションな高めの声）
-      const u1 = new SpeechSynthesisUtterance(part1);
-      u1.lang = 'ja-JP';
-      u1.pitch = 1.18;
-      u1.rate = 1.35;
-      u1.volume = 1.0;
-      if (hikakinVoice) u1.voice = hikakinVoice;
-
-      // 2つ目の本文Utterance（聞き取りやすくノリの良い男性トーン）
-      const u2 = new SpeechSynthesisUtterance(part2);
-      u2.lang = 'ja-JP';
-      u2.pitch = 0.95;
-      u2.rate = 1.22;
-      u2.volume = 1.0;
-      if (hikakinVoice) u2.voice = hikakinVoice;
-
-      window.speechSynthesis.speak(u1);
-      window.speechSynthesis.speak(u2);
-    } else {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ja-JP';
-      utterance.rate = 1.22;
-      utterance.pitch = 0.95;
-      utterance.volume = 1.0;
-      if (hikakinVoice) utterance.voice = hikakinVoice;
-      window.speechSynthesis.speak(utterance);
-    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 1.25;
+    utterance.pitch = 1.05;
+    utterance.volume = 1.0;
+    if (hikakinVoice) utterance.voice = hikakinVoice;
+    window.speechSynthesis.speak(utterance);
   } catch {
-    // Web Speech API 非対応環境でもエラーにしない
+    // ignore
+  }
+}
+
+/**
+ * セリフテキストから対応するヒカキンボイス（.mp3）を自動判定して再生
+ * 一致するボイスファイルがあればMP3を再生し、なければWeb Speech APIで読み上げ
+ */
+export function speakJapanese(text: string, soundEnabled = true) {
+  if (!soundEnabled || typeof window === 'undefined') return;
+
+  // テキストのパターンマッチングで対応するMP3ボイスを探す
+  let matchedVoiceId: VoiceId | null = null;
+
+  if (text.includes('どうもヒカキンです')) {
+    matchedVoiceId = 'tab_quest';
+  } else if (text.includes('かいじゅうしょうかんタイム')) {
+    matchedVoiceId = 'tab_summon_ready_kaiju';
+  } else if (text.includes('こんちゅう つかまえるタイム')) {
+    matchedVoiceId = 'tab_summon_ready_insect';
+  } else if (text.includes('エネルギーをためると こんちゅうを つかまえられるよ')) {
+    matchedVoiceId = 'tab_summon_wait_insect';
+  } else if (text.includes('エネルギーをためると しょうかんできるよ')) {
+    matchedVoiceId = 'tab_summon_wait_kaiju';
+  } else if (text.includes('かいじゅうずかん！')) {
+    matchedVoiceId = 'tab_zukan';
+  } else if (text.includes('ふたりで かいじゅうバトル！')) {
+    matchedVoiceId = 'tab_battle';
+  } else if (text.includes('こえがでるようになったよ')) {
+    matchedVoiceId = 'voice_toggle_on';
+  } else if (text.includes('かいじゅうしょうかんモード！')) {
+    matchedVoiceId = 'mode_kaiju';
+  } else if (text.includes('こんちゅう つかまえるモード！')) {
+    matchedVoiceId = 'mode_insect';
+  } else if (text.includes('あたらしい1にちのスタート')) {
+    matchedVoiceId = 'daily_reset';
+  } else if (text.includes('おためしチャージ！')) {
+    matchedVoiceId = 'test_charge';
+  } else if (text.includes('エネルギーがまんたんになったよ')) {
+    matchedVoiceId = 'quest_energy_full';
+  } else if (text.includes('あいぼうの') && text.includes('レベルアップ')) {
+    matchedVoiceId = 'quest_partner_levelup';
+  } else if (text.includes('タマゴがひかってゆれてるぞ')) {
+    matchedVoiceId = 'summon_start_kaiju';
+  } else if (text.includes('クヌギの木が ゆれてるぞ')) {
+    matchedVoiceId = 'summon_start_insect';
+  } else if (text.includes('エネルギーがあと') && text.includes('たりないよ')) {
+    matchedVoiceId = 'summon_no_energy';
+  } else if (text.includes('あたらしい かいじゅう') && text.includes('とうじょうだ')) {
+    matchedVoiceId = 'summon_result_kaiju';
+  } else if (text.includes('ほんものの こんちゅう') && text.includes('つかまえたぞ')) {
+    matchedVoiceId = 'summon_result_insect';
+  } else if (text.includes('パワーアップしょうかん') || text.includes('こたいレベルが')) {
+    matchedVoiceId = 'summon_result_powerup';
+  } else if (text.includes('バトルスタート！')) {
+    matchedVoiceId = 'battle_start';
+  } else if (text.includes('MPが たりないよ！パワーためる')) {
+    matchedVoiceId = 'battle_no_mp';
+  } else if (text.includes('かいふくには MPが 15')) {
+    matchedVoiceId = 'battle_heal_no_mp';
+  } else if (text.includes('かいふくした！') || text.includes('かいふくしたぞ！')) {
+    matchedVoiceId = 'battle_heal';
+  } else if (text.includes('パワーためる！MPが たまったぞ！')) {
+    matchedVoiceId = 'battle_charge';
+  } else if (text.includes('じょうの') && text.includes('だいしょうり')) {
+    matchedVoiceId = 'battle_win_p1';
+  } else if (text.includes('パパの') && text.includes('しょうり')) {
+    matchedVoiceId = 'battle_win_p2';
+  } else if (text.includes('まだみつかっていない かいじゅうだよ')) {
+    matchedVoiceId = 'zukan_locked';
+  } else if (text.includes('けいけんち玉が たりないよ')) {
+    matchedVoiceId = 'card_no_orbs';
+  } else if (text.includes('究極キングだよ')) {
+    matchedVoiceId = 'card_max_level';
+  } else if (text.includes('けいけんち玉を あげたよ！あとちょっとで')) {
+    matchedVoiceId = 'card_give_orb';
+  } else if (text.includes('究極完全体になったぞーっ')) {
+    matchedVoiceId = 'card_max_evolution';
+  } else if (text.includes('しんかしたーっ')) {
+    matchedVoiceId = 'card_evolution';
+  } else if (text.includes('テレレレッテッテッテー')) {
+    matchedVoiceId = 'card_level_up';
+  } else if (text.includes('あいぼうに したよ')) {
+    matchedVoiceId = 'card_partner';
+  } else if (text.includes('このわざは レベル') && text.includes('おぼえるよ')) {
+    matchedVoiceId = 'card_skill_locked';
+  } else if (text.includes('くらえっ')) {
+    matchedVoiceId = 'card_skill_attack';
+  } else if (text.includes('ほのおタイプ！メラメラ')) {
+    matchedVoiceId = 'el_fire';
+  } else if (text.includes('みずタイプ！ザブーン')) {
+    matchedVoiceId = 'el_water';
+  } else if (text.includes('かみなりタイプ！ビリビリ')) {
+    matchedVoiceId = 'el_thunder';
+  } else if (text.includes('しぜんタイプ！もりもり')) {
+    matchedVoiceId = 'el_nature';
+  } else if (text.includes('かざんフィールド')) {
+    matchedVoiceId = 'field_volcano';
+  } else if (text.includes('みずべフィールド')) {
+    matchedVoiceId = 'field_water';
+  } else if (text.includes('じゅうでんフィールド')) {
+    matchedVoiceId = 'field_thunder';
+  } else if (text.includes('もりフィールド')) {
+    matchedVoiceId = 'field_forest';
+  } else if (text.includes('きょうりゅう！ドッスン')) {
+    matchedVoiceId = 'tp_dino';
+  } else if (text.includes('ドラゴン！ブンブンお空')) {
+    matchedVoiceId = 'tp_dragon';
+  } else if (text.includes('ロボット！ガシーン')) {
+    matchedVoiceId = 'tp_robot';
+  } else if (text.includes('ビースト！ガルルル')) {
+    matchedVoiceId = 'tp_beast';
+  } else if (text.includes('カブトムシの なかま')) {
+    matchedVoiceId = 'tp_kabuto';
+  } else if (text.includes('クワガタの なかま')) {
+    matchedVoiceId = 'tp_kuwagata';
+  } else if (text.includes('ハンターこんちゅう')) {
+    matchedVoiceId = 'tp_hunter';
+  } else if (text.includes('おおぞらの こんちゅう')) {
+    matchedVoiceId = 'tp_flier';
+  }
+
+  // クエストクリア / 達成済みの自動判定
+  if (!matchedVoiceId) {
+    for (const [qId, qKey] of Object.entries(QUEST_KEY_MAP)) {
+      if (text.includes('もうバッチリクリアしてるよ') && (text.includes(qId) || text.includes(qKey))) {
+        matchedVoiceId = `quest_done_${qKey}` as VoiceId;
+        break;
+      }
+      if (text.includes('クリア！') && (text.includes(qId) || text.includes(qKey))) {
+        matchedVoiceId = `quest_clear_${qKey}` as VoiceId;
+        break;
+      }
+    }
+  }
+
+  if (matchedVoiceId) {
+    playVoiceSound(matchedVoiceId, soundEnabled, text);
+  } else {
+    speakWithWebSpeech(text);
   }
 }
 

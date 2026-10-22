@@ -1,0 +1,437 @@
+{
+  "tab_quest": {
+    "id": "tab_quest",
+    "text": "ブンブンハローかいじゅうクエスト！どうもヒカキンです！できたものをタップしてね！レッツゴー！",
+    "file": "/sounds/tab_quest.mp3"
+  },
+  "tab_summon_ready_kaiju": {
+    "id": "tab_summon_ready_kaiju",
+    "text": "ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！",
+    "file": "/sounds/tab_summon_ready_kaiju.mp3"
+  },
+  "tab_summon_ready_insect": {
+    "id": "tab_summon_ready_insect",
+    "text": "ブンブン！こんちゅう つかまえるタイム！クヌギの木にしゅうごうだ！いくぞー！",
+    "file": "/sounds/tab_summon_ready_insect.mp3"
+  },
+  "tab_summon_wait_kaiju": {
+    "id": "tab_summon_wait_kaiju",
+    "text": "あとエネルギーをためると しょうかんできるよ！いっしょにがんばろう！",
+    "file": "/sounds/tab_summon_wait_kaiju.mp3"
+  },
+  "tab_summon_wait_insect": {
+    "id": "tab_summon_wait_insect",
+    "text": "あとエネルギーをためると こんちゅうを つかまえられるよ！いっしょにがんばろう！",
+    "file": "/sounds/tab_summon_wait_insect.mp3"
+  },
+  "tab_zukan": {
+    "id": "tab_zukan",
+    "text": "かいじゅうずかん！いっぱいあつまったよ！やばいね！神ってるー！",
+    "file": "/sounds/tab_zukan.mp3"
+  },
+  "tab_battle": {
+    "id": "tab_battle",
+    "text": "ふたりで かいじゅうバトル！じょうくんと パパで たいけつだ！レッツゴー！",
+    "file": "/sounds/tab_battle.mp3"
+  },
+  "voice_toggle_on": {
+    "id": "voice_toggle_on",
+    "text": "ブンブンハロー！こえがでるようになったよ！",
+    "file": "/sounds/voice_toggle_on.mp3"
+  },
+  "mode_kaiju": {
+    "id": "mode_kaiju",
+    "text": "かいじゅうしょうかんモード！",
+    "file": "/sounds/mode_kaiju.mp3"
+  },
+  "mode_insect": {
+    "id": "mode_insect",
+    "text": "こんちゅう つかまえるモード！クヌギの木にしゅうごうだ！",
+    "file": "/sounds/mode_insect.mp3"
+  },
+  "quest_clear_wake_up": {
+    "id": "quest_clear_wake_up",
+    "text": "やったー！あさ おきる クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_wake_up.mp3"
+  },
+  "quest_done_wake_up": {
+    "id": "quest_done_wake_up",
+    "text": "あさ おきるは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_wake_up.mp3"
+  },
+  "quest_clear_morning_milk": {
+    "id": "quest_clear_morning_milk",
+    "text": "やったー！あさの ぎゅうにゅう クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_morning_milk.mp3"
+  },
+  "quest_done_morning_milk": {
+    "id": "quest_done_morning_milk",
+    "text": "あさの ぎゅうにゅうは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_morning_milk.mp3"
+  },
+  "quest_clear_breakfast": {
+    "id": "quest_clear_breakfast",
+    "text": "やったー！あさごはん クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_breakfast.mp3"
+  },
+  "quest_done_breakfast": {
+    "id": "quest_done_breakfast",
+    "text": "あさごはんは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_breakfast.mp3"
+  },
+  "quest_clear_morning_teeth": {
+    "id": "quest_clear_morning_teeth",
+    "text": "やったー！あさはみがき クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_morning_teeth.mp3"
+  },
+  "quest_done_morning_teeth": {
+    "id": "quest_done_morning_teeth",
+    "text": "あさはみがきは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_morning_teeth.mp3"
+  },
+  "quest_clear_toilet_morning": {
+    "id": "quest_clear_toilet_morning",
+    "text": "やったー！トイレ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_toilet_morning.mp3"
+  },
+  "quest_done_toilet_morning": {
+    "id": "quest_done_toilet_morning",
+    "text": "トイレは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_toilet_morning.mp3"
+  },
+  "quest_clear_shoes": {
+    "id": "quest_clear_shoes",
+    "text": "やったー！くつそろえ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_shoes.mp3"
+  },
+  "quest_done_shoes": {
+    "id": "quest_done_shoes",
+    "text": "くつそろえは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_shoes.mp3"
+  },
+  "quest_clear_nursery_go": {
+    "id": "quest_clear_nursery_go",
+    "text": "やったー！ほいくえんに いく クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_nursery_go.mp3"
+  },
+  "quest_done_nursery_go": {
+    "id": "quest_done_nursery_go",
+    "text": "ほいくえんに いくは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_nursery_go.mp3"
+  },
+  "quest_clear_nursery_back": {
+    "id": "quest_clear_nursery_back",
+    "text": "やったー！ほいくえんから かえる クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_nursery_back.mp3"
+  },
+  "quest_done_nursery_back": {
+    "id": "quest_done_nursery_back",
+    "text": "ほいくえんから かえるは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_nursery_back.mp3"
+  },
+  "quest_clear_tidy_toys": {
+    "id": "quest_clear_tidy_toys",
+    "text": "やったー！おもちゃの おかたづけ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_tidy_toys.mp3"
+  },
+  "quest_done_tidy_toys": {
+    "id": "quest_done_tidy_toys",
+    "text": "おもちゃの おかたづけは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_tidy_toys.mp3"
+  },
+  "quest_clear_dinner": {
+    "id": "quest_clear_dinner",
+    "text": "やったー！よるごはん クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_dinner.mp3"
+  },
+  "quest_done_dinner": {
+    "id": "quest_done_dinner",
+    "text": "よるごはんは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_dinner.mp3"
+  },
+  "quest_clear_bath": {
+    "id": "quest_clear_bath",
+    "text": "やったー！おふろ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_bath.mp3"
+  },
+  "quest_done_bath": {
+    "id": "quest_done_bath",
+    "text": "おふろは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_bath.mp3"
+  },
+  "quest_clear_night_teeth": {
+    "id": "quest_clear_night_teeth",
+    "text": "やったー！よるはみがき クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_night_teeth.mp3"
+  },
+  "quest_done_night_teeth": {
+    "id": "quest_done_night_teeth",
+    "text": "よるはみがきは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_night_teeth.mp3"
+  },
+  "quest_clear_clothes": {
+    "id": "quest_clear_clothes",
+    "text": "やったー！お着替え クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_clothes.mp3"
+  },
+  "quest_done_clothes": {
+    "id": "quest_done_clothes",
+    "text": "お着替えは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_clothes.mp3"
+  },
+  "quest_clear_night_toilet": {
+    "id": "quest_clear_night_toilet",
+    "text": "やったー！ねるまえの トイレ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_night_toilet.mp3"
+  },
+  "quest_done_night_toilet": {
+    "id": "quest_done_night_toilet",
+    "text": "ねるまえの トイレは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_night_toilet.mp3"
+  },
+  "quest_clear_sleep": {
+    "id": "quest_clear_sleep",
+    "text": "やったー！おやすみ クリア！エネルギーと けいけんち玉を ゲットしたよ！",
+    "file": "/sounds/quest_clear_sleep.mp3"
+  },
+  "quest_done_sleep": {
+    "id": "quest_done_sleep",
+    "text": "おやすみは もうバッチリクリアしてるよ！さすがだね！",
+    "file": "/sounds/quest_done_sleep.mp3"
+  },
+  "daily_reset": {
+    "id": "daily_reset",
+    "text": "ブンブン！あたらしい1にちのスタート！きょうもクエストがんばろう！レッツゴー！",
+    "file": "/sounds/daily_reset.mp3"
+  },
+  "test_charge": {
+    "id": "test_charge",
+    "text": "キターーー！おためしチャージ！エネルギー 3こと、けいけんち玉 3こを ゲットしたよ！やばすぎるー！",
+    "file": "/sounds/test_charge.mp3"
+  },
+  "quest_energy_full": {
+    "id": "quest_energy_full",
+    "text": "キターーー！エネルギーがまんたんになったよ！けいけんち玉も ゲット！",
+    "file": "/sounds/quest_energy_full.mp3"
+  },
+  "quest_partner_levelup": {
+    "id": "quest_partner_levelup",
+    "text": "キターーー！あいぼうが レベルアップしたよ！やばすぎるー！",
+    "file": "/sounds/quest_partner_levelup.mp3"
+  },
+  "el_fire": {
+    "id": "el_fire",
+    "text": "ほのおタイプ！メラメラあついぞ！これマジでやばいねー！",
+    "file": "/sounds/el_fire.mp3"
+  },
+  "el_water": {
+    "id": "el_water",
+    "text": "みずタイプ！ザブーンと超ビッグウェーブ！つよすぎるー！",
+    "file": "/sounds/el_water.mp3"
+  },
+  "el_thunder": {
+    "id": "el_thunder",
+    "text": "かみなりタイプ！ビリビリしびれるー！神ってるね！",
+    "file": "/sounds/el_thunder.mp3"
+  },
+  "el_nature": {
+    "id": "el_nature",
+    "text": "しぜんタイプ！もりもりパワー全開！レッツゴー！",
+    "file": "/sounds/el_nature.mp3"
+  },
+  "field_volcano": {
+    "id": "field_volcano",
+    "text": "かざんフィールド！",
+    "file": "/sounds/field_volcano.mp3"
+  },
+  "field_water": {
+    "id": "field_water",
+    "text": "みずべフィールド！",
+    "file": "/sounds/field_water.mp3"
+  },
+  "field_thunder": {
+    "id": "field_thunder",
+    "text": "じゅうでんフィールド！",
+    "file": "/sounds/field_thunder.mp3"
+  },
+  "field_forest": {
+    "id": "field_forest",
+    "text": "もりフィールド！",
+    "file": "/sounds/field_forest.mp3"
+  },
+  "tp_dino": {
+    "id": "tp_dino",
+    "text": "きょうりゅう！ドッスン！超でっかくてかっこいいー！",
+    "file": "/sounds/tp_dino.mp3"
+  },
+  "tp_dragon": {
+    "id": "tp_dragon",
+    "text": "ドラゴン！ブンブンお空をとぶぞ！やばいねー！",
+    "file": "/sounds/tp_dragon.mp3"
+  },
+  "tp_robot": {
+    "id": "tp_robot",
+    "text": "ロボット！ガシーン！超ハイテクで神ってるー！",
+    "file": "/sounds/tp_robot.mp3"
+  },
+  "tp_beast": {
+    "id": "tp_beast",
+    "text": "ビースト！ガルルル！スピードマックス！レッツゴー！",
+    "file": "/sounds/tp_beast.mp3"
+  },
+  "tp_kabuto": {
+    "id": "tp_kabuto",
+    "text": "カブトムシの なかま！おおきな ツノで つきあげるぞ！",
+    "file": "/sounds/tp_kabuto.mp3"
+  },
+  "tp_kuwagata": {
+    "id": "tp_kuwagata",
+    "text": "クワガタの なかま！おおアゴで ガッチリ はさむぞ！",
+    "file": "/sounds/tp_kuwagata.mp3"
+  },
+  "tp_hunter": {
+    "id": "tp_hunter",
+    "text": "ハンターこんちゅう！カマや ハリで ねらいうちだ！",
+    "file": "/sounds/tp_hunter.mp3"
+  },
+  "tp_flier": {
+    "id": "tp_flier",
+    "text": "おおぞらの こんちゅう！すごい スピードで とぶぞ！",
+    "file": "/sounds/tp_flier.mp3"
+  },
+  "summon_start_kaiju": {
+    "id": "summon_start_kaiju",
+    "text": "うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！",
+    "file": "/sounds/summon_start_kaiju.mp3"
+  },
+  "summon_start_insect": {
+    "id": "summon_start_insect",
+    "text": "うおおおー！クヌギの木が ゆれてるぞ！なにがでてくるかな！？ドキドキするねー！",
+    "file": "/sounds/summon_start_insect.mp3"
+  },
+  "summon_no_energy": {
+    "id": "summon_no_energy",
+    "text": "おっとー！エネルギーがたりないよ！クエストをクリアするか、おためしチャージをおしてね！",
+    "file": "/sounds/summon_no_energy.mp3"
+  },
+  "summon_result_kaiju": {
+    "id": "summon_result_kaiju",
+    "text": "キターーー！あたらしい かいじゅうのとうじょうだ！これマジでやばいねー！",
+    "file": "/sounds/summon_result_kaiju.mp3"
+  },
+  "summon_result_insect": {
+    "id": "summon_result_insect",
+    "text": "キターーー！ほんものの こんちゅうを つかまえたぞ！やばいねー！",
+    "file": "/sounds/summon_result_insect.mp3"
+  },
+  "summon_result_powerup": {
+    "id": "summon_result_powerup",
+    "text": "キターーー！パワーアップしょうかん！レベルがあがったぞ！つよすぎるー！",
+    "file": "/sounds/summon_result_powerup.mp3"
+  },
+  "summon_result_max": {
+    "id": "summon_result_max",
+    "text": "キターーー！すでに レベルMAXだから、けいけんち玉を ゲットしたよ！やばすぎるー！",
+    "file": "/sounds/summon_result_max.mp3"
+  },
+  "battle_start": {
+    "id": "battle_start",
+    "text": "ブンブン！バトルスタート！じょうたいパパ！じょうのターンだ！いくぞー！",
+    "file": "/sounds/battle_start.mp3"
+  },
+  "battle_no_mp": {
+    "id": "battle_no_mp",
+    "text": "おっと！MPが たりないよ！パワーためる ボタンで MPを かいふくしよう！",
+    "file": "/sounds/battle_no_mp.mp3"
+  },
+  "battle_heal_no_mp": {
+    "id": "battle_heal_no_mp",
+    "text": "おっと！かいふくには MPが 15 ひつようだよ！ためてみよう！",
+    "file": "/sounds/battle_heal_no_mp.mp3"
+  },
+  "battle_heal": {
+    "id": "battle_heal",
+    "text": "キターーー！かいふくしたぞ！HPが ふっかつだ！",
+    "file": "/sounds/battle_heal.mp3"
+  },
+  "battle_charge": {
+    "id": "battle_charge",
+    "text": "パワーためる！MPが たまったぞ！つぎは かいしんの いちげき 確定だ！",
+    "file": "/sounds/battle_charge.mp3"
+  },
+  "battle_critical": {
+    "id": "battle_critical",
+    "text": "かいしんの いちげきーっ！！",
+    "file": "/sounds/battle_critical.mp3"
+  },
+  "battle_effective": {
+    "id": "battle_effective",
+    "text": "こうかは ばつぐんだ！",
+    "file": "/sounds/battle_effective.mp3"
+  },
+  "battle_win_p1": {
+    "id": "battle_win_p1",
+    "text": "キターーー！じょうの だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんちをゲットしたよ！神ってるー！",
+    "file": "/sounds/battle_win_p1.mp3"
+  },
+  "battle_win_p2": {
+    "id": "battle_win_p2",
+    "text": "うおおお！パパの しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんちをゲットしたよ！",
+    "file": "/sounds/battle_win_p2.mp3"
+  },
+  "zukan_locked": {
+    "id": "zukan_locked",
+    "text": "おっと！まだみつかっていない かいじゅうだよ！えらんで しょうかんしてみよう！レッツゴー！",
+    "file": "/sounds/zukan_locked.mp3"
+  },
+  "zukan_tap_kaiju": {
+    "id": "zukan_tap_kaiju",
+    "text": "キターーー！かっこいい なかまだね！けいけんち玉で レベルアップや しんかも できるよ！",
+    "file": "/sounds/zukan_tap_kaiju.mp3"
+  },
+  "card_no_orbs": {
+    "id": "card_no_orbs",
+    "text": "おっとー！けいけんち玉が たりないよ！お支度クエストをクリアするか、バトルをして けいけんち玉を ゲットしよう！",
+    "file": "/sounds/card_no_orbs.mp3"
+  },
+  "card_max_level": {
+    "id": "card_max_level",
+    "text": "この なかまは もう レベルMAXの 究極キングだよ！ほかの なかまを そだててね！",
+    "file": "/sounds/card_max_level.mp3"
+  },
+  "card_give_orb": {
+    "id": "card_give_orb",
+    "text": "けいけんち玉を あげたよ！あとちょっとで レベルアップだ！",
+    "file": "/sounds/card_give_orb.mp3"
+  },
+  "card_level_up": {
+    "id": "card_level_up",
+    "text": "テレレレッテッテッテー！レベルがあがったぞ！ちからが ぐんぐん あがった！",
+    "file": "/sounds/card_level_up.mp3"
+  },
+  "card_evolution": {
+    "id": "card_evolution",
+    "text": "うおおおーっ！おや！？ようすが…！しんかしたーっ！神ってるー！",
+    "file": "/sounds/card_evolution.mp3"
+  },
+  "card_max_evolution": {
+    "id": "card_max_evolution",
+    "text": "ついに、レベルMAXの 究極完全体になったぞーっ！やばすぎるーー！！",
+    "file": "/sounds/card_max_evolution.mp3"
+  },
+  "card_partner": {
+    "id": "card_partner",
+    "text": "やったー！あいぼうに したよ！いっしょに クエストを がんばろう！",
+    "file": "/sounds/card_partner.mp3"
+  },
+  "card_skill_locked": {
+    "id": "card_skill_locked",
+    "text": "このわざは レベルアップすると おぼえるよ！たのしみだね！",
+    "file": "/sounds/card_skill_locked.mp3"
+  },
+  "card_skill_attack": {
+    "id": "card_skill_attack",
+    "text": "くらえっ！ひっさつわざだーっ！これマジでやばいねー！",
+    "file": "/sounds/card_skill_attack.mp3"
+  }
+}

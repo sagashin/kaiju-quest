@@ -46,6 +46,9 @@ import {
   playBeatboxIntroSound,
   playYoutuberAirhornSound,
   speakJapanese,
+  playVoiceSound,
+  playQuestVoice,
+  unlockAudioForIOS,
   fireQuestConfetti,
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
@@ -245,10 +248,7 @@ export default function KaijuQuestApp() {
     const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0 };
     if (currentProg.level >= MAX_KAIJU_LEVEL) {
       playTapSound(320);
-      speakJapanese(
-        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
-        soundEnabled
-      );
+      playVoiceSound('card_max_level', soundEnabled);
       return;
     }
     setExpOrbs((prev) => Math.max(0, prev - 1));
@@ -267,43 +267,25 @@ export default function KaijuQuestApp() {
 
     if (tab === 'quest') {
       playBeatboxIntroSound();
-      speakJapanese(
-        'ブンブンハローかいじゅうクエスト！どうもヒカキンです！できたものをタップしてね！レッツゴー！',
-        soundEnabled
-      );
+      playVoiceSound('tab_quest', soundEnabled);
     } else if (tab === 'summon') {
       playBeatboxIntroSound();
       if (energy >= 3) {
-        if (summonCategory === 'insect') {
-          speakJapanese(
-            'ブンブン！こんちゅう つかまえるタイム！クヌギの木にしゅうごうだ！いくぞー！',
-            soundEnabled
-          );
-        } else {
-          speakJapanese(
-            'ブンブン！かいじゅうしょうかんタイム！すきなわざとタイプをえらんでね！いくぞー！',
-            soundEnabled
-          );
-        }
+        playVoiceSound(
+          summonCategory === 'insect' ? 'tab_summon_ready_insect' : 'tab_summon_ready_kaiju',
+          soundEnabled
+        );
       } else {
-        speakJapanese(
-          `あと ${3 - energy}こ エネルギーをためると ${
-            summonCategory === 'insect' ? 'こんちゅうを つかまえられるよ' : 'しょうかんできるよ'
-          }！いっしょにがんばろう！`,
+        playVoiceSound(
+          summonCategory === 'insect' ? 'tab_summon_wait_insect' : 'tab_summon_wait_kaiju',
           soundEnabled
         );
       }
     } else if (tab === 'zukan') {
-      speakJapanese(
-        `かいじゅうずかん！いま ${unlockedKaijuIds.length}たい あつまったよ！やばいね！神ってるー！`,
-        soundEnabled
-      );
+      playVoiceSound('tab_zukan', soundEnabled);
     } else if (tab === 'battle') {
       playBeatboxIntroSound();
-      speakJapanese(
-        'ふたりで かいじゅうバトル！じょうくんと パパで たいけつだ！レッツゴー！',
-        soundEnabled
-      );
+      playVoiceSound('tab_battle', soundEnabled);
     }
   };
 
@@ -313,7 +295,7 @@ export default function KaijuQuestApp() {
 
     if (isAlreadyDone) {
       playTapSound(680);
-      speakJapanese(`${quest.shortSpeechName}は もうバッチリクリアしてるよ！さすがだね！`, soundEnabled);
+      playQuestVoice(quest.id, false, soundEnabled);
       return;
     }
 
@@ -335,24 +317,11 @@ export default function KaijuQuestApp() {
     fireQuestConfetti();
 
     if (expResult.leveledUp) {
-      const updatedPartnerStats = getKaijuStats(partnerKaiju, {
-        level: expResult.newLevel,
-        exp: 0,
-      });
-      speakJapanese(
-        `キターーー！${quest.shortSpeechName} クリア！さらに、あいぼうの ${updatedPartnerStats.displayName} が レベル ${expResult.newLevel} に レベルアップしたよ！やばすぎるー！`,
-        soundEnabled
-      );
+      playVoiceSound('quest_partner_levelup', soundEnabled);
     } else if (nextEnergy >= 3) {
-      speakJapanese(
-        `キターーー！${quest.shortSpeechName} クリア！エネルギーがまんたんになったよ！けいけんち玉も ゲット！`,
-        soundEnabled
-      );
+      playVoiceSound('quest_energy_full', soundEnabled);
     } else {
-      speakJapanese(
-        `やったー！${quest.shortSpeechName} クリア！エネルギーと けいけんち玉を ゲットしたよ！`,
-        soundEnabled
-      );
+      playQuestVoice(quest.id, true, soundEnabled);
     }
   };
 
@@ -361,10 +330,7 @@ export default function KaijuQuestApp() {
     playTapSound(420);
     setCompletedQuests([]);
     setDqToastMessages(null);
-    speakJapanese(
-      'ブンブン！あたらしい1にちのスタート！きょうもクエストがんばろう！レッツゴー！',
-      soundEnabled
-    );
+    playVoiceSound('daily_reset', soundEnabled);
   };
 
   // おためしチャージ（エネルギー +3 ＆ 🌟けいけんち玉 +3）
@@ -373,10 +339,7 @@ export default function KaijuQuestApp() {
     fireQuestConfetti();
     setEnergy((prev) => prev + 3);
     setExpOrbs((prev) => prev + 3);
-    speakJapanese(
-      'キターーー！おためしチャージ！エネルギー 3こと、けいけんち玉 3こを ゲットしたよ！やばすぎるー！',
-      soundEnabled
-    );
+    playVoiceSound('test_charge', soundEnabled);
   };
 
   // ② 怪獣を召喚する！ボタン
@@ -385,10 +348,7 @@ export default function KaijuQuestApp() {
 
     if (energy < 3) {
       playTapSound(320);
-      speakJapanese(
-        `おっとー！エネルギーがあと ${3 - energy}こ たりないよ！クエストをクリアするか、おためしチャージをおしてね！`,
-        soundEnabled
-      );
+      playVoiceSound('summon_no_energy', soundEnabled);
       return;
     }
 
@@ -397,17 +357,10 @@ export default function KaijuQuestApp() {
     setIsHatching(true);
     setSummonedKaiju(null);
     playEggChargeSound();
-    if (summonCategory === 'insect') {
-      speakJapanese(
-        'うおおおー！クヌギの木が ゆれてるぞ！なにがでてくるかな！？ドキドキするねー！',
-        soundEnabled
-      );
-    } else {
-      speakJapanese(
-        'うおおおー！タマゴがひかってゆれてるぞ！なにがでるかな！？ドキドキするねー！',
-        soundEnabled
-      );
-    }
+    playVoiceSound(
+      summonCategory === 'insect' ? 'summon_start_insect' : 'summon_start_kaiju',
+      soundEnabled
+    );
 
     const targetKaiju = findKaijuForSummon(
       selectedElement,
@@ -456,28 +409,15 @@ export default function KaijuQuestApp() {
       );
 
       if (isNew) {
-        if (targetKaiju.category === 'insect') {
-          speakJapanese(
-            `キターーー！ほんものの こんちゅう、${currentStats.displayName}を つかまえたぞ！${targetKaiju.specialMove}！やばいねー！`,
-            soundEnabled
-          );
-        } else {
-          speakJapanese(
-            `キターーー！あたらしい かいじゅう、${currentStats.displayName}のとうじょうだ！ひっさつわざは ${targetKaiju.specialMove}！これマジでやばいねー！`,
-            soundEnabled
-          );
-        }
+        playVoiceSound(
+          targetKaiju.category === 'insect' ? 'summon_result_insect' : 'summon_result_kaiju',
+          soundEnabled
+        );
       } else {
-        if (targetKaiju.category === 'insect') {
-          speakJapanese(
-            `キターーー！${currentStats.displayName}の こたいレベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
-            soundEnabled
-          );
+        if (powerUpLevel && powerUpLevel >= MAX_KAIJU_LEVEL) {
+          playVoiceSound('summon_result_max', soundEnabled);
         } else {
-          speakJapanese(
-            `キターーー！パワーアップしょうかん！${currentStats.displayName}の レベルが ${powerUpLevel} に あがったぞ！つよすぎるー！`,
-            soundEnabled
-          );
+          playVoiceSound('summon_result_powerup', soundEnabled);
         }
       }
     }, 1550);
@@ -490,21 +430,14 @@ export default function KaijuQuestApp() {
 
     if (!isUnlocked) {
       playTapSound(380);
-      speakJapanese(
-        `おっと！まだみつかっていない かいじゅうだよ！${elMeta.label} と ${typeMeta.label} をえらんで しょうかんしてみよう！レッツゴー！`,
-        soundEnabled
-      );
+      playVoiceSound('zukan_locked', soundEnabled);
       return;
     }
 
-    const st = getKaijuStats(kaiju, kaijuProgress[kaiju.id]);
     setSelectedZukanKaiju(kaiju);
     playSpecialAttackSound();
     fireSummonConfetti(elMeta.confettiColors);
-    speakJapanese(
-      `キターーー！レベル ${st.level}、${st.displayName}！けいけんち玉で レベルアップや しんかも できるよ！`,
-      soundEnabled
-    );
+    playVoiceSound('zukan_tap_kaiju', soundEnabled);
   };
 
   // バトル終了時のごほうび付与（🌟けいけんち玉 +2 ＆ 1P怪獣に経験値 +30）
@@ -573,7 +506,7 @@ export default function KaijuQuestApp() {
             setSoundEnabled(next);
             playTapSound(next ? 660 : 400);
             if (next) {
-              speakJapanese('ブンブンハロー！こえがでるようになったよ！', true);
+              playVoiceSound('voice_toggle_on', true);
             }
           }}
           className={`min-h-[44px] px-3 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
@@ -905,7 +838,7 @@ export default function KaijuQuestApp() {
                         if (!['dino', 'dragon', 'robot', 'beast'].includes(selectedType)) {
                           setSelectedType('dino');
                         }
-                        speakJapanese('かいじゅうしょうかんモード！', soundEnabled);
+                        playVoiceSound('mode_kaiju', soundEnabled);
                       }}
                       className={`min-h-[50px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         summonCategory === 'kaiju'
@@ -925,7 +858,7 @@ export default function KaijuQuestApp() {
                         if (!['kabuto', 'kuwagata', 'hunter', 'flier'].includes(selectedType)) {
                           setSelectedType('kabuto');
                         }
-                        speakJapanese('こんちゅう つかまえるモード！クヌギの木にしゅうごうだ！', soundEnabled);
+                        playVoiceSound('mode_insect', soundEnabled);
                       }}
                       className={`min-h-[50px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         summonCategory === 'insect'
@@ -974,7 +907,10 @@ export default function KaijuQuestApp() {
                             onClick={() => {
                               playTapSound(540);
                               setSelectedElement(el.id);
-                              speakJapanese(speechText, soundEnabled);
+                              const elVoice = summonCategory === 'insect'
+                                ? (el.id === 'fire' ? 'field_volcano' : el.id === 'water' ? 'field_water' : el.id === 'thunder' ? 'field_thunder' : 'field_forest')
+                                : (el.id === 'fire' ? 'el_fire' : el.id === 'water' ? 'el_water' : el.id === 'thunder' ? 'el_thunder' : 'el_nature');
+                              playVoiceSound(elVoice, soundEnabled);
                             }}
                             className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
                               isSelected
@@ -1016,7 +952,8 @@ export default function KaijuQuestApp() {
                               onClick={() => {
                                 playTapSound(620);
                                 setSelectedType(tp.id);
-                                speakJapanese(tp.speechLabel, soundEnabled);
+                                const tpVoice = 'tp_' + tp.id;
+                                playVoiceSound(tpVoice, soundEnabled);
                               }}
                               className={`min-h-[64px] rounded-xl p-1 flex flex-col items-center justify-center border-2 transition-all active:scale-95 cursor-pointer ${
                                 isSelected

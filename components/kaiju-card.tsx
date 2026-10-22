@@ -19,6 +19,7 @@ import {
   playLevelUpSound,
   playEvolutionSound,
   speakJapanese,
+  playVoiceSound,
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
 
@@ -74,10 +75,7 @@ export function KaijuHeroCard({
     setActiveSkillBanner(moveName);
     playSpecialAttackSound();
     fireSummonConfetti(elMeta.confettiColors);
-    speakJapanese(
-      `ブンブン！${kaiju.roar} ぼくは、${displayedName}！ くらえっ、${moveName} だーっ！これマジでやばいねー！`,
-      soundEnabled
-    );
+    playVoiceSound('card_skill_attack', soundEnabled);
     setTimeout(() => {
       setIsAttacking(false);
     }, 1200);
@@ -88,19 +86,13 @@ export function KaijuHeroCard({
 
     if (stats.level >= MAX_KAIJU_LEVEL) {
       playTapSound(320);
-      speakJapanese(
-        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
-        soundEnabled
-      );
+      playVoiceSound('card_max_level', soundEnabled);
       return;
     }
 
     if (expOrbs <= 0) {
       playTapSound(340);
-      speakJapanese(
-        'おっとー！けいけんち玉が たりないよ！お支度クエストをクリアするか、バトルをして けいけんち玉を ゲットしよう！',
-        soundEnabled
-      );
+      playVoiceSound('card_no_orbs', soundEnabled);
       return;
     }
 
@@ -145,34 +137,31 @@ export function KaijuHeroCard({
         msgs.push(
           `👑 ついに レベルMAX（Lv.10）とうたつ！！ 『${nextStats.displayName}』の 究極完全体になったぞーーっ！！`
         );
-        speech += ` ついに、レベルMAXの 究極完全体になったぞーっ！やばすぎるーー！！`;
         playEvolutionSound();
         fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff', '#ec4899']);
+        playVoiceSound('card_max_evolution', soundEnabled);
       } else if (didEvolve) {
         msgs.push(
           `🌟 おや…！？ ${oldStats.displayName}の ようすが…！ 『${nextStats.displayName}』に しんかした！！`
         );
-        speech += ` うおおおーっ！おや！？ ${oldStats.displayName}の ようすが…！ なんと、${nextStats.displayName} に しんかしたーっ！神ってるー！`;
         playEvolutionSound();
         fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff']);
+        playVoiceSound('card_evolution', soundEnabled);
       } else {
         playLevelUpSound();
         fireSummonConfetti(elMeta.confettiColors);
+        playVoiceSound('card_level_up', soundEnabled);
       }
 
       setLevelUpMessages(msgs);
       setIsAttacking(true);
-      speakJapanese(speech, soundEnabled);
     } else {
       playTapSound(520);
       setLevelUpMessages([
         `🌟 ${oldStats.displayName}に けいけんち＋50 を あたえた！`,
         `📈 つぎのレベルまで あと ${100 - (oldStats.exp + 50)} EXP！`,
       ]);
-      speakJapanese(
-        `けいけんち玉を あげたよ！あとちょっとで レベルアップだ！`,
-        soundEnabled
-      );
+      playVoiceSound('card_give_orb', soundEnabled);
     }
 
     setTimeout(() => {
@@ -351,10 +340,7 @@ export function KaijuHeroCard({
                   onClick={() => {
                     playTapSound(640);
                     onSelectPartner(kaiju.id);
-                    speakJapanese(
-                      `やったー！${displayedName}を あいぼうに したよ！いっしょに クエストを がんばろう！`,
-                      soundEnabled
-                    );
+                    playVoiceSound('card_partner', soundEnabled);
                   }}
                   className={`min-h-[52px] w-full rounded-2xl px-4 py-2 font-black text-sm sm:text-base flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer ${
                     isPartner
@@ -481,10 +467,7 @@ export function KaijuHeroCard({
                         handlePlaySkillAttack(skill);
                       } else {
                         playTapSound(350);
-                        speakJapanese(
-                          `このわざは レベル ${skill.unlockLevel} に なると おぼえるよ！たのしみだね！`,
-                          soundEnabled
-                        );
+                        playVoiceSound('card_skill_locked', soundEnabled);
                       }
                     }}
                     className={`w-full rounded-xl p-2.5 text-left border-2 transition-all flex items-center justify-between gap-2 cursor-pointer active:scale-95 ${

@@ -35,6 +35,7 @@ import {
   playYoutuberAirhornSound,
   playBeatboxIntroSound,
   speakJapanese,
+  playVoiceSound,
 } from '@/lib/sound-and-speech';
 
 type BattlePhase = 'select' | 'battle' | 'result';
@@ -197,10 +198,7 @@ export function KaijuBattle({
       '👦 1P（じょう）の ターン！ わざ・かいふく・ためる を えらんでね！',
     ]);
     setPhase('battle');
-    speakJapanese(
-      `ブンブン！バトルスタート！じょうの ${p1Stats.displayName} たい パパの ${p2Stats.displayName}！じょうのターンだ！いくぞー！`,
-      soundEnabled
-    );
+    playVoiceSound('battle_start', soundEnabled);
   };
 
   // 1Pが技ボタンを押した時のルーレット開始
@@ -208,10 +206,7 @@ export function KaijuBattle({
     if (isAnimatingAction || phase !== 'battle' || turn !== 1) return;
     if (p1Mp < skill.mpCost) {
       playTapSound(320);
-      speakJapanese(
-        'おっと！MPが たりないよ！パワーためる ボタンで MPを かいふくしよう！',
-        soundEnabled
-      );
+      playVoiceSound('battle_no_mp', soundEnabled);
       return;
     }
 
@@ -254,7 +249,7 @@ export function KaijuBattle({
     const HEAL_MP_COST = 15;
     if (actorMp < HEAL_MP_COST) {
       playTapSound(320);
-      speakJapanese('おっと！かいふくには MPが 15 ひつようだよ！ためてみよう！', soundEnabled);
+      playVoiceSound('battle_heal_no_mp', soundEnabled);
       return;
     }
 
@@ -284,10 +279,7 @@ export function KaijuBattle({
       `✨ HPが ${healAmount} かいふく！ げんきモリモリだー！`,
     ];
     setBattleLogs(logs);
-    speakJapanese(
-      `キターーー！${actorStats.displayName}は かいふくした！HPが ${healAmount} ふっかつだ！`,
-      soundEnabled
-    );
+    playVoiceSound('battle_heal', soundEnabled);
 
     setTimeout(() => {
       setDamagePopup(null);
@@ -328,10 +320,7 @@ export function KaijuBattle({
       '✨ MPが 25 かいふく！ つぎの こうげきで「かいしんの いちげき」が でるぞ！！',
     ];
     setBattleLogs(logs);
-    speakJapanese(
-      `パワーためる！MPが たまったぞ！つぎは かいしんの いちげき 確定だ！`,
-      soundEnabled
-    );
+    playVoiceSound('battle_charge', soundEnabled);
 
     setTimeout(() => {
       setDamagePopup(null);
@@ -357,7 +346,7 @@ export function KaijuBattle({
     // MPチェック
     if (attackerMp < skill.mpCost) {
       playTapSound(320);
-      speakJapanese('MPが たりないよ！パワーを ためよう！', soundEnabled);
+      playVoiceSound('battle_no_mp', soundEnabled);
       return;
     }
 
@@ -433,12 +422,11 @@ export function KaijuBattle({
 
       setBattleLogs(logs);
 
-      const critSpeech = isCritical ? 'かいしんの いちげきーっ！！' : '';
-      const advSpeech = adv.multiplier > 1.0 ? 'こうかは ばつぐんだ！' : '';
-      speakJapanese(
-        `${attackerStats.displayName}の ${skill.name}！${advSpeech} ${critSpeech} ${rawDamage} のダメージ！`,
-        soundEnabled
-      );
+      if (isCritical) {
+        playVoiceSound('battle_critical', soundEnabled);
+      } else if (adv.multiplier > 1.0) {
+        playVoiceSound('battle_effective', soundEnabled);
+      }
 
       setTimeout(() => {
         setP1Damaged(false);
@@ -454,12 +442,7 @@ export function KaijuBattle({
           playBattleVictorySound();
           onBattleComplete(p1Kaiju.id);
 
-          const winName = attackerStats.displayName;
-          const winSpeech =
-            actor === 1
-              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！神ってるー！`
-              : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！`;
-          speakJapanese(winSpeech, soundEnabled);
+          playVoiceSound(actor === 1 ? 'battle_win_p1' : 'battle_win_p2', soundEnabled);
         } else {
           setTurn(isP1 ? 2 : 1);
           setIsAnimatingAction(false);
