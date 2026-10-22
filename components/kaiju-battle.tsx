@@ -457,8 +457,8 @@ export function KaijuBattle({
           const winName = attackerStats.displayName;
           const winSpeech =
             actor === 1
-              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 50 をゲットしたよ！神ってるー！`
-              : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 50 をゲットしたよ！`;
+              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！神ってるー！`
+              : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！`;
           speakJapanese(winSpeech, soundEnabled);
         } else {
           setTurn(isP1 ? 2 : 1);
@@ -646,7 +646,7 @@ export function KaijuBattle({
                     type="button"
                     onClick={() => {
                       playTapSound(580);
-                      setP2ManualLevel(Math.min(15, p2Level + 1));
+                      setP2ManualLevel(Math.min(12, p2Level + 1));
                     }}
                     className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-yellow-300 flex items-center justify-center font-black cursor-pointer border border-white/20"
                     title="パパのレベルを上げる"
@@ -1169,7 +1169,7 @@ export function KaijuBattle({
               </div>
               <div className="flex flex-col items-center">
                 <span className="text-2xl">⚡</span>
-                <span className="text-sm font-black text-cyan-300 mt-0.5">EXP +50</span>
+                <span className="text-sm font-black text-cyan-300 mt-0.5">EXP +30</span>
               </div>
             </div>
             <p className="text-xs text-slate-200 text-center">

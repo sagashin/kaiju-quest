@@ -1529,17 +1529,21 @@ export const KAIJU_LIST: KaijuData[] = RAW_KAIJU_LIST.map((k, index) => ({
   dexNumber: index + 1,
 }));
 
+export const MAX_KAIJU_LEVEL = 10;
+
 /**
  * レベルに応じた進化段階（1:キッズ期, 2:せいちょう期, 3:究極キング期）を返す
+ * ★ プランA（Lv.10 MAX）：Lv.1〜4 キッズ期、Lv.5〜9 せいちょう期、Lv.10 究極キング
  */
 export function getEvolutionStage(level: number): EvolutionStage {
-  if (level <= 2) return 1;
-  if (level <= 4) return 2;
+  if (level <= 4) return 1;
+  if (level <= 9) return 2;
   return 3;
 }
 
 /**
  * 怪獣の4つの習得技リストを返す（未指定の場合は属性×タイプから自動生成）
+ * ★ レベル10までの成長に合わせて技を順次習得（Lv.1, Lv.3, Lv.7, Lv.10）
  */
 export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
   if (kaiju.skills && kaiju.skills.length > 0) {
@@ -1599,7 +1603,7 @@ export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
     {
       id: `${kaiju.id}-skill-2`,
       name: eMid.name,
-      unlockLevel: 2,
+      unlockLevel: 3,
       mpCost: 10,
       power: 50,
       description: eMid.desc,
@@ -1607,7 +1611,7 @@ export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
     {
       id: `${kaiju.id}-skill-3`,
       name: kaiju.specialMove,
-      unlockLevel: 3,
+      unlockLevel: 7,
       mpCost: 20,
       power: 80,
       description: `${kaiju.name} だけの ちょうきょうりょくな 必殺技だ！`,
@@ -1615,7 +1619,7 @@ export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
     {
       id: `${kaiju.id}-skill-4`,
       name: eUlt.name,
-      unlockLevel: 5,
+      unlockLevel: 10,
       mpCost: 35,
       power: 130,
       description: eUlt.desc,
@@ -1628,13 +1632,21 @@ export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
  * 怪獣の現在のレベル・進化段階・ドラクエ風ステータス・習得技を計算する
  */
 export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): KaijuComputedStats {
-  const level = Math.max(1, progress?.level ?? 1);
+  const level = Math.min(MAX_KAIJU_LEVEL, Math.max(1, progress?.level ?? 1));
   const exp = Math.max(0, progress?.exp ?? 0);
   const nextLevelExp = 100;
   const stage = getEvolutionStage(level);
+  const isMaxLevel = level >= MAX_KAIJU_LEVEL;
 
   let displayName = kaiju.name;
-  let stageTitle = stage === 1 ? '★ キッズ形態' : stage === 2 ? '★★ せいちょう形態' : '★★★ 究極キング形態';
+  let stageTitle =
+    stage === 1
+      ? '★ キッズ形態'
+      : stage === 2
+      ? '★★ せいちょう形態'
+      : isMaxLevel
+      ? '★★★ 究極キング形態【MAX】'
+      : '★★★ キング形態';
 
   if (kaiju.category === 'insect') {
     if (stage === 1) {
@@ -1645,7 +1657,7 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
       stageTitle = '🪲 成虫';
     } else {
       displayName = kaiju.stageNames?.[2] ?? `ギネス級${kaiju.name}`;
-      stageTitle = '👑 ギネス最大個体';
+      stageTitle = isMaxLevel ? '👑 ギネス最大個体【MAX】' : '👑 ギネス級個体';
     }
   } else {
     if (stage === 1) {
@@ -1657,12 +1669,12 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     }
   }
 
-  // 3ターン前後で白熱してサクッと決着がつくスピーディなバトルバランス
-  const maxHp = 130 + kaiju.stars * 12 + (level - 1) * 35 + (stage - 1) * 45;
-  const maxMp = 35 + kaiju.stars * 6 + (level - 1) * 10 + (stage - 1) * 15;
-  const attack = 32 + kaiju.stars * 6 + (level - 1) * 14 + (stage - 1) * 18;
-  const defense = 16 + kaiju.stars * 3 + (level - 1) * 7 + (stage - 1) * 10;
-  const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 12 : 5) + (level - 1) * 8;
+  // 3〜4ターン前後で白熱してサクッと決着がつくスピーディなバトルバランス
+  const maxHp = 140 + kaiju.stars * 12 + (level - 1) * 22 + (stage - 1) * 35;
+  const maxMp = 35 + kaiju.stars * 5 + (level - 1) * 6 + (stage - 1) * 12;
+  const attack = 34 + kaiju.stars * 5 + (level - 1) * 9 + (stage - 1) * 14;
+  const defense = 18 + kaiju.stars * 3 + (level - 1) * 4 + (stage - 1) * 8;
+  const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 10 : 4) + (level - 1) * 5;
 
   const allSkills = getKaijuSkills(kaiju);
   const unlockedSkills = allSkills.filter((s) => s.unlockLevel <= level);

@@ -30,6 +30,7 @@ import {
   getKaijuStats,
   getElementMeta,
   getTypeMeta,
+  MAX_KAIJU_LEVEL,
 } from '@/lib/kaiju-data';
 import { MonsterEggSvg, KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import { KaijuHeroCard } from '@/components/kaiju-card';
@@ -177,7 +178,7 @@ export default function KaijuQuestApp() {
     isHydrated,
   ]);
 
-  // 指定した怪獣に経験値を加算し、100ごとにレベルアップさせる共通関数
+  // 指定した怪獣に経験値を加算し、100ごとにレベルアップさせる共通関数（Lv.10 MAX）
   const addExpToKaiju = (
     kaijuId: string,
     expAmount: number,
@@ -187,18 +188,27 @@ export default function KaijuQuestApp() {
     const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0 };
     const oldStats = getKaijuStats(targetKaiju, currentProg);
 
+    if (currentProg.level >= MAX_KAIJU_LEVEL) {
+      return { leveledUp: false, newLevel: MAX_KAIJU_LEVEL, evolved: false };
+    }
+
     let nextLevel = currentProg.level;
     let nextExp = currentProg.exp + expAmount;
 
-    while (nextExp >= 100) {
+    while (nextExp >= 100 && nextLevel < MAX_KAIJU_LEVEL) {
       nextExp -= 100;
       nextLevel += 1;
+    }
+
+    if (nextLevel >= MAX_KAIJU_LEVEL) {
+      nextExp = 100;
     }
 
     const nextProg: KaijuProgress = { level: nextLevel, exp: nextExp };
     const nextStats = getKaijuStats(targetKaiju, nextProg);
     const leveledUp = nextLevel > currentProg.level;
     const evolved = nextStats.stage > oldStats.stage;
+    const reachedMax = nextLevel >= MAX_KAIJU_LEVEL && currentProg.level < MAX_KAIJU_LEVEL;
 
     setKaijuProgress((prev) => ({
       ...prev,
@@ -213,8 +223,12 @@ export default function KaijuQuestApp() {
       if (newSkill) {
         msgs.push(`✨ あたらしい わざ『${newSkill.name}』を おぼえた！`);
       }
-      if (evolved) {
-        msgs.push(`👑 『${nextStats.displayName}』に しんかしたぞ！！`);
+      if (reachedMax) {
+        msgs.push(`👑 ついに レベルMAX（Lv.10）！！ 『${nextStats.displayName}』の 究極完全体になったぞーーっ！！`);
+        playYoutuberAirhornSound();
+        playEvolutionSound();
+      } else if (evolved) {
+        msgs.push(`🌟 『${nextStats.displayName}』に しんかしたぞ！！`);
         playEvolutionSound();
       } else {
         playLevelUpSound();
@@ -225,11 +239,20 @@ export default function KaijuQuestApp() {
     return { leveledUp, newLevel: nextLevel, evolved };
   };
 
-  // ワンタップ「🌟けいけんち玉でレベルアップ！」ハンドラ
+  // ワンタップ「🌟けいけんち玉でレベルアップ！」ハンドラ（1個でEXP+50、2個で1Lvアップ）
   const handleUseExpOrb = (kaijuId: string) => {
     if (expOrbs <= 0) return;
+    const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0 };
+    if (currentProg.level >= MAX_KAIJU_LEVEL) {
+      playTapSound(320);
+      speakJapanese(
+        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
+        soundEnabled
+      );
+      return;
+    }
     setExpOrbs((prev) => Math.max(0, prev - 1));
-    addExpToKaiju(kaijuId, 100);
+    addExpToKaiju(kaijuId, 50, { showToast: true });
   };
 
   // タブ切り替え処理
@@ -301,10 +324,10 @@ export default function KaijuQuestApp() {
     setEnergy(nextEnergy);
     setExpOrbs((prev) => prev + 1);
 
-    // あいぼう怪獣に経験値 +50
+    // あいぼう怪獣に経験値 +20（1日15クエストで約3レベルアップ！）
     const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
     const partnerKaiju = KAIJU_LIST.find((k) => k.id === activePartnerId) || KAIJU_LIST[0];
-    const expResult = addExpToKaiju(partnerKaiju.id, 50, { showToast: true });
+    const expResult = addExpToKaiju(partnerKaiju.id, 20, { showToast: true });
 
     if (!expResult.leveledUp) {
       playQuestClearSound();
@@ -405,14 +428,19 @@ export default function KaijuQuestApp() {
           [targetKaiju.id]: prev[targetKaiju.id] || { level: 1, exp: 0 },
         }));
       } else {
-        // すでに持っている怪獣が召喚された場合は「限界突破ボーナス」でレベル +1！
+        // すでに持っている怪獣が召喚された場合は「限界突破ボーナス」でレベル +1！（Lv.10 MAX時はけいけんち玉+3個）
         const currentProg = kaijuProgress[targetKaiju.id] || { level: 1, exp: 0 };
-        const nextLv = currentProg.level + 1;
-        powerUpLevel = nextLv;
-        setKaijuProgress((prev) => ({
-          ...prev,
-          [targetKaiju.id]: { level: nextLv, exp: currentProg.exp },
-        }));
+        if (currentProg.level >= MAX_KAIJU_LEVEL) {
+          setExpOrbs((prev) => prev + 3);
+          powerUpLevel = MAX_KAIJU_LEVEL;
+        } else {
+          const nextLv = Math.min(MAX_KAIJU_LEVEL, currentProg.level + 1);
+          powerUpLevel = nextLv;
+          setKaijuProgress((prev) => ({
+            ...prev,
+            [targetKaiju.id]: { level: nextLv, exp: currentProg.exp },
+          }));
+        }
       }
 
       setIsHatching(false);
@@ -479,10 +507,10 @@ export default function KaijuQuestApp() {
     );
   };
 
-  // バトル終了時のごほうび付与（🌟けいけんち玉 +2 ＆ 1P怪獣に経験値 +50）
+  // バトル終了時のごほうび付与（🌟けいけんち玉 +2 ＆ 1P怪獣に経験値 +30）
   const handleBattleReward = (p1Id: string) => {
     setExpOrbs((prev) => prev + 2);
-    addExpToKaiju(p1Id, 50, { showToast: true });
+    addExpToKaiju(p1Id, 30, { showToast: true });
   };
 
   const canSummon = energy >= 3;
@@ -680,14 +708,17 @@ export default function KaijuQuestApp() {
                       <span>あいぼう</span>
                     </span>
                     <span className="text-sm font-black text-yellow-300 tabular-nums">
-                      Lv.{partnerStats.level}
+                      Lv.{partnerStats.level} / {MAX_KAIJU_LEVEL}
+                      {partnerStats.level >= MAX_KAIJU_LEVEL && ' 👑MAX'}
                     </span>
                   </div>
                   <div className="text-base sm:text-lg font-black text-white truncate">
                     {partnerStats.displayName}
                   </div>
                   <div className="text-[11px] font-bold text-slate-300">
-                    クエストクリアで けいけんち＋50！
+                    {partnerStats.level >= MAX_KAIJU_LEVEL
+                      ? '👑 レベルMAXの 究極キング！！'
+                      : 'クエストクリアで けいけんち＋20！'}
                   </div>
                   {/* EXPバー */}
                   <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-white/25">
@@ -1255,8 +1286,15 @@ export default function KaijuQuestApp() {
                           <span>No.{String(kaiju.dexNumber).padStart(2, '0')}</span>
                         </span>
                         {isUnlocked ? (
-                          <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full text-[11px] font-black tabular-nums">
-                            Lv.{stats.level} {'★'.repeat(stats.stage)}
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[11px] font-black tabular-nums ${
+                              stats.level >= MAX_KAIJU_LEVEL
+                                ? 'bg-gradient-to-r from-yellow-400 via-rose-500 to-purple-500 text-white shadow'
+                                : 'bg-amber-400 text-slate-950'
+                            }`}
+                          >
+                            Lv.{stats.level}{' '}
+                            {stats.level >= MAX_KAIJU_LEVEL ? '👑MAX' : '★'.repeat(stats.stage)}
                           </span>
                         ) : (
                           <span className="text-base">

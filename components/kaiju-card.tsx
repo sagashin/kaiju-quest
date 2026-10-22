@@ -10,6 +10,7 @@ import {
   getElementMeta,
   getTypeMeta,
   getKaijuStats,
+  MAX_KAIJU_LEVEL,
 } from '@/lib/kaiju-data';
 import { KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import {
@@ -85,6 +86,15 @@ export function KaijuHeroCard({
   const handleOneTapLevelUp = () => {
     if (!onLevelUp) return;
 
+    if (stats.level >= MAX_KAIJU_LEVEL) {
+      playTapSound(320);
+      speakJapanese(
+        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
+        soundEnabled
+      );
+      return;
+    }
+
     if (expOrbs <= 0) {
       playTapSound(340);
       speakJapanese(
@@ -95,49 +105,75 @@ export function KaijuHeroCard({
     }
 
     const oldStats = stats;
-    const nextProgress: KaijuProgress = {
-      level: oldStats.level + 1,
-      exp: oldStats.exp,
-    };
-    const nextStats = getKaijuStats(kaiju, nextProgress);
-    const didEvolve = nextStats.stage > oldStats.stage;
-    const newlyUnlockedSkill = nextStats.allSkills.find((s) => s.unlockLevel === nextStats.level);
-
-    // 親コンポーネントのレベルアップ処理を実行
+    // 親コンポーネントのレベルアップ処理を実行（EXP+50加算）
     onLevelUp(kaiju.id);
     setPreviewStage(null);
 
-    const hpDiff = nextStats.maxHp - oldStats.maxHp;
-    const mpDiff = nextStats.maxMp - oldStats.maxMp;
-    const atkDiff = nextStats.attack - oldStats.attack;
+    // 次の予測ステータス（100EXPごとにレベルアップ）
+    const nextExpTotal = oldStats.exp + 50;
+    const nextLvCandidate = Math.min(
+      MAX_KAIJU_LEVEL,
+      oldStats.level + (nextExpTotal >= 100 ? 1 : 0)
+    );
+    const nextStats = getKaijuStats(kaiju, {
+      level: nextLvCandidate,
+      exp: nextExpTotal >= 100 ? nextExpTotal - 100 : nextExpTotal,
+    });
+    const leveledUp = nextStats.level > oldStats.level;
+    const didEvolve = nextStats.stage > oldStats.stage;
+    const reachedMax = nextStats.level >= MAX_KAIJU_LEVEL && oldStats.level < MAX_KAIJU_LEVEL;
+    const newlyUnlockedSkill = nextStats.allSkills.find((s) => s.unlockLevel === nextStats.level);
 
-    const msgs: string[] = [
-      `🎉 ${oldStats.displayName}は レベル ${nextStats.level} に あがった！`,
-      `💪 さいだいHP ＋${hpDiff} ／ MP ＋${mpDiff} ／ ちから ＋${atkDiff} アップ！`,
-    ];
+    if (leveledUp) {
+      const hpDiff = nextStats.maxHp - oldStats.maxHp;
+      const mpDiff = nextStats.maxMp - oldStats.maxMp;
+      const atkDiff = nextStats.attack - oldStats.attack;
 
-    let speech = `テレレレッテッテッテー！${oldStats.displayName}は レベル ${nextStats.level} に あがったぞ！ちからが ぐんぐん あがった！`;
+      const msgs: string[] = [
+        `🎉 ${oldStats.displayName}は レベル ${nextStats.level} に あがった！`,
+        `💪 さいだいHP ＋${hpDiff} ／ MP ＋${mpDiff} ／ ちから ＋${atkDiff} アップ！`,
+      ];
 
-    if (newlyUnlockedSkill) {
-      msgs.push(`✨ あたらしい わざ『${newlyUnlockedSkill.name}』を おぼえた！`);
-      speech += ` さらに、あたらしい わざ、${newlyUnlockedSkill.name} を おぼえたよ！`;
-    }
+      let speech = `テレレレッテッテッテー！${oldStats.displayName}は レベル ${nextStats.level} に あがったぞ！ちからが ぐんぐん あがった！`;
 
-    if (didEvolve) {
-      msgs.push(
-        `👑 おや…！？ ${oldStats.displayName}の ようすが…！ 『${nextStats.displayName}』に しんかした！！`
-      );
-      speech += ` うおおおーっ！おや！？ ${oldStats.displayName}の ようすが…！ なんと、${nextStats.displayName} に しんかしたーっ！神ってるー！`;
-      playEvolutionSound();
-      fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff']);
+      if (newlyUnlockedSkill) {
+        msgs.push(`✨ あたらしい わざ『${newlyUnlockedSkill.name}』を おぼえた！`);
+        speech += ` さらに、あたらしい わざ、${newlyUnlockedSkill.name} を おぼえたよ！`;
+      }
+
+      if (reachedMax) {
+        msgs.push(
+          `👑 ついに レベルMAX（Lv.10）とうたつ！！ 『${nextStats.displayName}』の 究極完全体になったぞーーっ！！`
+        );
+        speech += ` ついに、レベルMAXの 究極完全体になったぞーっ！やばすぎるーー！！`;
+        playEvolutionSound();
+        fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff', '#ec4899']);
+      } else if (didEvolve) {
+        msgs.push(
+          `🌟 おや…！？ ${oldStats.displayName}の ようすが…！ 『${nextStats.displayName}』に しんかした！！`
+        );
+        speech += ` うおおおーっ！おや！？ ${oldStats.displayName}の ようすが…！ なんと、${nextStats.displayName} に しんかしたーっ！神ってるー！`;
+        playEvolutionSound();
+        fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff']);
+      } else {
+        playLevelUpSound();
+        fireSummonConfetti(elMeta.confettiColors);
+      }
+
+      setLevelUpMessages(msgs);
+      setIsAttacking(true);
+      speakJapanese(speech, soundEnabled);
     } else {
-      playLevelUpSound();
-      fireSummonConfetti(elMeta.confettiColors);
+      playTapSound(520);
+      setLevelUpMessages([
+        `🌟 ${oldStats.displayName}に けいけんち＋50 を あたえた！`,
+        `📈 つぎのレベルまで あと ${100 - (oldStats.exp + 50)} EXP！`,
+      ]);
+      speakJapanese(
+        `けいけんち玉を あげたよ！あとちょっとで レベルアップだ！`,
+        soundEnabled
+      );
     }
-
-    setLevelUpMessages(msgs);
-    setIsAttacking(true);
-    speakJapanese(speech, soundEnabled);
 
     setTimeout(() => {
       setIsAttacking(false);
@@ -183,8 +219,13 @@ export function KaijuHeroCard({
             <div className="inline-flex items-center gap-2 bg-slate-950/90 border-2 border-amber-400 px-3.5 py-0.5 rounded-full mb-1 shadow">
               <span className="text-xs font-black text-amber-300">レベル</span>
               <span className="text-lg sm:text-xl font-black text-yellow-300 tabular-nums">
-                Lv.{stats.level}
+                Lv.{stats.level} / {MAX_KAIJU_LEVEL}
               </span>
+              {stats.level >= MAX_KAIJU_LEVEL && (
+                <span className="bg-gradient-to-r from-yellow-400 via-rose-500 to-purple-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse shadow">
+                  👑 MAX
+                </span>
+              )}
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               {displayedName}
@@ -279,18 +320,29 @@ export function KaijuHeroCard({
           {(onLevelUp || onSelectPartner) && (
             <div className="relative z-10 space-y-2">
               {onLevelUp && (
-                <button
-                  type="button"
-                  onClick={handleOneTapLevelUp}
-                  className={`min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
-                    expOrbs > 0
-                      ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400 text-slate-950 border-white shadow-[0_5px_0_#b45309,0_0_25px_rgba(250,204,21,0.7)]'
-                      : 'bg-slate-800 text-slate-400 border-slate-600'
-                  }`}
-                >
-                  <span className="text-2xl">🌟</span>
-                  <span>けいけんち玉で レベルアップ！（のこり {expOrbs}こ）</span>
-                </button>
+                stats.level >= MAX_KAIJU_LEVEL ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 bg-slate-900/90 border-yellow-400/60 text-yellow-300 shadow cursor-default"
+                  >
+                    <span className="text-2xl">👑</span>
+                    <span>レベルMAX（究極完全体）！</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleOneTapLevelUp}
+                    className={`min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
+                      expOrbs > 0
+                        ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400 text-slate-950 border-white shadow-[0_5px_0_#b45309,0_0_25px_rgba(250,204,21,0.7)]'
+                        : 'bg-slate-800 text-slate-400 border-slate-600'
+                    }`}
+                  >
+                    <span className="text-2xl">🌟</span>
+                    <span>けいけんち玉で 育成！（のこり {expOrbs}こ・EXP+50）</span>
+                  </button>
+                )
               )}
 
               {onSelectPartner && (
@@ -348,10 +400,10 @@ export function KaijuHeroCard({
               <div className="flex items-center gap-2">
                 <Crown className="w-5 h-5 text-yellow-400 shrink-0" />
                 <span className="text-base sm:text-lg font-black text-yellow-300 tabular-nums">
-                  Lv.{stats.level}
+                  Lv.{stats.level} / {MAX_KAIJU_LEVEL}
                 </span>
                 <span className="text-xs font-bold text-slate-300">
-                  （つぎの進化: {stats.level < 3 ? 'Lv.3' : stats.level < 5 ? 'Lv.5 キング形態' : '👑究極進化ずみ！'}）
+                  （つぎの進化: {stats.level < 5 ? 'Lv.5 せいちょう期' : stats.level < 10 ? 'Lv.10 キング形態' : '👑究極キングMAX！'}）
                 </span>
               </div>
               <span className="text-xs font-black text-amber-200 tabular-nums">
