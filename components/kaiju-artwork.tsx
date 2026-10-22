@@ -1559,6 +1559,242 @@ function GatchaBeastSvg({ primary, secondary, accent, eyeColor, outline, silhoue
   );
 }
 
+/** No.25 キン斗ゴクウ (黄金の筋斗雲、赤い如意棒、緊箍児の輪、炎の逆立ちヘアの孫悟空風モンキー獣) */
+function KintoGokuBeastSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* くるんと伸びるサルのシッポ */}
+      <path
+        d="M170 165 C215 160, 232 115, 205 100 C188 92, 185 115, 202 118"
+        fill="none"
+        stroke="#b45309"
+        strokeWidth="9"
+        strokeLinecap="round"
+      />
+
+      {/* ★ 背中で斜めに構える伸縮自在の「赤い如意棒（にょいぼう）」 ★ */}
+      <g transform="rotate(-28 130 135)">
+        <rect x="20" y="128" width="220" height="14" rx="6" fill="#dc2626" />
+        <rect x="20" y="128" width="24" height="14" rx="4" fill="#facc15" />
+        <rect x="216" y="128" width="24" height="14" rx="4" fill="#facc15" />
+      </g>
+
+      {/* オレンジの道着ボディ＆青い帯 */}
+      <path d="M92 125 L168 125 L178 182 L82 182 Z" fill="#f97316" />
+      <polygon points="112,125 130,152 148,125" fill="#1d4ed8" />
+      <rect x="86" y="162" width="88" height="12" rx="5" fill="#1d4ed8" />
+
+      {/* 両腕・リストバンド */}
+      <ellipse cx="75" cy="142" rx="18" ry="12" fill={secondary} />
+      <rect x="62" y="135" width="10" height="14" rx="3" fill="#1d4ed8" />
+      <ellipse cx="185" cy="142" rx="18" ry="12" fill={secondary} />
+      <rect x="188" y="135" width="10" height="14" rx="3" fill="#1d4ed8" />
+
+      {/* ツンツン逆立つ悟空＆炎ヘア */}
+      <polygon
+        points="130,12 108,45 72,22 92,62 52,55 82,84 178,84 208,55 168,62 188,22 152,45"
+        fill={primary}
+      />
+      <polygon points="130,22 115,52 90,38 104,68 156,68 170,38 145,52" fill="#facc15" stroke="none" />
+
+      {/* サルの耳＆丸い顔 */}
+      <circle cx="84" cy="92" r="14" fill={secondary} />
+      <circle cx="176" cy="92" r="14" fill={secondary} />
+      <circle cx="130" cy="92" r="36" fill="#fed7aa" />
+
+      {/* 黄金の緊箍児（きんこじ）ヘッドバンド */}
+      <path d="M94 74 Q130 82, 166 74" fill="none" stroke="#facc15" strokeWidth="7" strokeLinecap="round" />
+      <circle cx="130" cy="74" r="6" fill="#ef4444" />
+
+      {/* 元気いっぱいの目と笑顔 */}
+      {!silhouette && (
+        <g>
+          <ellipse cx="114" cy="92" rx="8" ry="10" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="115" cy="92" r="5" fill="#0f172a" stroke="none" />
+          <circle cx="117" cy="89" r="2" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="146" cy="92" rx="8" ry="10" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+          <circle cx="145" cy="92" r="5" fill="#0f172a" stroke="none" />
+          <circle cx="147" cy="89" r="2" fill="#ffffff" stroke="none" />
+
+          <path d="M116 108 Q130 120, 144 108 Z" fill="#ef4444" stroke="#0f172a" strokeWidth="2.5" />
+        </g>
+      )}
+
+      {/* ★ 足元のモクモク黄金「筋斗雲（きんとうん）」 ★ */}
+      <path
+        d="M25 205 C10 195, 20 175, 42 182 C55 168, 82 178, 92 182 C108 166, 152 166, 168 182 C185 168, 218 175, 212 196 C230 205, 210 225, 185 218 C160 228, 100 228, 72 218 C48 225, 20 218, 25 205 Z"
+        fill="#facc15"
+      />
+      {!silhouette && (
+        <ellipse cx="130" cy="198" rx="62" ry="12" fill="#fef08a" stroke="none" opacity="0.7" />
+      )}
+    </g>
+  );
+}
+
+/** No.26 ブリザードプレシオ (長い首の首長竜プレシオサウルス × 氷河クリスタル背ビレ × 4枚のヒレ) */
+function BlizzardPlesioSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 背中の巨大氷河クリスタル群 */}
+      <polygon points="110,145 125,95 142,145" fill="#e0f2fe" />
+      <polygon points="135,142 158,82 175,145" fill="#bae6fd" />
+      <polygon points="165,148 188,105 198,155" fill="#7dd3fc" />
+
+      {/* しなやかな長いシッポ */}
+      <path d="M180 175 Q225 170, 242 135 Q232 195, 178 195 Z" fill={secondary} />
+
+      {/* どっしりした首長竜の胴体 */}
+      <ellipse cx="145" cy="175" rx="56" ry="36" fill={primary} />
+      <ellipse cx="142" cy="184" rx="42" ry="20" fill={accent} stroke="none" opacity="0.85" />
+
+      {/* 4枚の大きな遊泳ヒレ（フリッパー） */}
+      <path d="M105 188 C75 205, 62 228, 92 225 C112 220, 122 202, 120 190 Z" fill={secondary} />
+      <path d="M168 188 C185 212, 208 228, 218 215 C215 198, 192 188, 180 185 Z" fill={secondary} />
+
+      {/* ★ プレシオサウルス特有の長く美しいS字の首 ★ */}
+      <path
+        d="M105 168 C78 150, 72 95, 92 55 L112 62 C98 98, 102 140, 126 158 Z"
+        fill={primary}
+      />
+
+      {/* 首長竜の頭＆氷のクラウン角 */}
+      <polygon points="95,48 112,18 118,46 134,24 128,54" fill="#e0f2fe" />
+      <path d="M62 56 C62 36, 122 36, 124 58 C124 72, 65 74, 52 64 Z" fill={primary} />
+
+      {/* 口元の氷結ブリザードエネルギー球 */}
+      {!silhouette && (
+        <g>
+          <circle cx="42" cy="62" r="12" fill="#e0f2fe" stroke="#38bdf8" strokeWidth="3" />
+          <ellipse cx="86" cy="52" rx="8" ry="6" fill={eyeColor} stroke="#0f172a" strokeWidth="2" />
+          <circle cx="84" cy="52" r="3" fill="#0f172a" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.27 ライジンショーグンロボ (黄金の三日月兜、背中の雷神連太鼓、二刀流イナズマ刀の将軍メカ) */
+function RaijinShogunRoboSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ 背中の「雷神・連太鼓（かみなりリング）」 ★ */}
+      <circle cx="130" cy="115" r="78" fill="none" stroke="#facc15" strokeWidth="5" />
+      {[
+        [52, 115],
+        [72, 58],
+        [130, 36],
+        [188, 58],
+        [208, 115],
+      ].map(([cx, cy], idx) => (
+        <g key={idx}>
+          <circle cx={cx} cy={cy} r="13" fill="#fef08a" stroke="#b45309" strokeWidth="3" />
+          {!silhouette && (
+            <circle cx={cx} cy={cy} r="5" fill="#0f172a" stroke="none" />
+          )}
+        </g>
+      ))}
+
+      {/* ★ 両手に構える二刀流「イナズマレーザー日本刀」 ★ */}
+      <polygon points="48,145 12,42 26,38 62,140" fill="#38bdf8" />
+      <rect x="42" y="138" width="24" height="8" rx="2" fill="#facc15" />
+      <polygon points="212,145 248,42 234,38 198,140" fill="#38bdf8" />
+      <rect x="194" y="138" width="24" height="8" rx="2" fill="#facc15" />
+
+      {/* 戦国大鎧アーマー脚・胴体 */}
+      <rect x="86" y="182" width="32" height="38" rx="6" fill={secondary} />
+      <rect x="142" y="182" width="32" height="38" rx="6" fill={secondary} />
+      <polygon points="78,118 182,118 170,188 90,188" fill={primary} />
+
+      {/* 胸の雷神コア＆大袖（肩アーマー） */}
+      <polygon points="52,112 88,108 82,148 46,144" fill={secondary} />
+      <polygon points="208,112 172,108 178,148 214,144" fill={secondary} />
+      <circle cx="130" cy="150" r="18" fill="#38bdf8" />
+      <polygon points="134,136 120,152 132,152 124,166 142,148 130,148" fill="#fef08a" stroke="none" />
+
+      {/* 将軍ロボ頭部＆武者兜（カブト） */}
+      <path d="M84 95 C84 58, 176 58, 176 95 L186 112 L74 112 Z" fill="#1e293b" />
+      <rect x="96" y="75" width="68" height="34" rx="6" fill={primary} />
+
+      {/* ★ 兜の巨大黄金三日月前立て ★ */}
+      <path
+        d="M130 68 C95 68, 72 32, 86 14 C88 36, 108 52, 130 52 C152 52, 172 36, 174 14 C188 32, 165 68, 130 68 Z"
+        fill="#facc15"
+      />
+
+      {/* ツインアイ（ガンダム・戦国メカ風） */}
+      {!silhouette && (
+        <g>
+          <polygon points="102,86 124,90 104,96" fill="#4ade80" stroke="none" />
+          <polygon points="158,86 136,90 156,96" fill="#4ade80" stroke="none" />
+          <rect x="114" y="98" width="32" height="8" rx="2" fill="#facc15" stroke="#0f172a" strokeWidth="2" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.28 クリスタルシェンロン (うねる東洋龍ボディ、エメラルド宝玉7つ、若葉とクリスタルの鹿角) */
+function CrystalShenronSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ 周囲に浮かぶ7つの森のクリスタル宝玉 ★ */}
+      {[
+        [42, 75],
+        [68, 32],
+        [130, 18],
+        [192, 32],
+        [218, 75],
+        [48, 145],
+        [212, 145],
+      ].map(([cx, cy], idx) => (
+        <g key={idx}>
+          <circle cx={cx} cy={cy} r="10" fill="#34d399" stroke="#fef08a" strokeWidth="2.5" />
+          {!silhouette && (
+            <polygon
+              points={`${cx},${cy - 5} ${cx + 4},${cy} ${cx},${cy + 5} ${cx - 4},${cy}`}
+              fill="#fef08a"
+              stroke="none"
+            />
+          )}
+        </g>
+      ))}
+
+      {/* とぐろを巻く東洋神龍の長い身体 */}
+      <path
+        d="M65 205 C30 175, 55 125, 130 135 C205 145, 225 195, 175 215 C135 228, 85 220, 65 205 Z"
+        fill={primary}
+      />
+      <path
+        d="M82 195 C62 175, 82 148, 130 152 C178 158, 192 188, 160 202 Z"
+        fill={accent}
+      />
+
+      {/* 背中のクリスタル背ビレ列 */}
+      <polygon points="85,128 96,105 108,130 124,104 138,130 154,106 168,132" fill="#a7f3d0" />
+
+      {/* クリスタルの鹿角（2本） */}
+      <path d="M104 62 L78 24 L96 42 L88 18 L112 54 Z" fill="#6ee7b7" />
+      <path d="M156 62 L182 24 L164 42 L172 18 L148 54 Z" fill="#6ee7b7" />
+
+      {/* 神龍の顔＆長い龍のヒゲ */}
+      <path d="M90 82 C90 50, 170 50, 170 82 L182 112 C158 132, 102 132, 78 112 Z" fill={primary} />
+      <path d="M88 106 Q42 98, 22 128" fill="none" stroke="#fde047" strokeWidth="5" strokeLinecap="round" />
+      <path d="M172 106 Q218 98, 238 128" fill="none" stroke="#fde047" strokeWidth="5" strokeLinecap="round" />
+
+      {/* 額の虹色クリスタル＆神秘的な瞳 */}
+      <polygon points="130,52 140,68 130,82 120,68" fill="#facc15" />
+      {!silhouette && (
+        <g>
+          <polygon points="96,86 120,92 100,100" fill={eyeColor} stroke="#0f172a" strokeWidth="2" />
+          <polygon points="164,86 140,92 160,100" fill={eyeColor} stroke="#0f172a" strokeWidth="2" />
+        </g>
+      )}
+    </g>
+  );
+}
+
 /* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
@@ -2244,7 +2480,7 @@ function KaijuSpecificSvgDispatcher({
     case 'thunder-beast-2':
       return <GodThunderFenrirSvg {...partProps} />;
 
-    // 💥 鳥山明風コラボ怪獣
+    // 💥 鳥山明風コラボ怪獣 ＆ 新追加レジェンド怪獣
     case 'fire-db-tyranno':
       return <SuperTyrannoSvg {...partProps} />;
     case 'water-arale-robo':
@@ -2253,6 +2489,14 @@ function KaijuSpecificSvgDispatcher({
       return <ScouterDragoSvg {...partProps} />;
     case 'nature-arale-gatchan':
       return <GatchaBeastSvg {...partProps} />;
+    case 'fire-goku-beast':
+      return <KintoGokuBeastSvg {...partProps} />;
+    case 'water-plesio-dino':
+      return <BlizzardPlesioSvg {...partProps} />;
+    case 'thunder-shogun-robo':
+      return <RaijinShogunRoboSvg {...partProps} />;
+    case 'nature-crystal-dragon':
+      return <CrystalShenronSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;

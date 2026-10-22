@@ -400,7 +400,7 @@ export function createCustomKaiju(
 
 export const defineKaiju = createCustomKaiju;
 
-export const KAIJU_LIST: KaijuData[] = [
+const RAW_KAIJU_LIST: KaijuData[] = [
   // 🔥 ほのお × 4タイプ
   {
     id: 'fire-dino',
@@ -699,6 +699,60 @@ export const KAIJU_LIST: KaijuData[] = [
     stars: 5,
     titleBadge: 'むじゃきな天使モンスター',
     description: '頭に 天使の 輪と 小さな 羽を もつ 元気いっぱいビースト！どんな 硬い ものも バリバリ 食べちゃうぞ！',
+  }),
+
+  // 🔥💧⚡🌿 新追加・超個性派レジェンド怪獣 No.25〜28（各属性1体ずつ）
+  createCustomKaiju({
+    id: 'fire-goku-beast',
+    dexNumber: 25,
+    element: 'fire',
+    type: 'beast',
+    name: 'キン斗ゴクウ',
+    roar: 'オッス！オラと しょうぶだーっ！',
+    specialMove: 'にょいぼう・大車輪ファイヤー',
+    stars: 5,
+    titleBadge: '筋斗雲の 炎神モンキー',
+    description: '黄金の 筋斗雲に のって 空を とぶ ほのおの バトルモンキー！のびる 如意棒で どんな 悪者も ぶっとばすぞ！',
+    stageNames: ['プチキン斗ゴクウ', 'キン斗ゴクウ', '超ゴッドキン斗ゴクウ'],
+  }),
+  createCustomKaiju({
+    id: 'water-plesio-dino',
+    dexNumber: 26,
+    element: 'water',
+    type: 'dino',
+    name: 'ブリザードプレシオ',
+    roar: 'キュォォォーン！ザッパーン！',
+    specialMove: 'ぜったいれいど・ブリザードカノン',
+    stars: 5,
+    titleBadge: 'ひょうがの 首長竜王',
+    description: 'ながい 首と 氷の クリスタルアーマーを もつ 巨大な 首長竜！口から 絶対零度の 冷凍ビームを はっしゃするぞ！',
+    stageNames: ['プチプレシオ', 'ブリザードプレシオ', 'キングブリザードプレシオ'],
+  }),
+  createCustomKaiju({
+    id: 'thunder-shogun-robo',
+    dexNumber: 27,
+    element: 'thunder',
+    type: 'robot',
+    name: 'ライジンショーグンロボ',
+    roar: 'イザ尋常に・サンダー斬り！！',
+    specialMove: 'らいじん二刀流・イナズマスラッシュ',
+    stars: 5,
+    titleBadge: '二刀流・雷神武者ロボ',
+    description: '黄金の 三日月カブトと 雷神太鼓を せおった 戦国将軍ロボット！2本の イナズマレーザー刀で 電光石火の 斬撃を くりだすぞ！',
+    stageNames: ['プチショーグンロボ', 'ライジンショーグンロボ', '大将軍ライジンカイザー'],
+  }),
+  createCustomKaiju({
+    id: 'nature-crystal-dragon',
+    dexNumber: 28,
+    element: 'nature',
+    type: 'dragon',
+    name: 'クリスタルシェンロン',
+    roar: 'フォォォーン！ねがいを かなえよう！',
+    specialMove: 'しんりん七星・エメラルドノヴァ',
+    stars: 5,
+    titleBadge: '七宝玉の 森林神龍',
+    description: 'エメラルドと 虹色の クリスタルに かがやく 森の 東洋神龍！7つの 森の 宝玉から 神秘の エネルギー波を 放つぞ！',
+    stageNames: ['プチシェンロン', 'クリスタルシェンロン', '神龍王クリスタルシェンロン'],
   }),
 
   // =========================================================================
@@ -1469,6 +1523,11 @@ export const KAIJU_LIST: KaijuData[] = [
     },
   }),
 ];
+
+export const KAIJU_LIST: KaijuData[] = RAW_KAIJU_LIST.map((k, index) => ({
+  ...k,
+  dexNumber: index + 1,
+}));
 
 /**
  * レベルに応じた進化段階（1:キッズ期, 2:せいちょう期, 3:究極キング期）を返す

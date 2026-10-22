@@ -194,11 +194,11 @@ export function KaijuBattle({
     setDamagePopup(null);
     setBattleLogs([
       `🔥 ${p1Stats.displayName} (Lv.${p1Stats.level}) VS ${p2Stats.displayName} (Lv.${p2Stats.level})！`,
-      '👦 1Pの ターン！ わざ・かいふく・ためる を えらんでね！',
+      '👦 1P（じょう）の ターン！ わざ・かいふく・ためる を えらんでね！',
     ]);
     setPhase('battle');
     speakJapanese(
-      `ブンブン！バトルスタート！${p1Stats.displayName} たい パパの ${p2Stats.displayName}！1Pのターンだ！いくぞー！`,
+      `ブンブン！バトルスタート！じょうの ${p1Stats.displayName} たい パパの ${p2Stats.displayName}！じょうのターンだ！いくぞー！`,
       soundEnabled
     );
   };
@@ -249,7 +249,7 @@ export function KaijuBattle({
     const actorStats = isP1 ? p1Stats : p2Stats;
     const actorMp = isP1 ? p1Mp : p2Mp;
     const actorHp = isP1 ? p1Hp : p2Hp;
-    const actorTitle = isP1 ? '👦 1P' : '👨 2P(パパ)';
+    const actorTitle = isP1 ? '👦 1P(じょう)' : '👨 2P(パパ)';
 
     const HEAL_MP_COST = 15;
     if (actorMp < HEAL_MP_COST) {
@@ -303,7 +303,7 @@ export function KaijuBattle({
     const isP1 = actor === 1;
     const actorStats = isP1 ? p1Stats : p2Stats;
     const actorMp = isP1 ? p1Mp : p2Mp;
-    const actorTitle = isP1 ? '👦 1P' : '👨 2P(パパ)';
+    const actorTitle = isP1 ? '👦 1P(じょう)' : '👨 2P(パパ)';
 
     setIsAnimatingAction(true);
     playMpChargeSound();
@@ -352,7 +352,7 @@ export function KaijuBattle({
     const attackerMp = isP1 ? p1Mp : p2Mp;
     const defenderHp = isP1 ? p2Hp : p1Hp;
     const isCharged = isP1 ? p1Charged : p2Charged;
-    const actorTitle = isP1 ? '👦 1P' : '👨 2P(パパ)';
+    const actorTitle = isP1 ? '👦 1P(じょう)' : '👨 2P(パパ)';
 
     // MPチェック
     if (attackerMp < skill.mpCost) {
@@ -457,7 +457,7 @@ export function KaijuBattle({
           const winName = attackerStats.displayName;
           const winSpeech =
             actor === 1
-              ? `キターーー！1P、${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 50 をゲットしたよ！神ってるー！`
+              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 50 をゲットしたよ！神ってるー！`
               : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 50 をゲットしたよ！`;
           speakJapanese(winSpeech, soundEnabled);
         } else {
@@ -512,7 +512,7 @@ export function KaijuBattle({
                 <span>⚔️ ふたりで かいじゅうバトル！</span>
               </h2>
               <p className="text-xs sm:text-sm font-bold text-slate-300 mt-0.5">
-                1P（むすこ）と 2P（パパ）の かいじゅうを えらんで たいけつ しよう！
+                1P（じょう）と 2P（パパ）の かいじゅうを えらんで たいけつ しよう！
               </p>
             </div>
 
@@ -536,11 +536,11 @@ export function KaijuBattle({
 
           {/* 1P VS 2P 選択プレビューカード */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* 👦 1P（むすこ）怪獣選択 */}
+            {/* 👦 1P（じょう）怪獣選択 */}
             <div className="rounded-3xl bg-slate-900/95 border-2 border-amber-400/60 p-3.5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-xs sm:text-sm">
-                  👦 1P（むすこ）の かいじゅう
+                  👦 1P（じょう）の かいじゅう
                 </span>
                 <span className="text-xs font-black text-amber-300">
                   Lv.{p1Stats.level} / HP {p1Stats.maxHp}
@@ -794,7 +794,7 @@ export function KaijuBattle({
                 }`}
               >
                 <div className="flex items-center justify-between text-xs font-black text-amber-300 truncate">
-                  <span>👦 {p1Stats.displayName}</span>
+                  <span>👦 じょう：{p1Stats.displayName}</span>
                   <span className="text-yellow-300 text-[10px] shrink-0">Lv.{p1Stats.level}</span>
                 </div>
                 {/* HPバー */}
@@ -828,7 +828,7 @@ export function KaijuBattle({
                 }`}
               >
                 <div className="flex items-center justify-between text-xs font-black text-cyan-300 truncate">
-                  <span>👨 {p2Stats.displayName}</span>
+                  <span>👨 パパ：{p2Stats.displayName}</span>
                   <span className="text-yellow-300 text-[10px] shrink-0">Lv.{p2Stats.level}</span>
                 </div>
                 {/* HPバー */}
@@ -1011,7 +1011,7 @@ export function KaijuBattle({
                   }`}
                 >
                   {turn === 1
-                    ? `👦 1P（${p1Stats.displayName}）のターン！`
+                    ? `👦 1P じょう（${p1Stats.displayName}）のターン！`
                     : `👨 2P パパ（${p2Stats.displayName}）のターン！`}
                 </span>
 
@@ -1135,7 +1135,7 @@ export function KaijuBattle({
           <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-400 text-slate-950 font-black text-base sm:text-lg shadow-lg">
             <Trophy className="w-6 h-6" />
             <span>
-              {winner === 1 ? '🎉 1P（むすこ）の だいしょうり！！' : '👏 2P（パパ）の しょうり！！'}
+              {winner === 1 ? '🎉 1P（じょう）の だいしょうり！！' : '👏 2P（パパ）の しょうり！！'}
             </span>
           </div>
 

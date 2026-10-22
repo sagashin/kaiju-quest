@@ -278,7 +278,7 @@ export default function KaijuQuestApp() {
     } else if (tab === 'battle') {
       playBeatboxIntroSound();
       speakJapanese(
-        'ふたりで かいじゅうバトル！むすこくんと パパで たいけつだ！レッツゴー！',
+        'ふたりで かいじゅうバトル！じょうくんと パパで たいけつだ！レッツゴー！',
         soundEnabled
       );
     }
@@ -883,7 +883,7 @@ export default function KaijuQuestApp() {
                       }`}
                     >
                       <span className="text-xl">🦖</span>
-                      <span>かいじゅう (24種)</span>
+                      <span>かいじゅう (28種)</span>
                     </button>
 
                     <button
@@ -1128,7 +1128,7 @@ export default function KaijuQuestApp() {
                 />
               </div>
 
-              {/* カテゴリ切り替えボタン（すべて 60種 / かいじゅう 24種 / ほんもの昆虫 36種） */}
+              {/* カテゴリ切り替えボタン（すべて 64種 / かいじゅう 28種 / ほんもの昆虫 36種） */}
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
@@ -1142,7 +1142,7 @@ export default function KaijuQuestApp() {
                       : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                   }`}
                 >
-                  <span>🌟 すべて (60)</span>
+                  <span>🌟 すべて (64)</span>
                 </button>
                 <button
                   type="button"
@@ -1156,7 +1156,7 @@ export default function KaijuQuestApp() {
                       : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                   }`}
                 >
-                  <span>🦖 かいじゅう (24)</span>
+                  <span>🦖 かいじゅう (28)</span>
                 </button>
                 <button
                   type="button"
@@ -1337,7 +1337,7 @@ export default function KaijuQuestApp() {
         )}
 
         {/* ============================================================
-            TAB 4: ⚔️ バトルタブ（パパ vs むすこ 2P対戦モード）
+            TAB 4: ⚔️ バトルタブ（パパ vs じょう 2P対戦モード）
            ============================================================ */}
         {activeTab === 'battle' && (
           <KaijuBattle
