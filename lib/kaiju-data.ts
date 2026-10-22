@@ -41,6 +41,7 @@ export interface QuestItem {
   emoji: string;
   title: string;
   shortSpeechName: string;
+  timeOfDay: 'morning' | 'night';
   cardBg: string;
   borderAccent: string;
   iconBg: string;
@@ -52,6 +53,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '☀️',
     title: 'あさ おきる',
     shortSpeechName: 'あさ おきる',
+    timeOfDay: 'morning',
     cardBg: 'from-yellow-400/25 to-amber-500/15',
     borderAccent: 'border-yellow-400/60',
     iconBg: 'bg-yellow-400/30',
@@ -61,6 +63,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🥛',
     title: 'あさ ぎゅうにゅうを のむ',
     shortSpeechName: 'あさの ぎゅうにゅう',
+    timeOfDay: 'morning',
     cardBg: 'from-sky-400/25 to-blue-500/15',
     borderAccent: 'border-sky-300/60',
     iconBg: 'bg-sky-400/30',
@@ -70,6 +73,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🍙',
     title: 'あさごはんを たべる',
     shortSpeechName: 'あさごはん',
+    timeOfDay: 'morning',
     cardBg: 'from-orange-500/25 to-amber-500/15',
     borderAccent: 'border-orange-400/60',
     iconBg: 'bg-orange-500/30',
@@ -79,6 +83,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🪥',
     title: 'あさはみがきを する',
     shortSpeechName: 'あさはみがき',
+    timeOfDay: 'morning',
     cardBg: 'from-cyan-500/25 to-sky-500/15',
     borderAccent: 'border-cyan-400/60',
     iconBg: 'bg-cyan-500/30',
@@ -88,6 +93,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🚽',
     title: 'トイレに いく',
     shortSpeechName: 'トイレ',
+    timeOfDay: 'morning',
     cardBg: 'from-rose-500/25 to-pink-500/15',
     borderAccent: 'border-rose-400/60',
     iconBg: 'bg-rose-500/30',
@@ -97,6 +103,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '👟',
     title: 'くつを そろえる',
     shortSpeechName: 'くつそろえ',
+    timeOfDay: 'morning',
     cardBg: 'from-emerald-500/25 to-teal-500/15',
     borderAccent: 'border-emerald-400/60',
     iconBg: 'bg-emerald-500/30',
@@ -106,6 +113,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🎒',
     title: 'ほいくえんに いく',
     shortSpeechName: 'ほいくえんに いく',
+    timeOfDay: 'morning',
     cardBg: 'from-lime-500/25 to-green-500/15',
     borderAccent: 'border-lime-400/60',
     iconBg: 'bg-lime-500/30',
@@ -115,6 +123,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🏠',
     title: 'ほいくえんから かえる',
     shortSpeechName: 'ほいくえんから かえる',
+    timeOfDay: 'night',
     cardBg: 'from-teal-500/25 to-cyan-500/15',
     borderAccent: 'border-teal-400/60',
     iconBg: 'bg-teal-500/30',
@@ -124,6 +133,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '📦',
     title: 'おもちゃの おかたづけ',
     shortSpeechName: 'おもちゃの おかたづけ',
+    timeOfDay: 'night',
     cardBg: 'from-amber-500/25 to-yellow-500/15',
     borderAccent: 'border-amber-400/60',
     iconBg: 'bg-amber-500/30',
@@ -133,6 +143,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🍛',
     title: 'よるごはんを たべる',
     shortSpeechName: 'よるごはん',
+    timeOfDay: 'night',
     cardBg: 'from-orange-500/25 to-rose-500/15',
     borderAccent: 'border-orange-400/60',
     iconBg: 'bg-orange-500/30',
@@ -142,6 +153,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🛁',
     title: 'おふろに はいる',
     shortSpeechName: 'おふろ',
+    timeOfDay: 'night',
     cardBg: 'from-blue-500/25 to-cyan-500/15',
     borderAccent: 'border-blue-400/60',
     iconBg: 'bg-blue-500/30',
@@ -151,6 +163,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🪥',
     title: 'よるはみがきを する',
     shortSpeechName: 'よるはみがき',
+    timeOfDay: 'night',
     cardBg: 'from-purple-500/25 to-indigo-500/15',
     borderAccent: 'border-purple-400/60',
     iconBg: 'bg-purple-500/30',
@@ -160,6 +173,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '👕',
     title: 'パジャマに きがえる',
     shortSpeechName: 'お着替え',
+    timeOfDay: 'night',
     cardBg: 'from-indigo-500/25 to-blue-500/15',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-500/30',
@@ -169,6 +183,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🚽',
     title: 'ねるまえ トイレに いく',
     shortSpeechName: 'ねるまえの トイレ',
+    timeOfDay: 'night',
     cardBg: 'from-indigo-600/30 to-purple-800/25',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-600/30',
@@ -178,6 +193,7 @@ export const QUEST_LIST: QuestItem[] = [
     emoji: '🛌',
     title: 'お布団で ねる',
     shortSpeechName: 'おやすみ',
+    timeOfDay: 'night',
     cardBg: 'from-slate-700/40 to-indigo-900/30',
     borderAccent: 'border-indigo-400/60',
     iconBg: 'bg-indigo-600/30',
@@ -1763,3 +1779,210 @@ export function getElementAdvantage(
 }
 
 
+
+export interface HeroRankInfo {
+  title: string;
+  badge: string;
+  nextHint: string;
+}
+
+/**
+ * 勇者称号判定ヘルパー
+ */
+export function getHeroRank(unlockedCount: number, totalLevelSum: number): HeroRankInfo {
+  const score = unlockedCount * 2 + totalLevelSum;
+  if (score < 10) {
+    return {
+      badge: '🌱',
+      title: 'みならいキッズ',
+      nextHint: 'クエストをクリアして なかまを ふやそう！',
+    };
+  }
+  if (score < 25) {
+    return {
+      badge: '🪲',
+      title: 'むしとり＆かいじゅう名人',
+      nextHint: 'ずかんを もっと あつめよう！',
+    };
+  }
+  if (score < 50) {
+    return {
+      badge: '⚔️',
+      title: 'ベテランバトラー',
+      nextHint: 'レベルをあげて キングに しんかさせよう！',
+    };
+  }
+  if (score < 85) {
+    return {
+      badge: '🛡️',
+      title: 'ドラクエゆうしゃ',
+      nextHint: '大魔王ボスを たおそう！',
+    };
+  }
+  return {
+    badge: '👑',
+    title: 'でんせつの大勇者',
+    nextHint: 'すべての なかまと わざを きわめた 最強の勇者！',
+  };
+}
+
+export interface RaidBossData {
+  id: string;
+  name: string;
+  titleBadge: string;
+  element: ElementId;
+  type: KaijuTypeId;
+  kaijuId?: string;
+  level: number;
+  maxHp: number;
+  attack: number;
+  defense: number;
+  roar: string;
+  specialMove: string;
+  description: string;
+  rewardOrbs: number;
+  rewardExp: number;
+}
+
+/**
+ * 親子タッグで挑む「大魔王・巨大レイドボス」4体
+ */
+export const RAID_BOSS_LIST: RaidBossData[] = [
+  {
+    id: 'boss-zoma',
+    name: '大魔王デスカイザー',
+    titleBadge: '😈 こおりと あんこくの メカ大魔王',
+    element: 'water',
+    type: 'robot',
+    kaijuId: 'water-robot',
+    level: 3,
+    maxHp: 650,
+    attack: 48,
+    defense: 22,
+    roar: 'グオオオォォッ！！',
+    specialMove: 'あんこく ブリザードキャノン',
+    description: 'すべてを こおらせる 暗黒のメカ大魔王！パパと じょうの ちからを あわせて たおそう！',
+    rewardOrbs: 3,
+    rewardExp: 80,
+  },
+  {
+    id: 'boss-ghidorah',
+    name: '暗黒神竜キングドラゴ',
+    titleBadge: '🐉 いなずまの 宇宙三つ首神竜',
+    element: 'thunder',
+    type: 'dragon',
+    kaijuId: 'thunder-scouter-drago',
+    level: 6,
+    maxHp: 950,
+    attack: 68,
+    defense: 30,
+    roar: 'ビビビ・ギャオォォーン！！',
+    specialMove: 'ギガ・グラビティサンダー',
+    description: '宇宙から やってきた 黄金の 巨大イナズマドラゴン！合体必殺技で たちむかえ！',
+    rewardOrbs: 4,
+    rewardExp: 100,
+  },
+  {
+    id: 'boss-hercules',
+    name: '黄金巨神ギガヘラクレス',
+    titleBadge: '🪲 ジャングルを 統べる 巨大神昆虫',
+    element: 'fire',
+    type: 'dino',
+    kaijuId: 'insect-hercules',
+    level: 9,
+    maxHp: 1300,
+    attack: 88,
+    defense: 40,
+    roar: 'ブォォォン・ギガァァッ！！',
+    specialMove: 'ゴッド・ホーン・カタストロフ',
+    description: 'ジャングルの 奥地に 君臨する 巨大な黄金の守護神！キング形態に しんかして 挑もう！',
+    rewardOrbs: 5,
+    rewardExp: 120,
+  },
+  {
+    id: 'boss-metal',
+    name: 'プラチナ・メタルレックス',
+    titleBadge: '👑 ごほうび ざくざく！ 銀ピカ怪獣',
+    element: 'nature',
+    type: 'beast',
+    kaijuId: 'fire-super-tyranno',
+    level: 5,
+    maxHp: 500,
+    attack: 45,
+    defense: 55,
+    roar: 'キュピーン・ガオーッ！！',
+    specialMove: 'キラッと メタルボディプレス',
+    description: '倒すと けいけんち玉が 6こも もらえる 超ラッキーな 銀ピカ怪獣だ！',
+    rewardOrbs: 6,
+    rewardExp: 150,
+  },
+];
+
+export interface QuizQuestion {
+  id: string;
+  questionText: string;
+  speechQuestion: string;
+  correctKaiju: KaijuData;
+  choices: KaijuData[];
+  explanation: string;
+}
+
+/**
+ * 知育3択クイズ生成関数
+ */
+export function generateQuizQuestion(excludeIds: string[] = []): QuizQuestion {
+  const pool = KAIJU_LIST.filter((k) => !excludeIds.includes(k.id));
+  const candidatePool = pool.length >= 3 ? pool : KAIJU_LIST;
+
+  const correctIndex = Math.floor(Math.random() * candidatePool.length);
+  const correctKaiju = candidatePool[correctIndex];
+
+  // ダミー選択肢を2体選ぶ（できるだけ同じカテゴリから選ぶと楽しい）
+  const others = KAIJU_LIST.filter((k) => k.id !== correctKaiju.id);
+  const sameCategoryOthers = others.filter(
+    (k) => (k.category ?? 'kaiju') === (correctKaiju.category ?? 'kaiju')
+  );
+  const dummyPool = sameCategoryOthers.length >= 2 ? sameCategoryOthers : others;
+
+  const shuffledDummies = [...dummyPool].sort(() => Math.random() - 0.5).slice(0, 2);
+  const choices = [correctKaiju, ...shuffledDummies].sort(() => Math.random() - 0.5);
+
+  let questionText = '';
+  let speechQuestion = '';
+  let explanation = '';
+
+  if (correctKaiju.insectInfo) {
+    const info = correctKaiju.insectInfo;
+    const pattern = Math.floor(Math.random() * 3);
+    if (pattern === 0) {
+      questionText = `🎓 ヒミツクイズ！\n「${info.trivia}」\nこの こんちゅうは どれかな？`;
+      speechQuestion = `デデドン！もんだい！ ${info.trivia} この こんちゅうは どれかな？`;
+    } else if (pattern === 1) {
+      questionText = `🎓 いきものクイズ！\nすんでいる場所は「${info.habitat}」、おおきさは「${info.realSize}」！\n『${correctKaiju.titleBadge}』とよばれる こんちゅうは どれかな？`;
+      speechQuestion = `デデドン！もんだい！ すんでいるばしょは ${info.habitat}、おおきさは ${info.realSize}！ ${correctKaiju.titleBadge} とよばれる こんちゅうは どれかな？`;
+    } else {
+      questionText = `🎓 ひっさつわざクイズ！\n『${correctKaiju.specialMove}』をつかう、「${correctKaiju.titleBadge}」は どれかな？`;
+      speechQuestion = `デデドン！もんだい！ ${correctKaiju.specialMove} をつかう、${correctKaiju.titleBadge} は どれかな？`;
+    }
+    explanation = `せいかいは『${correctKaiju.name}』！ ${info.trivia}`;
+  } else {
+    const pattern = Math.floor(Math.random() * 2);
+    if (pattern === 0) {
+      questionText = `🦖 かいじゅうクイズ！\n「${correctKaiju.description}」\nこの かいじゅうは どれかな？`;
+      speechQuestion = `デデドン！もんだい！ ${correctKaiju.description} この かいじゅうは どれかな？`;
+    } else {
+      questionText = `⚡ ひっさつわざクイズ！\n『${correctKaiju.titleBadge}』とよばれ、ひっさつわざ『${correctKaiju.specialMove}』を つかうのは どれかな？`;
+      speechQuestion = `デデドン！もんだい！ ${correctKaiju.titleBadge} とよばれ、ひっさつわざ ${correctKaiju.specialMove} を つかうのは どれかな？`;
+    }
+    explanation = `せいかいは『${correctKaiju.name}』！ ひっさつわざは ${correctKaiju.specialMove} だよ！`;
+  }
+
+  return {
+    id: `${correctKaiju.id}-${Date.now()}`,
+    questionText,
+    speechQuestion,
+    correctKaiju,
+    choices,
+    explanation,
+  };
+}

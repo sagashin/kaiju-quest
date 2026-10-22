@@ -815,3 +815,174 @@ export function playBattleVictorySound() {
   });
 }
 
+
+/**
+ * 6. クイズ正解音「ピンポン・ピンポーン♪」（A5→F5 ×2 の明るいチャイム音＋紙吹雪）
+ */
+export function playQuizCorrectSound() {
+  fireQuestConfetti();
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const notes = [
+    { freq: 880.0, delay: 0.0, dur: 0.14 },
+    { freq: 698.46, delay: 0.14, dur: 0.22 },
+    { freq: 880.0, delay: 0.38, dur: 0.14 },
+    { freq: 698.46, delay: 0.52, dur: 0.42 },
+    { freq: 1046.5, delay: 0.52, dur: 0.42 },
+  ];
+
+  notes.forEach(({ freq, delay, dur }) => {
+    const start = now + delay;
+    const osc = ctx.createOscillator();
+    const sub = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    sub.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, start);
+    sub.frequency.setValueAtTime(freq * 2, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.28, start + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    sub.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    sub.start(start);
+    osc.stop(start + dur + 0.02);
+    sub.stop(start + dur + 0.02);
+  });
+}
+
+/**
+ * 7. クイズ不正解時の優しいコミカルな「ブッブー♪」（4歳児が怖がらない柔らかい音）
+ */
+export function playQuizWrongSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const pulses = [
+    { freq: 240, delay: 0.0, dur: 0.14 },
+    { freq: 195, delay: 0.17, dur: 0.26 },
+  ];
+
+  pulses.forEach(({ freq, delay, dur }) => {
+    const start = now + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, start);
+    osc.frequency.linearRampToValueAtTime(freq * 0.92, start + dur);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.22, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  });
+}
+
+/**
+ * 8. 7つのほし玉が揃って神龍（シェンロン）を呼び出す神秘的な雷鳴＆東洋風ペンタトニック上昇音
+ */
+export function playShenronSummonSound() {
+  fireSummonConfetti(['#facc15', '#f97316', '#fde047', '#ffffff']);
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  const bufferSize = Math.floor(ctx.sampleRate * 1.2);
+  const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = noiseBuffer;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(420, now);
+  filter.frequency.exponentialRampToValueAtTime(90, now + 1.15);
+
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.32, now);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.18);
+
+  noise.connect(filter);
+  filter.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+  noise.start(now);
+  noise.stop(now + 1.2);
+
+  const scale = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51, 1567.98];
+  scale.forEach((freq, idx) => {
+    const start = now + 0.15 + idx * 0.085;
+    const dur = idx === scale.length - 1 ? 0.9 : 0.28;
+    const osc = ctx.createOscillator();
+    const sub = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    sub.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, start);
+    sub.frequency.setValueAtTime(freq * 0.5, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.24, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    sub.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(start);
+    sub.start(start);
+    osc.stop(start + dur + 0.02);
+    sub.stop(start + dur + 0.02);
+  });
+}
+
+/**
+ * 9. パパ＆じょうの「ふたりで合体必殺技！」超ド派手ダブルレーザー＋大爆発＋エアホーン音
+ */
+export function playTagUltimateSound() {
+  fireSummonConfetti(['#facc15', '#ef4444', '#38bdf8', '#a855f7', '#ffffff']);
+  playYoutuberAirhornSound();
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  [220, 330].forEach((startFreq) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(startFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(startFreq * 6, now + 0.45);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.48);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.5);
+  });
+
+  setTimeout(() => {
+    playBattleAttackSound(true);
+  }, 320);
+}
