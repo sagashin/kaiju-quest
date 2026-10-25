@@ -1181,7 +1181,7 @@ export default function KaijuQuestApp() {
                       }`}
                     >
                       <span className="text-xl">🦖</span>
-                      <span>かいじゅう (28種)</span>
+                      <span>かいじゅう ({KAIJU_LIST.filter((k) => (k.category || 'kaiju') === 'kaiju').length}種)</span>
                     </button>
 
                     <button
@@ -1440,7 +1440,7 @@ export default function KaijuQuestApp() {
                       : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                   }`}
                 >
-                  <span>🌟 すべて (64)</span>
+                  <span>🌟 すべて ({KAIJU_LIST.length})</span>
                 </button>
                 <button
                   type="button"
@@ -1454,7 +1454,7 @@ export default function KaijuQuestApp() {
                       : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                   }`}
                 >
-                  <span>🦖 かいじゅう (28)</span>
+                  <span>🦖 かいじゅう ({KAIJU_LIST.filter((k) => (k.category || 'kaiju') === 'kaiju').length})</span>
                 </button>
                 <button
                   type="button"
@@ -1468,7 +1468,7 @@ export default function KaijuQuestApp() {
                       : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                   }`}
                 >
-                  <span>🪲 こんちゅう (36)</span>
+                  <span>🪲 こんちゅう ({KAIJU_LIST.filter((k) => k.category === 'insect').length})</span>
                 </button>
               </div>
 
