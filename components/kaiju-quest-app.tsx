@@ -576,10 +576,17 @@ export default function KaijuQuestApp() {
 
     if (!isUnlocked) {
       playTapSound(380);
-      speakJapanese(
-        `おっと！まだみつかっていない かいじゅうだよ！${elMeta.label} と ${typeMeta.label} をえらんで しょうかんしてみよう！レッツゴー！`,
-        soundEnabled
-      );
+      if (kaiju.id.includes('-dq-')) {
+        speakJapanese(
+          `おっと！これは 伝説の大魔王だよ！バトル画面で たおすと、まれに おきあがって なかまに なるぞ！レッツゴー！`,
+          soundEnabled
+        );
+      } else {
+        speakJapanese(
+          `おっと！まだみつかっていない かいじゅうだよ！${elMeta.label} と ${typeMeta.label} をえらんで しょうかんしてみよう！レッツゴー！`,
+          soundEnabled
+        );
+      }
       return;
     }
 
@@ -593,17 +600,39 @@ export default function KaijuQuestApp() {
     );
   };
 
-  // バトル終了時のごほうび付与（VS対戦・親子タッグボス討伐対応）
+  // バトル終了時のごほうび付与（VS対戦・親子タッグボス討伐・大魔王スカウト対応）
   const handleBattleReward = (
     p1Id: string,
     p2Id?: string,
     rewardOrbs: number = 2,
     rewardExp: number = 30,
-    isBossWin: boolean = false
+    isBossWin: boolean = false,
+    recruitedBossKaijuId?: string
   ) => {
     setExpOrbs((prev) => prev + rewardOrbs);
     if (isBossWin) {
       setStarBalls((prev) => prev + 1);
+    }
+    if (recruitedBossKaijuId) {
+      setUnlockedKaijuIds((prev) =>
+        prev.includes(recruitedBossKaijuId) ? prev : [...prev, recruitedBossKaijuId]
+      );
+      setKaijuProgress((prev) => {
+        const existing = prev[recruitedBossKaijuId];
+        if (existing) {
+          return {
+            ...prev,
+            [recruitedBossKaijuId]: {
+              level: Math.min(MAX_KAIJU_LEVEL, existing.level + 1),
+              exp: existing.exp,
+            },
+          };
+        }
+        return {
+          ...prev,
+          [recruitedBossKaijuId]: { level: 3, exp: 0 },
+        };
+      });
     }
     addExpToKaiju(p1Id, rewardExp, { showToast: true });
     if (p2Id && p2Id !== p1Id) {

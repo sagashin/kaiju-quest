@@ -2909,6 +2909,303 @@ function BulbasaurSvg({ primary, secondary, accent, eyeColor, outline, silhouett
 }
 
 /* ==========================================================================
+   😈 ドラクエ風・伝説の4大魔王 (No.45〜48: りゅうおう・ハーゴン＆シドー・ダークドレアム・デスピサロ)
+   ========================================================================== */
+
+/** No.45 りゅうおう (紫の巨大悪魔竜、コウモリの大翼、黄金の2本角＆首輪、灼熱の業火) */
+function RyuoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const purpleScale = silhouette ? primary : '#7e22ce';
+  const darkPurple = silhouette ? secondary : '#4c1d95';
+  const wingMembrane = silhouette ? secondary : '#c026d3';
+  const goldTrim = silhouette ? secondary : '#facc15';
+  const bellyCream = silhouette ? secondary : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 背中に広がる巨大な悪魔コウモリ翼 ★ */}
+      <polygon points="108,132 16,45 48,96 20,126 62,135 45,165 104,155" fill={wingMembrane} />
+      <polygon points="152,132 244,45 212,96 240,126 198,135 215,165 156,155" fill={wingMembrane} />
+      <path d="M108 132 L16 45 L48 96 L20 126" fill="none" stroke={darkPurple} strokeWidth="5" strokeLinecap="round" />
+      <path d="M152 132 L244 45 L212 96 L240 126" fill="none" stroke={darkPurple} strokeWidth="5" strokeLinecap="round" />
+
+      {/* 太く長大な紫ドラゴンの尻尾＆トゲ */}
+      <path d="M90 185 Q28 205, 18 158 Q45 168, 95 168 Z" fill={purpleScale} />
+      <polygon points="22,158 10,145 28,148" fill={goldTrim} />
+
+      {/* 威風堂々たる竜王の巨体＆黄金の蛇腹お腹 */}
+      <ellipse cx="130" cy="168" rx="48" ry="44" fill={purpleScale} />
+      <ellipse cx="130" cy="172" rx="28" ry="32" fill={bellyCream} stroke="none" />
+      {!silhouette && (
+        <g stroke="#b45309" strokeWidth="2.5" fill="none">
+          <line x1="106" y1="156" x2="154" y2="156" />
+          <line x1="104" y1="170" x2="156" y2="170" />
+          <line x1="108" y1="184" x2="152" y2="184" />
+        </g>
+      )}
+
+      {/* 強靭な後ろ足と鋭い黄金のツメ */}
+      <rect x="82" y="194" width="26" height="30" rx="8" fill={darkPurple} />
+      <rect x="152" y="194" width="26" height="30" rx="8" fill={darkPurple} />
+      <polygon points="78,224 86,214 92,224" fill={goldTrim} />
+      <polygon points="92,224 100,214 106,224" fill={goldTrim} />
+      <polygon points="148,224 156,214 162,224" fill={goldTrim} />
+      <polygon points="162,224 170,214 176,224" fill={goldTrim} />
+
+      {/* 首元の黄金のトゲ付き魔王カラー（首輪） */}
+      <ellipse cx="130" cy="126" rx="34" ry="12" fill={goldTrim} />
+      <polygon points="98,126 84,118 96,118" fill="#ffffff" />
+      <polygon points="162,126 176,118 164,118" fill="#ffffff" />
+
+      {/* たくましい両腕 */}
+      <path d="M94 140 L64 158 L74 172 L102 154 Z" fill={purpleScale} />
+      <path d="M166 140 L196 158 L186 172 L158 154 Z" fill={purpleScale} />
+
+      {/* ★ 天を衝く2本の巨大な黄金の竜王角 ★ */}
+      <path d="M108 72 Q70 30, 52 14 Q84 36, 116 62 Z" fill={goldTrim} />
+      <path d="M152 72 Q190 30, 208 14 Q176 36, 144 62 Z" fill={goldTrim} />
+
+      {/* 竜王の威厳あるドラゴンヘッド */}
+      <ellipse cx="130" cy="86" rx="36" ry="30" fill={purpleScale} />
+      <ellipse cx="130" cy="100" rx="28" ry="16" fill={darkPurple} />
+
+      {/* 口から溢れ出す灼熱の煉獄火炎（ベギラゴン） */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="130" cy="112" r="10" fill="#ef4444" opacity="0.85" />
+          <circle cx="130" cy="112" r="6" fill="#fde047" />
+        </g>
+      )}
+
+      {/* 紅蓮に輝く魔王の眼光＆鋭い牙 */}
+      {!silhouette && (
+        <g>
+          <polygon points="104,76 122,82 110,90" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="114" cy="82" r="2.5" fill="#fef08a" stroke="none" />
+          <polygon points="156,76 138,82 150,90" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="146" cy="82" r="2.5" fill="#fef08a" stroke="none" />
+          <polygon points="114,102 118,114 122,102" fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+          <polygon points="138,102 142,114 146,102" fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.46 ハーゴン＆シドー (6本腕の蒼き破壊神シドー、ドクロ冠、大蛇の尾、邪神官の魔杖) */
+function HargonSidohSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const cyanBody = silhouette ? primary : '#0284c7';
+  const deepBlue = silhouette ? secondary : '#1e3a8a';
+  const hornGold = silhouette ? secondary : '#fde047';
+  const robePurple = silhouette ? secondary : '#7e22ce';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 背中の邪神ウイング */}
+      <polygon points="105,120 28,68 48,118 24,142 98,145" fill={deepBlue} />
+      <polygon points="155,120 232,68 212,118 236,142 162,145" fill={deepBlue} />
+
+      {/* とぐろを巻く長い大蛇の尻尾 */}
+      <path d="M95 190 Q28 210, 22 168 Q40 148, 62 172 Q82 182, 102 178 Z" fill={cyanBody} />
+
+      {/* ★ 破壊神シドー象徴の「6本の剛腕（左右3対）」 ★ */}
+      <path d="M96 122 L46 102 L54 118 L92 134 Z" fill={cyanBody} />
+      <path d="M92 144 L42 142 L48 158 L92 156 Z" fill={cyanBody} />
+      <path d="M96 164 L56 176 L64 190 L100 176 Z" fill={cyanBody} />
+
+      <path d="M164 122 L214 102 L206 118 L168 134 Z" fill={cyanBody} />
+      <path d="M168 144 L218 142 L212 158 L168 156 Z" fill={cyanBody} />
+      <path d="M164 164 L204 176 L196 190 L160 176 Z" fill={cyanBody} />
+
+      {/* 右手に握る大神官ハーゴンの邪神の杖 */}
+      <line x1="214" y1="62" x2="202" y2="195" stroke={hornGold} strokeWidth="5" strokeLinecap="round" />
+      <circle cx="214" cy="58" r="11" fill={robePurple} stroke={hornGold} strokeWidth="3" />
+
+      {/* 筋骨隆々の蒼き邪神の胴体 */}
+      <ellipse cx="130" cy="164" rx="46" ry="42" fill={cyanBody} />
+      <ellipse cx="130" cy="168" rx="28" ry="28" fill={deepBlue} stroke="none" />
+
+      {/* 強靭な両脚 */}
+      <rect x="86" y="194" width="26" height="28" rx="8" fill={cyanBody} />
+      <rect x="148" y="194" width="26" height="28" rx="8" fill={cyanBody} />
+
+      {/* ★ 湾曲する2本の巨大な悪魔角 ＆ 頭上のドクロ紋章 ★ */}
+      <path d="M104 72 Q58 28, 44 58 Q68 58, 108 82 Z" fill={hornGold} />
+      <path d="M156 72 Q202 28, 216 58 Q192 58, 152 82 Z" fill={hornGold} />
+
+      {/* 破壊神の猛々しい頭部 */}
+      <ellipse cx="130" cy="86" rx="36" ry="30" fill={cyanBody} />
+      <circle cx="130" cy="62" r="9" fill="#f8fafc" stroke="#0f172a" strokeWidth="2" />
+
+      {/* 邪悪に光る黄金の瞳と大口の牙 */}
+      {!silhouette && (
+        <g>
+          <polygon points="106,78 122,84 110,92" fill="#facc15" stroke="#0f172a" strokeWidth="2" />
+          <polygon points="154,78 138,84 150,92" fill="#facc15" stroke="#0f172a" strokeWidth="2" />
+          <rect x="112" y="98" width="36" height="12" rx="4" fill="#991b1b" stroke="#0f172a" strokeWidth="2" />
+          <polygon points="116,98 120,106 124,98" fill="#ffffff" stroke="none" />
+          <polygon points="136,98 140,106 144,98" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.47 ダークドレアム (二刀流の巨大魔神剣、4本角の魔神兜、真紅のマント、筋骨隆々の破壊神) */
+function DarkDreambSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const armorPurple = silhouette ? primary : '#4338ca';
+  const capeRed = silhouette ? secondary : '#dc2626';
+  const goldArmor = silhouette ? secondary : '#facc15';
+  const bladeSilver = silhouette ? secondary : '#e2e8f0';
+  const bladeGlow = silhouette ? secondary : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 背後に大きくひるがえる真紅の魔王マント ★ */}
+      <path
+        d="M84 102 C38 125, 26 185, 42 220 C85 208, 175 208, 218 220 C234 185, 222 125, 176 102 Z"
+        fill={capeRed}
+      />
+
+      {/* ★ 左右に構えた超巨大な「二刀流の魔神剣 (DUAL DEMON GOD SWORDS)」 ★ */}
+      {/* 左の大剣 */}
+      <g>
+        <polygon points="36,152 10,24 34,14 54,144" fill={bladeSilver} />
+        {!silhouette && (
+          <line x1="24" y1="22" x2="44" y2="144" stroke={bladeGlow} strokeWidth="3" />
+        )}
+        <rect x="26" y="144" width="36" height="10" rx="3" transform="rotate(-12 44 149)" fill={goldArmor} />
+        <rect x="38" y="154" width="12" height="24" rx="3" transform="rotate(-12 44 166)" fill="#78350f" />
+      </g>
+      {/* 右の大剣 */}
+      <g>
+        <polygon points="224,152 250,24 226,14 206,144" fill={bladeSilver} />
+        {!silhouette && (
+          <line x1="236" y1="22" x2="216" y2="144" stroke={bladeGlow} strokeWidth="3" />
+        )}
+        <rect x="198" y="144" width="36" height="10" rx="3" transform="rotate(12 216 149)" fill={goldArmor} />
+        <rect x="210" y="154" width="12" height="24" rx="3" transform="rotate(12 216 166)" fill="#78350f" />
+      </g>
+
+      {/* 鋼の重厚な両脚ブーツ */}
+      <rect x="92" y="186" width="28" height="36" rx="6" fill={armorPurple} />
+      <rect x="140" y="186" width="28" height="36" rx="6" fill={armorPurple} />
+      <rect x="90" y="198" width="32" height="10" rx="3" fill={goldArmor} />
+      <rect x="138" y="198" width="32" height="10" rx="3" fill={goldArmor} />
+
+      {/* 鍛え抜かれた魔神の紫ボディ＆黄金のベルト・胸当て */}
+      <polygon points="86,108 174,108 160,188 100,188" fill={armorPurple} />
+      {/* 胸のクロス黄金アーマー */}
+      <polygon points="92,110 168,110 138,152 122,152" fill={goldArmor} />
+      <circle cx="130" cy="132" r="10" fill={capeRed} stroke="#ffffff" strokeWidth="2" />
+      <rect x="96" y="174" width="68" height="14" rx="4" fill={goldArmor} />
+
+      {/* 黄金のトゲ付き巨大肩アーマー（ショルダーパッド） */}
+      <ellipse cx="80" cy="116" rx="24" ry="16" fill={goldArmor} />
+      <polygon points="62,108 48,92 72,102" fill="#ffffff" />
+      <ellipse cx="180" cy="116" rx="24" ry="16" fill={goldArmor} />
+      <polygon points="198,108 212,92 188,102" fill="#ffffff" />
+
+      {/* 剣を握る剛腕 */}
+      <path d="M72 126 L44 152 L56 164 L86 140 Z" fill={armorPurple} />
+      <path d="M188 126 L216 152 L204 164 L174 140 Z" fill={armorPurple} />
+
+      {/* ★ ダークドレアム象徴の「4本角の黄金バイキング魔神兜」 ★ */}
+      <path d="M102 68 Q62 32, 54 12 Q82 32, 110 58 Z" fill={goldArmor} />
+      <path d="M98 80 Q58 64, 48 48 Q76 58, 104 74 Z" fill="#ffffff" />
+      <path d="M158 68 Q198 32, 206 12 Q178 32, 150 58 Z" fill={goldArmor} />
+      <path d="M162 80 Q202 64, 212 48 Q184 58, 156 74 Z" fill="#ffffff" />
+
+      {/* 兜本体＆フェイスマスク */}
+      <ellipse cx="130" cy="76" rx="32" ry="28" fill={armorPurple} />
+      <polygon points="102,68 158,68 150,52 110,52" fill={goldArmor} />
+      {/* 顎の白い髭・装甲 */}
+      <polygon points="112,92 148,92 138,112 122,112" fill={bladeSilver} />
+
+      {/* 兜の奥で眼光鋭く光る赤い双眸 */}
+      {!silhouette && (
+        <g>
+          <polygon points="108,76 124,80 112,86" fill="#ef4444" stroke="#fef08a" strokeWidth="1.5" />
+          <polygon points="152,76 136,80 148,86" fill="#ef4444" stroke="#fef08a" strokeWidth="1.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.48 デスピサロ (エメラルドグリーンの4本腕の巨獣、トゲ甲殻、腹部の第二の魔眼フェイス) */
+function DespisaroSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const tealBody = silhouette ? primary : '#0d9488';
+  const darkTeal = silhouette ? secondary : '#115e59';
+  const hornYellow = silhouette ? secondary : '#fde047';
+  const bellyRed = silhouette ? secondary : '#e11d48';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ デスピサロ特有の「4本の巨大な剛腕」＆鋭い白爪 ★ */}
+      {/* 上段の巨大腕 */}
+      <path d="M88 112 L28 78 L18 98 L44 118 L86 132 Z" fill={tealBody} />
+      <polygon points="18,98 8,92 14,106" fill="#ffffff" />
+      <polygon points="24,106 14,104 20,114" fill="#ffffff" />
+
+      <path d="M172 112 L232 78 L242 98 L216 118 L174 132 Z" fill={tealBody} />
+      <polygon points="242,98 252,92 246,106" fill="#ffffff" />
+      <polygon points="236,106 246,104 240,114" fill="#ffffff" />
+
+      {/* 下段の剛腕 */}
+      <path d="M88 148 L36 154 L42 172 L92 166 Z" fill={darkTeal} />
+      <polygon points="36,154 24,152 32,164" fill="#ffffff" />
+      <path d="M172 148 L224 154 L218 172 L168 166 Z" fill={darkTeal} />
+      <polygon points="224,154 236,152 228,164" fill="#ffffff" />
+
+      {/* 両肩の巨大なトゲ付き甲殻アーマー */}
+      <ellipse cx="82" cy="108" rx="26" ry="18" fill={darkTeal} />
+      <polygon points="68,94 56,72 80,90" fill={hornYellow} />
+      <ellipse cx="178" cy="108" rx="26" ry="18" fill={darkTeal} />
+      <polygon points="192,94 204,72 180,90" fill={hornYellow} />
+
+      {/* 圧倒的な巨躯の胴体 */}
+      <ellipse cx="130" cy="158" rx="50" ry="46" fill={tealBody} />
+
+      {/* ★ 胸部・腹部に浮かび上がる不気味な「第二の魔眼フェイス」 ★ */}
+      <ellipse cx="130" cy="162" rx="34" ry="26" fill={darkTeal} />
+      {!silhouette && (
+        <g>
+          <polygon points="108,150 122,156 112,162" fill="#facc15" stroke="#0f172a" strokeWidth="1.5" />
+          <polygon points="152,150 138,156 148,162" fill="#facc15" stroke="#0f172a" strokeWidth="1.5" />
+          <path d="M110 172 Q130 182, 150 172" fill="none" stroke={bellyRed} strokeWidth="4" strokeLinecap="round" />
+          <polygon points="116,172 120,180 124,172" fill="#ffffff" stroke="none" />
+          <polygon points="136,172 140,180 144,172" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+
+      {/* 強靭な脚と巨爪 */}
+      <rect x="82" y="192" width="28" height="30" rx="8" fill={tealBody} />
+      <rect x="150" y="192" width="28" height="30" rx="8" fill={tealBody} />
+      <polygon points="78,222 86,212 92,222" fill="#ffffff" />
+      <polygon points="92,222 100,212 106,222" fill="#ffffff" />
+      <polygon points="146,222 154,212 160,222" fill="#ffffff" />
+      <polygon points="160,222 168,212 174,222" fill="#ffffff" />
+
+      {/* ★ 頭上の長大な2本の大角＆トゲ冠 ★ */}
+      <path d="M106 68 Q68 24, 52 16 Q82 40, 114 62 Z" fill={hornYellow} />
+      <path d="M154 68 Q192 24, 208 16 Q178 40, 146 62 Z" fill={hornYellow} />
+      <polygon points="130,38 122,60 138,60" fill={hornYellow} />
+
+      {/* 魔族の王の頭部 */}
+      <ellipse cx="130" cy="80" rx="30" ry="24" fill={tealBody} />
+
+      {/* 紅く燃える魔眼 */}
+      {!silhouette && (
+        <g>
+          <polygon points="110,74 124,78 114,84" fill="#ef4444" stroke="#0f172a" strokeWidth="1.5" />
+          <polygon points="150,74 136,78 146,84" fill="#ef4444" stroke="#0f172a" strokeWidth="1.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -3647,6 +3944,16 @@ function KaijuSpecificSvgDispatcher({
       return <EeveeSvg {...partProps} />;
     case 'nature-pkmn-bulbasaur':
       return <BulbasaurSvg {...partProps} />;
+
+    // 😈 ドラクエ風・伝説の4大魔王
+    case 'fire-dq-ryuo':
+      return <RyuoSvg {...partProps} />;
+    case 'water-dq-hargon':
+      return <HargonSidohSvg {...partProps} />;
+    case 'thunder-dq-dreamb':
+      return <DarkDreambSvg {...partProps} />;
+    case 'nature-dq-pisaro':
+      return <DespisaroSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;

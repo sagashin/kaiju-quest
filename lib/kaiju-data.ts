@@ -984,6 +984,62 @@ const RAW_KAIJU_LIST: KaijuData[] = [
   }),
 
   // =========================================================================
+  // 😈 ドラクエ風・伝説の4大魔王（ボス討伐でまれに仲間になる！ No.45〜No.48）
+  // =========================================================================
+  createCustomKaiju({
+    id: 'fire-dq-ryuo',
+    dexNumber: 45,
+    element: 'fire',
+    type: 'dragon',
+    name: 'りゅうおう',
+    roar: 'フォッフォッフォ！世界の半分を やろう！',
+    specialMove: 'しゃくねつの 業火・ベギラゴン',
+    stars: 5,
+    titleBadge: '世界の半分を統べる 悪の化身',
+    description: '紫の 魔道士から 巨大な 紫の ドラゴンへと 変身する 伝説の大魔王！キング形態に しんかすると 闇の覇者・真りゅうおうとなり 灼熱の 煉獄炎を 吐きだすぞ！',
+    stageNames: ['りゅうおう(魔道士)', '竜王(ドラゴン)', '闇の覇者・真りゅうおう'],
+  }),
+  createCustomKaiju({
+    id: 'water-dq-hargon',
+    dexNumber: 46,
+    element: 'water',
+    type: 'dino',
+    name: 'ハーゴン＆シドー',
+    roar: 'グオォォォッ！すべてを 破壊する！！',
+    specialMove: '絶対零度・邪神イオナズン',
+    stars: 5,
+    titleBadge: '邪神官が呼び出しし 破壊の邪神',
+    description: '邪神の 杖を あやつる 大神官ハーゴンと、6本腕をもつ 破壊神シドーの 最強大魔王タッグ！キング形態に しんかすると 邪神の 真の力が 解き放たれるぞ！',
+    stageNames: ['大神官ハーゴン', '破壊神シドー', '邪神ハーゴン＆真シドー'],
+  }),
+  createCustomKaiju({
+    id: 'thunder-dq-dreamb',
+    dexNumber: 47,
+    element: 'thunder',
+    type: 'robot',
+    name: 'ダークドレアム',
+    roar: 'ワタシハ 破壊ト 殺リクノ 神ナリ！！',
+    specialMove: 'ギガスロー・グランドクロス',
+    stars: 5,
+    titleBadge: '二刀流の魔剣をもつ 破壊と殺りくの神',
+    description: '巨大な 二刀流の 魔神剣を ふるい、黄金の 雷で すべてを なぎ払う 伝説の魔神！キング形態に しんかすると どんな 大魔王をも 圧倒する 究極の力を 得るぞ！',
+    stageNames: ['プチドレアム', '魔神ダークドレアム', '破壊神・真ダークドレアム'],
+  }),
+  createCustomKaiju({
+    id: 'nature-dq-pisaro',
+    dexNumber: 48,
+    element: 'nature',
+    type: 'beast',
+    name: 'デスピサロ',
+    roar: 'グガァァァッ！進化の秘法よ！！',
+    specialMove: 'いてつく波動・暗黒マダンテ',
+    stars: 5,
+    titleBadge: '進化の秘法で 覚醒せし 魔族の王',
+    description: '黄金の うでわで「進化の秘法」を つかい、4本の 剛腕をもつ 巨大魔獣へと 変貌した 魔族の王！キング形態に しんかすると 神をも 超える 究極進化をとげるぞ！',
+    stageNames: ['魔剣士ピサロ', 'デスピサロ', '究極進化・真デスピサロ'],
+  }),
+
+  // =========================================================================
   // 🪲 実在こんちゅう大図鑑 No.25〜No.60（全36種）
   // =========================================================================
 
@@ -1948,13 +2004,17 @@ export function findKaijuForSummon(
     return fallback[0] ?? KAIJU_LIST[0];
   }
 
-  const lockedCandidates = candidates.filter((k) => !unlockedIds.includes(k.id));
-  if (lockedCandidates.length > 0) {
-    return lockedCandidates[0];
+  const normalLocked = candidates.filter(
+    (k) => !unlockedIds.includes(k.id) && !k.id.includes('-dq-')
+  );
+  if (normalLocked.length > 0) {
+    return normalLocked[0];
   }
 
-  const randomIndex = Math.floor(Math.random() * candidates.length);
-  return candidates[randomIndex];
+  const normalPool = candidates.filter((k) => !k.id.includes('-dq-'));
+  const poolToPick = normalPool.length > 0 ? normalPool : candidates;
+  const randomIndex = Math.floor(Math.random() * poolToPick.length);
+  return poolToPick[randomIndex];
 }
 
 export function getElementMeta(element: ElementId): ElementOption {
@@ -2057,74 +2117,74 @@ export interface RaidBossData {
 }
 
 /**
- * 親子タッグで挑む「大魔王・巨大レイドボス」4体
+ * 親子タッグで挑む「ドラクエ風・伝説の4大魔王ボス」（倒すとまれに起き上がって仲間になる！）
  */
 export const RAID_BOSS_LIST: RaidBossData[] = [
   {
-    id: 'boss-zoma',
-    name: '大魔王デスカイザー',
-    titleBadge: '😈 こおりと あんこくの メカ大魔王',
-    element: 'water',
-    type: 'robot',
-    kaijuId: 'water-robot',
+    id: 'boss-ryuo',
+    name: 'りゅうおう',
+    titleBadge: '😈 世界の半分を統べる 悪の化身',
+    element: 'fire',
+    type: 'dragon',
+    kaijuId: 'fire-dq-ryuo',
     level: 3,
     maxHp: 650,
     attack: 48,
     defense: 22,
-    roar: 'グオオオォォッ！！',
-    specialMove: 'あんこく ブリザードキャノン',
-    description: 'すべてを こおらせる 暗黒のメカ大魔王！パパと じょうの ちからを あわせて たおそう！',
+    roar: 'フォッフォッフォ！世界の半分を やろう！',
+    specialMove: 'しゃくねつの 業火・ベギラゴン',
+    description: '紫の魔道士から 巨大ドラゴンへ 変身する 伝説の大魔王！倒すと まれに 仲間になるぞ！',
     rewardOrbs: 3,
     rewardExp: 80,
   },
   {
-    id: 'boss-ghidorah',
-    name: '暗黒神竜キングドラゴ',
-    titleBadge: '🐉 いなずまの 宇宙三つ首神竜',
-    element: 'thunder',
-    type: 'dragon',
-    kaijuId: 'thunder-scouter-drago',
-    level: 6,
-    maxHp: 950,
-    attack: 68,
-    defense: 30,
-    roar: 'ビビビ・ギャオォォーン！！',
-    specialMove: 'ギガ・グラビティサンダー',
-    description: '宇宙から やってきた 黄金の 巨大イナズマドラゴン！合体必殺技で たちむかえ！',
+    id: 'boss-hargon',
+    name: 'ハーゴン＆シドー',
+    titleBadge: '😈 邪神官が呼び出しし 破壊神シドー',
+    element: 'water',
+    type: 'dino',
+    kaijuId: 'water-dq-hargon',
+    level: 5,
+    maxHp: 850,
+    attack: 62,
+    defense: 28,
+    roar: 'グオォォォッ！すべてを 破壊する！！',
+    specialMove: '絶対零度・邪神イオナズン',
+    description: '大神官ハーゴンと 6本腕の破壊神シドー！倒すと まれに 起き上がって 仲間になるぞ！',
     rewardOrbs: 4,
     rewardExp: 100,
   },
   {
-    id: 'boss-hercules',
-    name: '黄金巨神ギガヘラクレス',
-    titleBadge: '🪲 ジャングルを 統べる 巨大神昆虫',
-    element: 'fire',
-    type: 'dino',
-    kaijuId: 'insect-hercules',
-    level: 9,
-    maxHp: 1300,
-    attack: 88,
-    defense: 40,
-    roar: 'ブォォォン・ギガァァッ！！',
-    specialMove: 'ゴッド・ホーン・カタストロフ',
-    description: 'ジャングルの 奥地に 君臨する 巨大な黄金の守護神！キング形態に しんかして 挑もう！',
+    id: 'boss-pisaro',
+    name: 'デスピサロ',
+    titleBadge: '😈 進化の秘法で 覚醒せし 魔族の王',
+    element: 'nature',
+    type: 'beast',
+    kaijuId: 'nature-dq-pisaro',
+    level: 7,
+    maxHp: 1100,
+    attack: 76,
+    defense: 35,
+    roar: 'グガァァァッ！進化の秘法よ！！',
+    specialMove: 'いてつく波動・暗黒マダンテ',
+    description: '進化の秘法で 4本腕の 究極形態へ 変貌した 魔族の王！倒すと まれに 仲間になるぞ！',
     rewardOrbs: 5,
     rewardExp: 120,
   },
   {
-    id: 'boss-metal',
-    name: 'プラチナ・メタルレックス',
-    titleBadge: '👑 ごほうび ざくざく！ 銀ピカ怪獣',
-    element: 'nature',
-    type: 'beast',
-    kaijuId: 'fire-super-tyranno',
-    level: 5,
-    maxHp: 500,
-    attack: 45,
-    defense: 55,
-    roar: 'キュピーン・ガオーッ！！',
-    specialMove: 'キラッと メタルボディプレス',
-    description: '倒すと けいけんち玉が 6こも もらえる 超ラッキーな 銀ピカ怪獣だ！',
+    id: 'boss-dreamb',
+    name: 'ダークドレアム',
+    titleBadge: '👑 二刀流の魔剣をもつ 破壊と殺りくの神',
+    element: 'thunder',
+    type: 'robot',
+    kaijuId: 'thunder-dq-dreamb',
+    level: 9,
+    maxHp: 1350,
+    attack: 90,
+    defense: 42,
+    roar: 'ワタシハ 破壊ト 殺リクノ 神ナリ！！',
+    specialMove: 'ギガスロー・グランドクロス',
+    description: '巨大な二刀流の魔神剣で すべてを なぎ払う 裏ボス大魔王！倒すと まれに 仲間になるぞ！',
     rewardOrbs: 6,
     rewardExp: 150,
   },

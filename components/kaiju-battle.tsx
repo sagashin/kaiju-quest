@@ -54,7 +54,8 @@ interface KaijuBattleProps {
     p2KaijuId?: string,
     rewardOrbs?: number,
     rewardExp?: number,
-    isBossWin?: boolean
+    isBossWin?: boolean,
+    recruitedBossKaijuId?: string
   ) => void;
 }
 
@@ -71,16 +72,22 @@ export function KaijuBattle({
   soundEnabled,
   onBattleComplete,
 }: KaijuBattleProps) {
-  // 1P・2Pが選べる怪獣リスト（解放済みの怪獣のみ）
+  // 1Pが選べる怪獣リスト（解放済みの怪獣のみ）
   const p1AvailableList =
     unlockedKaijuIds.length > 0
       ? KAIJU_LIST.filter((k) => unlockedKaijuIds.includes(k.id))
       : KAIJU_LIST.slice(0, 4);
 
-  const p2AvailableList = p1AvailableList;
+  // 2P（パパ）は解放済み怪獣 ＋ ドラクエ風4大魔王（りゅうおう・ハーゴン・ダークドレアム・デスピサロ）も選択可能！
+  const dqBossKaijuList = KAIJU_LIST.filter((k) => k.id.includes('-dq-'));
+  const p2AvailableList = [
+    ...dqBossKaijuList,
+    ...p1AvailableList.filter((k) => !k.id.includes('-dq-')),
+  ];
 
   const [battleMode, setBattleMode] = useState<BattleMode>('coop');
   const [phase, setPhase] = useState<BattlePhase>('select');
+  const [recruitedBossKaiju, setRecruitedBossKaiju] = useState<KaijuData | null>(null);
   const [p1KaijuId, setP1KaijuId] = useState<string>(p1AvailableList[0]?.id ?? KAIJU_LIST[0].id);
   const [p2KaijuId, setP2KaijuId] = useState<string>(
     p2AvailableList[1]?.id ?? p2AvailableList[0]?.id ?? KAIJU_LIST[0].id
@@ -226,6 +233,7 @@ export function KaijuBattle({
     setRouletteSkill(null);
     setDamagePopup(null);
     setTagUltimateFlash(false);
+    setRecruitedBossKaiju(null);
 
     if (battleMode === 'coop') {
       setP1Hp(tagMaxHp);
@@ -355,17 +363,40 @@ export function KaijuBattle({
     setIsAnimatingAction(false);
     resetScrollTop();
     playBattleVictorySound();
+
+    const bossKaijuObj = selectedBoss.kaijuId
+      ? KAIJU_LIST.find((k) => k.id === selectedBoss.kaijuId) || null
+      : null;
+    const isAlreadyUnlocked = bossKaijuObj
+      ? unlockedKaijuIds.includes(bossKaijuObj.id)
+      : false;
+    // 未獲得時は50%（約2回に1回）、獲得済みでも35%の確率で起き上がって仲間になる！
+    const didRecruit = bossKaijuObj
+      ? Math.random() < (isAlreadyUnlocked ? 0.35 : 0.5)
+      : false;
+
+    setRecruitedBossKaiju(didRecruit ? bossKaijuObj : null);
+
     onBattleComplete(
       p1Kaiju.id,
       p2Kaiju.id,
       selectedBoss.rewardOrbs,
       selectedBoss.rewardExp,
-      true
+      true,
+      didRecruit && bossKaijuObj ? bossKaijuObj.id : undefined
     );
-    speakJapanese(
-      `キターーー！じょうと パパの ちからをあわせて、${selectedBoss.name}を たおしたぞーっ！ごほうびに けいけんち玉 ${selectedBoss.rewardOrbs}こと、ほし玉 1こを ゲット！やばすぎるー！`,
-      soundEnabled
-    );
+
+    if (didRecruit && bossKaijuObj) {
+      speakJapanese(
+        `キターーー！${selectedBoss.name}を たおしたぞ！…おや！？ たおした ${bossKaijuObj.name} が おきあがり、なかまに なりたそうに こちらを みている！やったー！大魔王 ${bossKaijuObj.name} が なかまに なったぞーーっ！！`,
+        soundEnabled
+      );
+    } else {
+      speakJapanese(
+        `キターーー！じょうと パパの ちからをあわせて、${selectedBoss.name}を たおしたぞーっ！ごほうびに けいけんち玉 ${selectedBoss.rewardOrbs}こと、ほし玉 1こを ゲット！やばすぎるー！`,
+        soundEnabled
+      );
+    }
   };
 
   // 💚 かいふく（ホイミ）アクション
@@ -616,13 +647,28 @@ export function KaijuBattle({
             setIsAnimatingAction(false);
             resetScrollTop();
             playBattleVictorySound();
-            onBattleComplete(p1Kaiju.id, p2Kaiju.id, 2, 30, false);
+
+            const isVsDemonLord = actor === 1 && p2Kaiju.id.includes('-dq-');
+            const isAlreadyUnlocked = unlockedKaijuIds.includes(p2Kaiju.id);
+            const didRecruitVsBoss =
+              isVsDemonLord && Math.random() < (isAlreadyUnlocked ? 0.35 : 0.5);
+            setRecruitedBossKaiju(didRecruitVsBoss ? p2Kaiju : null);
+
+            onBattleComplete(
+              p1Kaiju.id,
+              p2Kaiju.id,
+              2,
+              30,
+              false,
+              didRecruitVsBoss ? p2Kaiju.id : undefined
+            );
 
             const winName = attackerStats.displayName;
-            const winSpeech =
-              actor === 1
-                ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！神ってるー！`
-                : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！`;
+            const winSpeech = didRecruitVsBoss
+              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おや！？ たおした大魔王 ${p2Kaiju.name} が おきあがり、なかまに なったぞーーっ！！神ってるー！`
+              : actor === 1
+              ? `キターーー！じょうの ${winName}の だいしょうりーっ！おめでとう！ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！神ってるー！`
+              : `うおおお！パパの ${winName}の しょうり！でも さいごまで たたかった ごほうびに けいけんち玉 2こと、けいけんち 30 をゲットしたよ！`;
             speakJapanese(winSpeech, soundEnabled);
           }
         } else {
@@ -1082,8 +1128,15 @@ export function KaijuBattle({
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[10px] font-black text-cyan-300">
-                          Lv.{stats.level} {el.emoji}
+                        <div className="text-[10px] font-black text-cyan-300 flex items-center gap-1">
+                          <span>
+                            Lv.{stats.level} {el.emoji}
+                          </span>
+                          {k.id.includes('-dq-') && (
+                            <span className="px-1 rounded bg-rose-600 text-yellow-200 text-[9px]">
+                              😈大魔王
+                            </span>
+                          )}
                         </div>
                         <div className="text-[11px] font-black truncate">{stats.displayName}</div>
                       </div>
@@ -1648,6 +1701,42 @@ export function KaijuBattle({
                 : p2Stats.displayName}
             </h3>
           </div>
+
+          {/* 👑 大魔王が起き上がって仲間になったときの特別スカウト演出ウィンドウ */}
+          {recruitedBossKaiju && (
+            <div className="dq-window p-4 max-w-md mx-auto border-4 border-yellow-300 bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 shadow-[0_0_30px_rgba(250,204,21,0.6)] space-y-2 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-20 h-20 shrink-0 bg-slate-950/90 rounded-2xl border-2 border-yellow-300 p-1">
+                  <KaijuSvgIllustration
+                    element={recruitedBossKaiju.element}
+                    type={recruitedBossKaiju.type}
+                    kaijuId={recruitedBossKaiju.id}
+                    evolutionStage={2}
+                    isFloating={true}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <div className="inline-block px-2.5 py-0.5 rounded-full bg-yellow-300 text-slate-950 font-black text-xs">
+                    👑 大魔王スカウト大成功！！
+                  </div>
+                  <div className="text-base sm:text-lg font-black text-yellow-300 leading-snug">
+                    おや！？『{recruitedBossKaiju.name}』が おきあがり なかまに なったぞーーっ！！
+                  </div>
+                  <p className="text-xs font-bold text-slate-200">
+                    📖「ずかん」に とうろくされたよ！ほかの かいじゅうとおなじように レベルアップや 3段階しんかも できるぞ！
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!recruitedBossKaiju &&
+            winner === 1 &&
+            (battleMode === 'coop' || p2Kaiju.id.includes('-dq-')) && (
+              <div className="max-w-md mx-auto rounded-xl bg-purple-950/70 border border-purple-400/50 px-3 py-2 text-xs font-black text-purple-200">
+                💡 ヒント：大魔王を たおすと、まれに おきあがって なかまに なるよ！もういちど たたかってみよう！
+              </div>
+            )}
 
           {/* ごほうびボックス */}
           <div className="rounded-2xl bg-amber-500/20 border-2 border-amber-300 p-4 max-w-md mx-auto text-left space-y-2">
