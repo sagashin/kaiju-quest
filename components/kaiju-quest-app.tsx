@@ -1582,7 +1582,12 @@ export default function KaijuQuestApp() {
 
                       {/* イラストまたは未発見シルエット */}
                       <div className="relative w-full h-32 sm:h-36 my-1.5 flex items-center justify-center">
-                        <div className="w-28 h-28 sm:w-32 sm:h-32">
+                        <div
+                          className={`w-28 h-28 sm:w-32 sm:h-32 transition-all ${
+                            !isUnlocked ? 'filter grayscale contrast-125 brightness-50 opacity-60' : ''
+                          }`}
+                          style={!isUnlocked ? { filter: 'grayscale(100%) contrast(140%) brightness(40%)' } : undefined}
+                        >
                           <KaijuSvgIllustration
                             element={kaiju.element}
                             type={kaiju.type}

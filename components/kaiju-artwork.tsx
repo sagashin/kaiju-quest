@@ -2308,6 +2308,548 @@ function ForestGolemSvg({ primary, secondary, accent, eyeColor, outline, silhoue
 }
 
 /* ==========================================================================
+   ⭐ じょうくん大興奮！大人気ポケモン・スーパースター 8体 (No.37〜44)
+   ========================================================================== */
+
+/** No.37 リザードン (灼熱のメガ進化かえん竜・ヒトカゲ ➔ リザードン ➔ メガリザードン) */
+function CharizardSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const bodyColor = silhouette ? primary : '#ea580c';
+  const darkHornColor = silhouette ? secondary : '#c2410c';
+  const wingInner = silhouette ? secondary : '#06b6d4';
+  const wingEdge = silhouette ? secondary : '#ea580c';
+  const bellyColor = silhouette ? secondary : '#fef08a';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* 太くたくましい炎のしっぽ */}
+      <path d="M78 180 Q24 185, 20 130 Q44 142, 82 156 Z" fill={bodyColor} />
+      {/* 尾先の青＆橙のメガ進化炎 */}
+      {!silhouette ? (
+        <g stroke="none">
+          <path d="M22 132 C2 108, 0 68, 22 45 C38 75, 50 95, 22 132 Z" fill="#ef4444" />
+          <path d="M22 120 C10 100, 8 75, 22 60 C32 80, 42 98, 22 120 Z" fill="#38bdf8" />
+          <path d="M22 108 C14 92, 14 78, 22 68 C28 82, 34 94, 22 108 Z" fill="#ffffff" />
+        </g>
+      ) : (
+        <path d="M22 132 C2 108, 0 68, 22 45 C38 75, 50 95, 22 132 Z" fill={secondary} />
+      )}
+
+      {/* ★ 大空を駆けるメガリザードン風の巨大なドラゴン翼 ★ */}
+      <polygon points="90,135 42,65 72,85 52,50 98,95" fill={wingInner} />
+      <polygon points="155,122 212,55 182,80 206,45 152,94" fill={wingInner} />
+      <path d="M42 65 L72 85 L52 50 L98 95" fill="none" stroke={wingEdge} strokeWidth="4.5" strokeLinecap="round" />
+      <path d="M212 55 L182 80 L206 45 L152 94" fill="none" stroke={wingEdge} strokeWidth="4.5" strokeLinecap="round" />
+
+      {/* たくましい二足歩行胴体 */}
+      <ellipse cx="126" cy="164" rx="52" ry="46" fill={bodyColor} />
+      {/* 黄色いお腹 */}
+      <ellipse cx="132" cy="166" rx="30" ry="32" fill={bellyColor} stroke="none" />
+      {!silhouette && (
+        <g stroke="#f59e0b" strokeWidth="2" fill="none" opacity="0.6">
+          <path d="M114 156 Q132 164, 150 156" />
+          <path d="M116 170 Q132 178, 148 170" />
+        </g>
+      )}
+
+      {/* 強靭な脚＆鋭い3本の白いツメ */}
+      <rect x="78" y="194" width="28" height="32" rx="8" fill={bodyColor} />
+      <rect x="138" y="194" width="28" height="32" rx="8" fill={bodyColor} />
+      <polygon points="74,226 82,216 88,226" fill={silhouette ? secondary : '#ffffff'} />
+      <polygon points="86,226 94,216 100,226" fill={silhouette ? secondary : '#ffffff'} />
+      <polygon points="134,226 142,216 148,226" fill={silhouette ? secondary : '#ffffff'} />
+      <polygon points="146,226 154,216 160,226" fill={silhouette ? secondary : '#ffffff'} />
+
+      {/* 力強い両腕 */}
+      <path d="M98 145 L76 158 L84 170 L104 158 Z" fill={bodyColor} />
+      <path d="M150 145 L174 158 L168 170 L144 158 Z" fill={bodyColor} />
+
+      {/* ★ リザードン特有の後ろへ湾曲して伸びる2本の長いツノ ★ */}
+      <path d="M102 75 Q72 35, 54 24 Q78 50, 106 70 Z" fill={darkHornColor} />
+      <path d="M142 72 Q174 32, 194 20 Q168 50, 146 68 Z" fill={darkHornColor} />
+      <ellipse cx="125" cy="94" rx="38" ry="34" fill={bodyColor} />
+      <ellipse cx="132" cy="105" rx="28" ry="18" fill={bodyColor} />
+
+      {/* 誇り高きドラゴンの瞳＆キバ */}
+      {!silhouette && (
+        <g>
+          {/* 青く鋭い眼光 */}
+          <polygon points="106,82 120,86 110,95" fill="#06b6d4" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="112" cy="86" r="2.5" fill="#ffffff" stroke="none" />
+          <polygon points="144,82 130,86 140,95" fill="#06b6d4" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="138" cy="86" r="2.5" fill="#ffffff" stroke="none" />
+
+          {/* 牙の並ぶ口元 */}
+          <path d="M118 108 Q132 118, 146 108" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" />
+          <polygon points="122,108 126,116 130,108" fill="#ffffff" stroke="#0f172a" strokeWidth="1" />
+          <polygon points="134,108 138,116 142,108" fill="#ffffff" stroke="#0f172a" strokeWidth="1" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.38 ヒバニー (元気いっぱい炎ウサギ・ヒバニー ➔ ラビフット ➔ エースバーン) */
+function ScorbunnySvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const furColor = silhouette ? primary : '#ffffff';
+  const orangeAccent = silhouette ? secondary : '#f97316';
+  const yellowAccent = silhouette ? secondary : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ちょこんと丸い白ウサギのしっぽ */}
+      <circle cx="82" cy="178" r="14" fill={furColor} />
+
+      {/* スラッと元気な白ウサギの体 */}
+      <ellipse cx="130" cy="170" rx="42" ry="38" fill={furColor} />
+
+      {/* 首元のオレンジの襟カラー */}
+      <path d="M110 132 L130 148 L150 132 L142 124 L130 132 L118 124 Z" fill={orangeAccent} />
+
+      {/* ★ キック力抜群の後ろ足＆オレンジの炎パッドソール ★ */}
+      <rect x="96" y="184" width="22" height="32" rx="9" fill={furColor} />
+      <rect x="142" y="184" width="22" height="32" rx="9" fill={furColor} />
+      <ellipse cx="107" cy="214" rx="14" ry="7" fill={orangeAccent} />
+      <ellipse cx="153" cy="214" rx="14" ry="7" fill={orangeAccent} />
+      {!silhouette && (
+        <g fill={yellowAccent} stroke="none">
+          <circle cx="107" cy="214" r="3.5" />
+          <circle cx="153" cy="214" r="3.5" />
+        </g>
+      )}
+
+      {/* まあるい元気なウサギ頭部 */}
+      <circle cx="130" cy="98" r="38" fill={furColor} />
+
+      {/* ★ 長い白ウサギ耳＆オレンジの耳先＆黄色い毛束 ★ */}
+      <polygon points="98,82 72,12 114,64" fill={furColor} />
+      <polygon points="85,38 72,12 96,28" fill={orangeAccent} />
+      <polygon points="90,52 82,28 102,44" fill={yellowAccent} />
+
+      <polygon points="162,82 188,12 146,64" fill={furColor} />
+      <polygon points="175,38 188,12 164,28" fill={orangeAccent} />
+      <polygon points="170,52 178,28 158,44" fill={yellowAccent} />
+
+      {/* ★ 鼻の上のトレードマーク「黄色いバンドエイドパッチ」 ★ */}
+      <rect
+        x="116"
+        y="98"
+        width="28"
+        height="12"
+        rx="4"
+        transform="rotate(-5 130 104)"
+        fill={yellowAccent}
+        stroke={outline}
+        strokeWidth="2.5"
+      />
+
+      {/* くりくり大きな瞳＆元気いっぱいの前歯スマイル */}
+      {!silhouette && (
+        <g>
+          {/* 赤みがかった大きな瞳 */}
+          <ellipse cx="112" cy="92" rx="9" ry="12" fill="#78350f" stroke="#0f172a" strokeWidth="2" />
+          <ellipse cx="112" cy="92" rx="5" ry="8" fill="#ea580c" stroke="none" />
+          <circle cx="110" cy="88" r="3.5" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="148" cy="92" rx="9" ry="12" fill="#78350f" stroke="#0f172a" strokeWidth="2" />
+          <ellipse cx="148" cy="92" rx="5" ry="8" fill="#ea580c" stroke="none" />
+          <circle cx="146" cy="88" r="3.5" fill="#ffffff" stroke="none" />
+
+          {/* 前歯がチャームポイントの口 */}
+          <path d="M122 114 Q130 124, 138 114 Z" fill="#f43f5e" stroke="#0f172a" strokeWidth="2" />
+          <rect x="127" y="114" width="6" height="5" rx="1" fill="#ffffff" stroke="#0f172a" strokeWidth="1" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.39 ゲッコウガ (神出鬼没の水流ニンジャ・ケロマツ ➔ ゲコガシラ ➔ サトシゲッコウガ) */
+function GreninjaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const blueNinja = silhouette ? primary : '#1d4ed8';
+  const yellowChest = silhouette ? secondary : '#fef08a';
+  const pinkScarf = silhouette ? secondary : '#f43f5e';
+  const shurikenColor = silhouette ? secondary : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ 背中に背負う巨大な「水手裏剣 (GIANT WATER SHURIKEN)」 ★ */}
+      <polygon
+        points="130,42 146,88 192,104 146,120 130,166 114,120 68,104 114,88"
+        fill={shurikenColor}
+      />
+      {!silhouette && (
+        <circle cx="130" cy="104" r="10" fill="#ffffff" stroke={shurikenColor} strokeWidth="3" />
+      )}
+
+      {/* スラリとしなやかなニンジャ脚部 */}
+      <ellipse cx="98" cy="190" rx="18" ry="24" fill={blueNinja} />
+      <ellipse cx="162" cy="190" rx="18" ry="24" fill={blueNinja} />
+      {/* 白い関節水玉ウェビング */}
+      <circle cx="86" cy="182" r="7" fill={silhouette ? secondary : '#ffffff'} />
+      <circle cx="174" cy="182" r="7" fill={silhouette ? secondary : '#ffffff'} />
+
+      {/* 逆三角形の青い胴体＆黄色い胸当て */}
+      <polygon points="108,135 152,135 142,176 118,176" fill={blueNinja} />
+      <polygon points="116,135 144,135 138,162 122,162" fill={yellowChest} stroke="none" />
+
+      {/* ★ 首に巻き付けたピンクの舌マフラー (TONGUE SCARF) ★ */}
+      <ellipse cx="130" cy="128" rx="36" ry="16" fill={pinkScarf} />
+      <path d="M156 130 Q188 145, 195 180 Q178 175, 150 142 Z" fill={pinkScarf} />
+
+      {/* ★ ニンジャ頭部＆左右に張り出す大きな頭ビレ ★ */}
+      <polygon points="102,112 58,82 110,88" fill={blueNinja} />
+      <polygon points="158,112 202,82 150,88" fill={blueNinja} />
+      <polygon points="110,88 130,62 150,88 142,118 118,118" fill={blueNinja} />
+
+      {/* 鋭いニンジャEYE */}
+      {!silhouette && (
+        <g>
+          <polygon points="110,92 124,94 114,102" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <polygon points="150,92 136,94 146,102" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="116" cy="95" r="2" fill="#ffffff" stroke="none" />
+          <circle cx="144" cy="95" r="2" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.40 ポッチャマ (プライド高き水のペンギン・ポッチャマ ➔ ポッタイシ ➔ エンペルト) */
+function PiplupSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const lightBlue = silhouette ? primary : '#38bdf8';
+  const navyBlue = silhouette ? secondary : '#0369a1';
+  const yellowBeak = silhouette ? secondary : '#facc15';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* まあるい水色のペンギン胴体 */}
+      <ellipse cx="130" cy="168" rx="48" ry="42" fill={lightBlue} />
+
+      {/* 背中の濃い青いマント／羽 */}
+      <path d="M85 140 Q62 165, 75 195 Q88 175, 95 150 Z" fill={navyBlue} />
+      <path d="M175 140 Q198 165, 185 195 Q172 175, 165 150 Z" fill={navyBlue} />
+
+      {/* 黄色いペンギンの足 */}
+      <ellipse cx="110" cy="208" rx="14" ry="8" fill={yellowBeak} />
+      <ellipse cx="150" cy="208" rx="14" ry="8" fill={yellowBeak} />
+
+      {/* ★ 胸の2つの白いボタンスポット (TWO WHITE CHEST BUTTONS) ★ */}
+      {!silhouette ? (
+        <g fill="#ffffff" stroke={navyBlue} strokeWidth="2.5">
+          <circle cx="118" cy="165" r="7" />
+          <circle cx="142" cy="165" r="7" />
+        </g>
+      ) : (
+        <g fill={secondary}>
+          <circle cx="118" cy="165" r="7" />
+          <circle cx="142" cy="165" r="7" />
+        </g>
+      )}
+
+      {/* まあるく大きな頭部 */}
+      <circle cx="130" cy="98" r="40" fill={lightBlue} />
+
+      {/* 頭の上の濃い青いクラウンキャップ模様 */}
+      <path d="M92 92 C92 62, 168 62, 168 92 C152 82, 130 92, 130 92 C130 92, 108 82, 92 92 Z" fill={navyBlue} />
+
+      {/* ★ 黄色い小さなくちばし (YELLOW BEAK) ★ */}
+      <polygon points="122,102 138,102 130,118" fill={yellowBeak} />
+
+      {/* つぶらで誇り高き大きな瞳 */}
+      {!silhouette && (
+        <g>
+          <ellipse cx="110" cy="92" rx="8" ry="12" fill="#082f49" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="108" cy="88" r="3.5" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="150" cy="92" rx="8" ry="12" fill="#082f49" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="148" cy="88" r="3.5" fill="#ffffff" stroke="none" />
+
+          {/* 自信満々なピンクのほっぺ */}
+          <ellipse cx="96" cy="104" rx="6" ry="4" fill="#fb7185" stroke="none" opacity="0.75" />
+          <ellipse cx="164" cy="104" rx="6" ry="4" fill="#fb7185" stroke="none" opacity="0.75" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.41 ルカリオ (あおき波導のオーラ戦士・リオル ➔ ルカリオ ➔ メガルカリオ) */
+function LucarioSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const blueColor = silhouette ? primary : '#0284c7';
+  const blackColor = silhouette ? secondary : '#0f172a';
+  const creamColor = silhouette ? secondary : '#fef08a';
+  const spikeColor = silhouette ? secondary : '#e2e8f0';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* しなやかな青いしっぽ */}
+      <path d="M80 185 Q40 195, 32 155 Q55 162, 85 174 Z" fill={blueColor} />
+
+      {/* ★ 4本の後ろ頭部のオーラセンサーリボン (AURA APPENDAGES) ★ */}
+      <path d="M96 85 C65 95, 52 135, 62 165 C68 140, 80 110, 102 95 Z" fill={blackColor} />
+      <path d="M92 90 C55 110, 48 150, 52 180 C60 152, 75 125, 96 100 Z" fill={blackColor} />
+      <path d="M164 85 C195 95, 208 135, 198 165 C192 140, 180 110, 158 95 Z" fill={blackColor} />
+      <path d="M168 90 C205 110, 212 150, 208 180 C200 152, 185 125, 164 100 Z" fill={blackColor} />
+
+      {/* 青いもも＆黒い脚部 */}
+      <ellipse cx="100" cy="188" rx="20" ry="16" fill={blueColor} />
+      <ellipse cx="160" cy="188" rx="20" ry="16" fill={blueColor} />
+      <rect x="94" y="194" width="16" height="28" rx="6" fill={blackColor} />
+      <rect x="150" y="194" width="16" height="28" rx="6" fill={blackColor} />
+
+      {/* 黒い腰バンド */}
+      <ellipse cx="130" cy="172" rx="42" ry="14" fill={blackColor} />
+
+      {/* ★ クリーム色のモフモフ胸部 ＆ 胸元の輝くシルバースパイク ★ */}
+      <ellipse cx="130" cy="148" rx="34" ry="24" fill={creamColor} />
+      <polygon points="130,132 124,148 136,148" fill={spikeColor} />
+
+      {/* 前脚の黒い腕＆手の甲の白いスパイク */}
+      <path d="M96 142 L72 165 L84 172 L105 152 Z" fill={blackColor} />
+      <polygon points="70,162 62,158 68,170" fill={spikeColor} />
+      <path d="M164 142 L188 165 L176 172 L155 152 Z" fill={blackColor} />
+      <polygon points="190,162 198,158 192,170" fill={spikeColor} />
+
+      {/* ★ 両手の間に浮かぶ青く輝く「波導弾 (AURA SPHERE)」 ★ */}
+      {!silhouette && (
+        <g>
+          <circle cx="130" cy="175" r="18" fill="#38bdf8" opacity="0.4" stroke="none" />
+          <circle cx="130" cy="175" r="12" fill="#0284c7" stroke="#ffffff" strokeWidth="2.5" />
+          <circle cx="130" cy="175" r="6" fill="#ffffff" stroke="none" />
+          {/* バチバチオーラスパーク */}
+          <path d="M120 168 L126 175 L122 182" fill="none" stroke="#fde047" strokeWidth="2" />
+          <path d="M140 168 L134 175 L138 182" fill="none" stroke="#fde047" strokeWidth="2" />
+        </g>
+      )}
+
+      {/* ★ ルカリオの精悍なジャッカル頭部＆黒マスク ★ */}
+      <polygon points="104,75 80,18 118,55" fill={blueColor} />
+      <polygon points="156,75 180,18 142,55" fill={blueColor} />
+      <circle cx="130" cy="85" r="32" fill={blueColor} />
+      {/* 目のまわりの黒いアイマスク模様 */}
+      <polygon points="102,75 158,75 168,95 130,105 92,95" fill={blackColor} />
+
+      {/* 誇り高きルビーレッドの瞳 */}
+      {!silhouette && (
+        <g>
+          <polygon points="108,82 122,86 112,94" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="114" cy="86" r="2" fill="#ffffff" stroke="none" />
+          <polygon points="152,82 138,86 148,94" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="146" cy="86" r="2" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.42 ピカチュウ (世界中で愛される電撃ネズミ・ピチュー ➔ ピカチュウ ➔ ライチュウキング) */
+function PikachuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const yellowColor = silhouette ? primary : '#facc15';
+  const redCheek = silhouette ? secondary : '#ef4444';
+  const blackColor = silhouette ? secondary : '#0f172a';
+  const brownStripe = silhouette ? secondary : '#78350f';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ ギザギザのイナズマ尻尾 ★ */}
+      <polygon
+        points="164,160 196,145 186,130 224,110 208,95 248,65 220,85 236,100 200,120 210,135 174,155"
+        fill={yellowColor}
+      />
+      <rect x="160" y="152" width="16" height="16" rx="3" fill={brownStripe} stroke="none" />
+
+      {/* まあるく太った黄色い胴体 */}
+      <ellipse cx="130" cy="168" rx="52" ry="44" fill={yellowColor} />
+      {!silhouette && (
+        <g stroke={brownStripe} strokeWidth="5" strokeLinecap="round" fill="none">
+          <path d="M96 150 Q130 160, 164 150" />
+          <path d="M98 168 Q130 178, 162 168" />
+        </g>
+      )}
+
+      {/* ちょこんと揃えた前足 */}
+      <circle cx="112" cy="164" r="10" fill={yellowColor} />
+      <circle cx="148" cy="164" r="10" fill={yellowColor} />
+      <ellipse cx="92" cy="204" rx="18" ry="10" fill={yellowColor} />
+      <ellipse cx="168" cy="204" rx="18" ry="10" fill={yellowColor} />
+
+      {/* まあるい頭部 */}
+      <ellipse cx="130" cy="98" rx="44" ry="40" fill={yellowColor} />
+
+      {/* ★ 長い立ち耳＆黒い耳先 ★ */}
+      <polygon points="102,74 62,16 92,60" fill={yellowColor} />
+      <polygon points="76,36 62,16 70,28" fill={blackColor} />
+      <polygon points="158,74 198,16 168,60" fill={yellowColor} />
+      <polygon points="184,36 198,16 190,28" fill={blackColor} />
+
+      {/* ★ 赤いほっぺの電気袋 ＆ バチバチ電撃 ★ */}
+      <circle cx="94" cy="112" r="13" fill={redCheek} stroke="#ffffff" strokeWidth="2" />
+      <circle cx="166" cy="112" r="13" fill={redCheek} stroke="#ffffff" strokeWidth="2" />
+      {!silhouette && (
+        <g fill="#fde047" stroke="none">
+          <polygon points="76,110 84,105 82,112 88,112 80,122 82,115" />
+          <polygon points="184,110 176,105 178,112 172,112 180,122 178,115" />
+        </g>
+      )}
+
+      {/* くりくり大きな瞳とにっこり笑顔 */}
+      {!silhouette && (
+        <g>
+          <circle cx="112" cy="95" r="9" fill={blackColor} stroke="none" />
+          <circle cx="114" cy="93" r="3.5" fill="#ffffff" stroke="none" />
+          <circle cx="148" cy="95" r="9" fill={blackColor} stroke="none" />
+          <circle cx="146" cy="93" r="3.5" fill="#ffffff" stroke="none" />
+
+          <circle cx="130" cy="104" r="2.5" fill={blackColor} stroke="none" />
+          <path d="M124 110 Q130 124, 136 110 Z" fill="#f43f5e" stroke="#0f172a" strokeWidth="2" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.43 イーブイ (可能性無限のもふもふ進化獣・イーブイ ➔ ニンフィア ➔ レインボーイーブイキング) */
+function EeveeSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const coatColor = silhouette ? primary : '#92400e';
+  const ruffColor = silhouette ? secondary : '#fef3c7';
+  const darkBrown = silhouette ? secondary : '#78350f';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ 大きくふさふさした茶色＆クリーム先のしっぽ ★ */}
+      <path
+        d="M85 165 C35 175, 15 125, 30 85 C45 55, 85 75, 65 110 C85 98, 105 112, 95 142 Z"
+        fill={coatColor}
+      />
+      <path
+        d="M45 78 C65 65, 82 85, 65 110 C78 100, 92 110, 85 130 C65 135, 45 105, 45 78 Z"
+        fill={ruffColor}
+        stroke="none"
+      />
+
+      {/* お行儀よく座るかわいい身体 */}
+      <ellipse cx="130" cy="172" rx="42" ry="36" fill={coatColor} />
+
+      {/* ★ イーブイ名物「首回りのモフモフ大きなクリーム襟巻き」 (GIANT CREAM RUFF) ★ */}
+      <path
+        d="M94 135 C80 165, 110 178, 130 178 C150 178, 180 165, 166 135 C178 145, 158 155, 150 148 C144 158, 130 156, 130 156 C130 156, 116 158, 110 148 C102 155, 82 145, 94 135 Z"
+        fill={ruffColor}
+      />
+
+      {/* まあるい前足 */}
+      <rect x="108" y="186" width="16" height="24" rx="8" fill={coatColor} />
+      <rect x="136" y="186" width="16" height="24" rx="8" fill={coatColor} />
+
+      {/* 愛くるしいまんまる頭部 */}
+      <circle cx="130" cy="98" r="38" fill={coatColor} />
+
+      {/* ★ 長く大きなキツネ/ウサギ耳 ★ */}
+      <polygon points="98,82 58,16 115,62" fill={coatColor} />
+      <polygon points="98,78 70,30 108,64" fill={darkBrown} />
+      <polygon points="162,82 202,16 145,62" fill={coatColor} />
+      <polygon points="162,78 190,30 152,64" fill={darkBrown} />
+
+      {/* 頭の上のちっちゃな3本毛束 */}
+      <polygon points="130,55 125,44 135,44" fill={coatColor} />
+      <polygon points="122,58 116,48 126,50" fill={coatColor} />
+      <polygon points="138,58 144,48 134,50" fill={coatColor} />
+
+      {/* ★ 進化の可能性を象徴するキラキラ虹の星 ★ */}
+      {!silhouette && (
+        <polygon
+          points="180,48 184,56 193,58 186,64 188,73 180,68 172,73 174,64 167,58 176,56"
+          fill="#fde047"
+          stroke="#f59e0b"
+          strokeWidth="1.5"
+        />
+      )}
+
+      {/* 吸い込まれそうに大きくて可愛い茶色の瞳 */}
+      {!silhouette && (
+        <g>
+          <ellipse cx="112" cy="96" rx="9" ry="13" fill="#451a03" stroke="#0f172a" strokeWidth="2" />
+          <ellipse cx="112" cy="96" rx="5" ry="8" fill="#92400e" stroke="none" />
+          <circle cx="110" cy="91" r="3.5" fill="#ffffff" stroke="none" />
+          <circle cx="114" cy="102" r="1.5" fill="#ffffff" stroke="none" />
+
+          <ellipse cx="148" cy="96" rx="9" ry="13" fill="#451a03" stroke="#0f172a" strokeWidth="2" />
+          <ellipse cx="148" cy="96" rx="5" ry="8" fill="#92400e" stroke="none" />
+          <circle cx="146" cy="91" r="3.5" fill="#ffffff" stroke="none" />
+          <circle cx="150" cy="102" r="1.5" fill="#ffffff" stroke="none" />
+
+          {/* ちっちゃな黒鼻とにっこりキャットマウス */}
+          <polygon points="130,105 127,108 133,108" fill="#0f172a" stroke="none" />
+          <path d="M124 112 Q130 117, 136 112" fill="none" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.44 フシギダネ (背中にタネをもつ不思議恐竜・フシギダネ ➔ フシギソウ ➔ メガフシギバナ) */
+function BulbasaurSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const bodyColor = silhouette ? primary : '#2dd4bf';
+  const bulbColor = silhouette ? secondary : '#15803d';
+  const spotColor = silhouette ? secondary : '#0f766e';
+  const petalTip = silhouette ? secondary : '#f43f5e';
+
+  return (
+    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
+      {/* ★ 背中に背負った大きな植物のタネ球根 (PLANT BULB) ★ */}
+      <path
+        d="M130 90 C85 85, 78 140, 95 165 C115 178, 145 178, 165 165 C182 140, 175 85, 130 90 Z"
+        fill={bulbColor}
+      />
+      {/* 球根の先のピンクのつぼみ花弁 */}
+      <polygon points="130,80 124,96 136,96" fill={petalTip} />
+      <polygon points="120,86 116,102 128,100" fill={petalTip} />
+      <polygon points="140,86 144,102 132,100" fill={petalTip} />
+
+      {/* どっしりした四つ足恐竜ボディ */}
+      <ellipse cx="130" cy="174" rx="52" ry="36" fill={bodyColor} />
+
+      {/* からだの緑の斑点模様 */}
+      {!silhouette && (
+        <g fill={spotColor} stroke="none">
+          <polygon points="98,155 106,150 110,160 102,165" />
+          <polygon points="148,155 158,150 162,160 152,166" />
+          <polygon points="125,178 135,174 138,182 128,185" />
+        </g>
+      )}
+
+      {/* 4本の足と白いツメ */}
+      <rect x="85" y="194" width="22" height="25" rx="7" fill={bodyColor} />
+      <rect x="153" y="194" width="22" height="25" rx="7" fill={bodyColor} />
+      <polygon points="82,218 86,212 90,218" fill="#ffffff" />
+      <polygon points="90,218 94,212 98,218" fill="#ffffff" />
+      <polygon points="150,218 154,212 158,218" fill="#ffffff" />
+      <polygon points="158,218 162,212 166,218" fill="#ffffff" />
+
+      {/* まあるい頭部＆とがった耳 */}
+      <polygon points="102,74 85,50 115,65" fill={bodyColor} />
+      <polygon points="158,74 175,50 145,65" fill={bodyColor} />
+      <ellipse cx="130" cy="98" rx="38" ry="32" fill={bodyColor} />
+
+      {/* 赤い大きな瞳とにっこり笑顔＆2本の小さな牙 */}
+      {!silhouette && (
+        <g>
+          <polygon points="110,88 122,86 116,98" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="114" cy="90" r="2.5" fill="#ffffff" stroke="none" />
+
+          <polygon points="150,88 138,86 144,98" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
+          <circle cx="146" cy="90" r="2.5" fill="#ffffff" stroke="none" />
+
+          {/* にっかり笑った口とちっちゃな牙 */}
+          <path d="M116 112 Q130 124, 144 112" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" />
+          <polygon points="118,112 121,118 124,112" fill="#ffffff" stroke="#0f172a" strokeWidth="1" />
+          <polygon points="136,112 139,118 142,112" fill="#ffffff" stroke="#0f172a" strokeWidth="1" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -3028,6 +3570,24 @@ function KaijuSpecificSvgDispatcher({
     case 'nature-pkmn-golem':
       return <ForestGolemSvg {...partProps} />;
 
+    // ⭐ じょうくん大興奮！大人気ポケモン・スーパースター 8体
+    case 'fire-pkmn-charizard':
+      return <CharizardSvg {...partProps} />;
+    case 'fire-pkmn-scorbunny':
+      return <ScorbunnySvg {...partProps} />;
+    case 'water-pkmn-greninja':
+      return <GreninjaSvg {...partProps} />;
+    case 'water-pkmn-piplup':
+      return <PiplupSvg {...partProps} />;
+    case 'thunder-pkmn-lucario':
+      return <LucarioSvg {...partProps} />;
+    case 'thunder-pkmn-pikachu':
+      return <PikachuSvg {...partProps} />;
+    case 'nature-pkmn-eevee':
+      return <EeveeSvg {...partProps} />;
+    case 'nature-pkmn-bulbasaur':
+      return <BulbasaurSvg {...partProps} />;
+
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;
       if (resolvedId.includes('kuwagata')) return <OJawStagSvg {...partProps} />;
@@ -3093,7 +3653,8 @@ export function KaijuSvgIllustration({
     <div
       className={`relative flex items-center justify-center select-none ${
         isDamaged ? 'animate-damage-shake' : ''
-      } ${className}`}
+      } ${silhouette ? 'filter grayscale contrast-125 brightness-50 opacity-60' : ''} ${className}`}
+      style={silhouette ? { filter: 'grayscale(100%) contrast(140%) brightness(40%)' } : undefined}
     >
       {/* 背面の属性エネルギー陣 */}
       {!silhouette && (
@@ -3122,12 +3683,20 @@ export function KaijuSvgIllustration({
         </div>
       )}
 
-      <div className={`w-full h-full flex items-center justify-center ${flipHorizontal ? 'scale-x-[-1]' : ''}`}>
+      <div
+        className={`w-full h-full flex items-center justify-center ${flipHorizontal ? 'scale-x-[-1]' : ''}`}
+        style={silhouette ? { filter: 'grayscale(100%) contrast(150%) brightness(35%)' } : undefined}
+      >
         <svg
           viewBox="0 0 260 260"
-          className={`w-full h-full relative z-10 drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)] transition-transform duration-200 ${stageScaleClass} ${
+          className={`w-full h-full relative z-10 transition-transform duration-200 ${stageScaleClass} ${
             isAttacking ? 'scale-110' : 'animate-float'
+          } ${
+            silhouette
+              ? 'filter grayscale contrast-125 brightness-50 opacity-60'
+              : 'drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)]'
           }`}
+          style={silhouette ? { filter: 'grayscale(100%) contrast(150%) brightness(35%)' } : undefined}
         >
           {/* Stage 2 & 3 共通の属性エフェクト背景リング */}
           {!silhouette && evolutionStage >= 2 && (
