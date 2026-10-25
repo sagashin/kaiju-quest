@@ -957,7 +957,7 @@ export default function KaijuQuestApp() {
                       soundEnabled
                     );
                   }}
-                  className="w-full sm:w-auto min-h-[52px] px-5 rounded-2xl bg-gradient-to-r from-emerald-400 via-yellow-300 to-amber-400 text-slate-950 font-black text-sm sm:text-base border-2 border-white shadow-[0_5px_0_#065f46] animate-bounce cursor-pointer whitespace-nowrap shrink-0"
+                  className="w-full sm:w-auto min-h-[52px] px-5 rounded-2xl bg-gradient-to-r from-emerald-400 via-yellow-300 to-amber-400 text-slate-950 font-black text-sm sm:text-base border-2 border-white shadow-[0_5px_0_#065f46] hover:scale-105 active:scale-95 transition-transform cursor-pointer whitespace-nowrap shrink-0"
                 >
                   🐉 いでよ神龍！おねがいをする！
                 </button>
@@ -1035,7 +1035,7 @@ export default function KaijuQuestApp() {
                     <div
                       className={`w-20 h-20 rounded-2xl ${quest.iconBg} border-2 border-white/25 flex items-center justify-center text-5xl shrink-0 shadow-inner`}
                     >
-                      <span className={isDone ? 'animate-bounce' : ''}>{quest.emoji}</span>
+                      <span>{quest.emoji}</span>
                     </div>
 
                     {/* クエスト名と状態 */}
@@ -1556,9 +1556,6 @@ export default function KaijuQuestApp() {
                     }`}
                   >
                     <div className="rounded-[20px] bg-slate-950/95 p-3 h-full flex flex-col justify-between relative overflow-hidden">
-                      {isUnlocked && (
-                        <div className="pointer-events-none absolute inset-0 animate-holo opacity-25" />
-                      )}
 
                       {/* ナンバー＆Lv・進化段階バッジ */}
                       <div className="flex items-center justify-between gap-1 text-xs font-black">
@@ -1795,7 +1792,7 @@ export default function KaijuQuestApp() {
             }`}
           >
             {starBalls >= 7 && activeTab !== 'quest' && (
-              <span className="absolute -top-2.5 right-0.5 bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full border border-white shadow animate-bounce">
+              <span className="absolute -top-2.5 right-0.5 bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full border border-white shadow">
                 🐉神龍!
               </span>
             )}
@@ -1811,7 +1808,7 @@ export default function KaijuQuestApp() {
               activeTab === 'summon'
                 ? 'bg-gradient-to-b from-rose-500 to-orange-500 text-white border-white shadow-[0_0_22px_rgba(244,63,94,0.7)]'
                 : canSummon
-                ? 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_0_25px_rgba(250,204,21,0.95)] animate-bounce'
+                ? 'bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_0_25px_rgba(250,204,21,0.95)] ring-2 ring-yellow-300'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
             }`}
           >

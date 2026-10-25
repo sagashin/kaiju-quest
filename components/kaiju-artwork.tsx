@@ -16,7 +16,7 @@ export function MonsterEggSvg({ element, type, category = 'kaiju', isShaking = f
   // 🪲 昆虫モードのときは「🌳 甘い黄金の樹液が光るクヌギのご神木」を描画
   if (category === 'insect') {
     return (
-      <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : 'animate-float'}`}>
+      <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : ''}`}>
         {/* 背面の森のオーラ発光 */}
         <div
           className="absolute w-48 h-48 rounded-full blur-2xl opacity-75 transition-all duration-300"
@@ -113,7 +113,7 @@ export function MonsterEggSvg({ element, type, category = 'kaiju', isShaking = f
 
   // 🦖 怪獣モードのタマゴ表示
   return (
-    <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : 'animate-float'}`}>
+    <div className={`relative flex items-center justify-center select-none ${isShaking ? 'animate-egg-shake' : ''}`}>
       {/* 背面の属性オーラ発光 */}
       <div
         className="absolute w-44 h-44 rounded-full blur-2xl opacity-75 transition-all duration-300"
@@ -223,6 +223,7 @@ export interface KaijuArtProps {
   realColors?: { primary: string; secondary: string; accent: string };
   silhouette?: boolean;
   isAttacking?: boolean;
+  isFloating?: boolean;
   evolutionStage?: 1 | 2 | 3;
   isDamaged?: boolean;
   flipHorizontal?: boolean;
@@ -3671,6 +3672,7 @@ export function KaijuSvgIllustration({
   realColors,
   silhouette = false,
   isAttacking = false,
+  isFloating = false,
   evolutionStage = 2,
   isDamaged = false,
   flipHorizontal = false,
@@ -3696,7 +3698,7 @@ export function KaijuSvgIllustration({
     evolutionStage === 1
       ? 'scale-90'
       : evolutionStage === 3
-      ? 'scale-105 animate-evo-glow'
+      ? 'scale-105'
       : 'scale-100';
 
   const partProps: SvgPartProps = {
@@ -3747,7 +3749,7 @@ export function KaijuSvgIllustration({
         <svg
           viewBox="0 0 260 260"
           className={`w-full h-full relative z-10 transition-transform duration-200 ${stageScaleClass} ${
-            isAttacking ? 'scale-110' : 'animate-float'
+            isAttacking ? 'scale-110 animate-float' : isFloating ? 'animate-float' : ''
           } ${
             silhouette
               ? 'opacity-90'

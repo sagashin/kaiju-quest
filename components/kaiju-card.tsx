@@ -302,6 +302,7 @@ export function KaijuHeroCard({
                 realColors={kaiju.realColors}
                 evolutionStage={displayedStage}
                 isAttacking={isAttacking}
+                isFloating={true}
               />
             </div>
 
