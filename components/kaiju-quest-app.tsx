@@ -1582,12 +1582,7 @@ export default function KaijuQuestApp() {
 
                       {/* イラストまたは未発見シルエット */}
                       <div className="relative w-full h-32 sm:h-36 my-1.5 flex items-center justify-center">
-                        <div
-                          className={`w-28 h-28 sm:w-32 sm:h-32 transition-all ${
-                            !isUnlocked ? 'filter grayscale contrast-125 brightness-50 opacity-60' : ''
-                          }`}
-                          style={!isUnlocked ? { filter: 'grayscale(100%) contrast(140%) brightness(40%)' } : undefined}
-                        >
+                        <div className="w-28 h-28 sm:w-32 sm:h-32 transition-all">
                           <KaijuSvgIllustration
                             element={kaiju.element}
                             type={kaiju.type}
@@ -1599,14 +1594,6 @@ export default function KaijuQuestApp() {
                             realColors={kaiju.realColors}
                           />
                         </div>
-
-                        {!isUnlocked && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-900/90 border-2 border-slate-500 flex items-center justify-center text-2xl shadow-lg">
-                              ❓
-                            </div>
-                          </div>
-                        )}
                       </div>
 
                       {/* 名前＆ステータス概要 */}

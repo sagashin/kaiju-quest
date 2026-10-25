@@ -3620,16 +3620,16 @@ export function KaijuSvgIllustration({
   const elMeta = getElementMeta(element);
 
   const primary = silhouette
-    ? '#1e293b'
+    ? '#475569'
     : realColors?.primary ?? elMeta.primaryHex;
   const secondary = silhouette
-    ? '#334155'
+    ? '#64748b'
     : realColors?.secondary ?? elMeta.secondaryHex;
   const accent = silhouette
-    ? '#475569'
+    ? '#94a3b8'
     : realColors?.accent ?? elMeta.accentHex;
-  const eyeColor = silhouette ? '#0f172a' : '#fef08a';
-  const outline = silhouette ? '#475569' : '#ffffff';
+  const eyeColor = silhouette ? '#cbd5e1' : '#fef08a';
+  const outline = silhouette ? '#cbd5e1' : '#ffffff';
 
   const resolvedId = kaijuId || `${element}-${type}`;
 
@@ -3653,8 +3653,7 @@ export function KaijuSvgIllustration({
     <div
       className={`relative flex items-center justify-center select-none ${
         isDamaged ? 'animate-damage-shake' : ''
-      } ${silhouette ? 'filter grayscale contrast-125 brightness-50 opacity-60' : ''} ${className}`}
-      style={silhouette ? { filter: 'grayscale(100%) contrast(140%) brightness(40%)' } : undefined}
+      } ${className}`}
     >
       {/* 背面の属性エネルギー陣 */}
       {!silhouette && (
@@ -3685,7 +3684,6 @@ export function KaijuSvgIllustration({
 
       <div
         className={`w-full h-full flex items-center justify-center ${flipHorizontal ? 'scale-x-[-1]' : ''}`}
-        style={silhouette ? { filter: 'grayscale(100%) contrast(150%) brightness(35%)' } : undefined}
       >
         <svg
           viewBox="0 0 260 260"
@@ -3693,10 +3691,10 @@ export function KaijuSvgIllustration({
             isAttacking ? 'scale-110' : 'animate-float'
           } ${
             silhouette
-              ? 'filter grayscale contrast-125 brightness-50 opacity-60'
+              ? 'opacity-90'
               : 'drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)]'
           }`}
-          style={silhouette ? { filter: 'grayscale(100%) contrast(150%) brightness(35%)' } : undefined}
+          style={silhouette ? { filter: 'grayscale(100%) brightness(85%) contrast(110%)' } : undefined}
         >
           {/* Stage 2 & 3 共通の属性エフェクト背景リング */}
           {!silhouette && evolutionStage >= 2 && (
