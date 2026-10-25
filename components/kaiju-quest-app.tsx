@@ -128,18 +128,28 @@ export default function KaijuQuestApp() {
             setCompletedQuests(migrated);
           }
 
-          const loadedUnlocked =
+          const rawUnlocked: string[] =
             Array.isArray(parsed.unlockedKaijuIds) && parsed.unlockedKaijuIds.length > 0
               ? parsed.unlockedKaijuIds
               : ['fire-dino'];
+          const loadedUnlocked = Array.from(
+            new Set(
+              rawUnlocked.map((id) =>
+                id === 'thunder-pkmn-pikachu' ? 'thunder-pkmn-miraidon' : id
+              )
+            )
+          );
           setUnlockedKaijuIds(loadedUnlocked);
 
           if (typeof parsed.soundEnabled === 'boolean') setSoundEnabled(parsed.soundEnabled);
 
-          // kaijuProgress の初期化・補完
+          // kaijuProgress の初期化・補完（旧ID移行対応）
           const loadedProgress: Record<string, KaijuProgress> = {
             ...(parsed.kaijuProgress || {}),
           };
+          if (loadedProgress['thunder-pkmn-pikachu'] && !loadedProgress['thunder-pkmn-miraidon']) {
+            loadedProgress['thunder-pkmn-miraidon'] = loadedProgress['thunder-pkmn-pikachu'];
+          }
           loadedUnlocked.forEach((id) => {
             if (!loadedProgress[id]) {
               loadedProgress[id] = { level: 1, exp: 0 };
@@ -153,8 +163,12 @@ export default function KaijuQuestApp() {
             setExpOrbs(3);
           }
 
-          if (parsed.partnerKaijuId && KAIJU_LIST.some((k) => k.id === parsed.partnerKaijuId)) {
-            setPartnerKaijuId(parsed.partnerKaijuId);
+          const candidatePartner =
+            parsed.partnerKaijuId === 'thunder-pkmn-pikachu'
+              ? 'thunder-pkmn-miraidon'
+              : parsed.partnerKaijuId;
+          if (candidatePartner && KAIJU_LIST.some((k) => k.id === candidatePartner)) {
+            setPartnerKaijuId(candidatePartner);
           } else {
             setPartnerKaijuId(loadedUnlocked[0] || 'fire-dino');
           }

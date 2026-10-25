@@ -2642,68 +2642,126 @@ function LucarioSvg({ primary, secondary, accent, eyeColor, outline, silhouette 
   );
 }
 
-/** No.42 ピカチュウ (世界中で愛される電撃ネズミ・ピチュー ➔ ピカチュウ ➔ ライチュウキング) */
-function PikachuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const yellowColor = silhouette ? primary : '#facc15';
-  const redCheek = silhouette ? secondary : '#ef4444';
-  const blackColor = silhouette ? secondary : '#0f172a';
-  const brownStripe = silhouette ? secondary : '#78350f';
+/** No.42 ミライドン (未来から来た伝説の雷竜・ちびミライドン ➔ ミライドン ➔ アルティメットミライドン) */
+function MiraidonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const violetBody = silhouette ? primary : '#4f46e5';
+  const darkIndigo = silhouette ? secondary : '#312e81';
+  const electricCyan = silhouette ? secondary : '#38bdf8';
+  const lightningYellow = silhouette ? secondary : '#fde047';
+  const silverArmor = silhouette ? secondary : '#e2e8f0';
 
   return (
-    <g stroke={outline} strokeWidth="4" strokeLinejoin="round">
-      {/* ★ ギザギザのイナズマ尻尾 ★ */}
-      <polygon
-        points="164,160 196,145 186,130 224,110 208,95 248,65 220,85 236,100 200,120 210,135 174,155"
-        fill={yellowColor}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 背後のジェットスラスター尾＆青白く光るプラズマ噴射 ★ */}
+      <path
+        d="M135 178 Q185 195, 215 160 Q225 145, 218 135 Q195 155, 145 168 Z"
+        fill={violetBody}
       />
-      <rect x="160" y="152" width="16" height="16" rx="3" fill={brownStripe} stroke="none" />
+      {/* 尾先のサイバージェットノズル */}
+      <rect x="210" y="132" width="16" height="24" rx="4" transform="rotate(-30 218 144)" fill={darkIndigo} />
+      {!silhouette ? (
+        <g stroke="none">
+          {/* 青と黄色のプラズマジェット炎 */}
+          <polygon points="228,138 255,120 236,152 248,158" fill={electricCyan} opacity="0.85" />
+          <polygon points="226,142 245,130 232,150" fill={lightningYellow} />
+          {/* 稲妻スパーク */}
+          <polygon points="215,115 224,122 220,128 230,126 222,136" fill={lightningYellow} />
+        </g>
+      ) : (
+        <polygon points="228,138 250,124 236,152" fill={secondary} />
+      )}
 
-      {/* まあるく太った黄色い胴体 */}
-      <ellipse cx="130" cy="168" rx="52" ry="44" fill={yellowColor} />
+      {/* 背中のエアロダイナミック・サイバーウィング（青く光るエネルギー翼） */}
+      <polygon points="108,125 55,75 88,95 62,55 115,100" fill={violetBody} />
+      <polygon points="152,118 205,68 172,90 198,48 145,95" fill={violetBody} />
       {!silhouette && (
-        <g stroke={brownStripe} strokeWidth="5" strokeLinecap="round" fill="none">
-          <path d="M96 150 Q130 160, 164 150" />
-          <path d="M98 168 Q130 178, 162 168" />
+        <g stroke={electricCyan} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M58 76 L86 95 L64 57" />
+          <path d="M202 70 L174 90 L195 50" />
         </g>
       )}
 
-      {/* ちょこんと揃えた前足 */}
-      <circle cx="112" cy="164" r="10" fill={yellowColor} />
-      <circle cx="148" cy="164" r="10" fill={yellowColor} />
-      <ellipse cx="92" cy="204" rx="18" ry="10" fill={yellowColor} />
-      <ellipse cx="168" cy="204" rx="18" ry="10" fill={yellowColor} />
+      {/* スラリと伸びる未来サイバードラゴンの胴体 */}
+      <ellipse cx="130" cy="165" rx="46" ry="40" fill={violetBody} />
+      {/* メタリックシルバーの腹部装甲 */}
+      <path
+        d="M115 140 Q130 148, 145 140 L140 188 Q130 194, 120 188 Z"
+        fill={darkIndigo}
+      />
 
-      {/* まあるい頭部 */}
-      <ellipse cx="130" cy="98" rx="44" ry="40" fill={yellowColor} />
+      {/* ★ 胸の象徴「ハドロンエンジン・ジェットタービン (HADRON ENGINE TURBINE)」 ★ */}
+      <circle cx="130" cy="154" r="22" fill={darkIndigo} stroke={silhouette ? secondary : electricCyan} strokeWidth="3.5" />
+      <circle cx="130" cy="154" r="16" fill="#1e1b4b" stroke="none" />
+      {/* タービンの回転ブレード */}
+      {!silhouette ? (
+        <g fill={electricCyan}>
+          <polygon points="130,140 134,152 130,154 126,152" />
+          <polygon points="144,154 132,158 130,154 132,150" />
+          <polygon points="130,168 126,156 130,154 134,156" />
+          <polygon points="116,154 128,150 130,154 128,158" />
+          {/* コアの超高輝度プラズマ発電球 */}
+          <circle cx="130" cy="154" r="8" fill={lightningYellow} stroke="#ffffff" strokeWidth="2" />
+          <circle cx="130" cy="154" r="4" fill="#ffffff" stroke="none" />
+        </g>
+      ) : (
+        <circle cx="130" cy="154" r="9" fill={secondary} />
+      )}
 
-      {/* ★ 長い立ち耳＆黒い耳先 ★ */}
-      <polygon points="102,74 62,16 92,60" fill={yellowColor} />
-      <polygon points="76,36 62,16 70,28" fill={blackColor} />
-      <polygon points="158,74 198,16 168,60" fill={yellowColor} />
-      <polygon points="184,36 198,16 190,28" fill={blackColor} />
+      {/* 強靭でしなやかなサイバードラゴン脚部＆シルバーの鉤爪 */}
+      <rect x="85" y="185" width="22" height="34" rx="8" fill={violetBody} />
+      <rect x="153" y="185" width="22" height="34" rx="8" fill={violetBody} />
+      <polygon points="82,222 88,212 94,222" fill={silverArmor} />
+      <polygon points="94,222 100,212 106,222" fill={silverArmor} />
+      <polygon points="150,222 156,212 162,222" fill={silverArmor} />
+      <polygon points="162,222 168,212 174,222" fill={silverArmor} />
 
-      {/* ★ 赤いほっぺの電気袋 ＆ バチバチ電撃 ★ */}
-      <circle cx="94" cy="112" r="13" fill={redCheek} stroke="#ffffff" strokeWidth="2" />
-      <circle cx="166" cy="112" r="13" fill={redCheek} stroke="#ffffff" strokeWidth="2" />
+      {/* 首のネオンブルー発光ライン */}
+      <path d="M118 135 Q115 100, 122 75 L138 75 Q145 100, 142 135 Z" fill={violetBody} />
       {!silhouette && (
-        <g fill="#fde047" stroke="none">
-          <polygon points="76,110 84,105 82,112 88,112 80,122 82,115" />
-          <polygon points="184,110 176,105 178,112 172,112 180,122 178,115" />
+        <g stroke={electricCyan} strokeWidth="2.5" fill="none" opacity="0.9">
+          <line x1="122" y1="92" x2="138" y2="92" />
+          <line x1="120" y1="108" x2="140" y2="108" />
+          <line x1="118" y1="124" x2="142" y2="124" />
         </g>
       )}
 
-      {/* くりくり大きな瞳とにっこり笑顔 */}
-      {!silhouette && (
+      {/* ★ 精悍なサイバードラゴンヘッド (CYBER DRAGON HEAD) ★ */}
+      <polygon points="112,85 148,85 140,60 120,60" fill={violetBody} />
+      <ellipse cx="130" cy="78" rx="26" ry="20" fill={violetBody} />
+      {/* 前方に突き出す鋭いサイバーノズル口元 */}
+      <polygon points="120,78 140,78 134,92 126,92" fill={darkIndigo} />
+
+      {/* ★ ミライドン最大のトレードマーク「後方へ伸びる巨大な稲妻型アンテナ角」 ★ */}
+      {/* 左角：ジグザグのイナズマホーン */}
+      <polygon points="118,65 72,28 88,48 58,16 102,48" fill={electricCyan} />
+      <polygon points="112,62 82,36 94,48 76,26 102,48" fill={lightningYellow} />
+      {/* 右角：ジグザグのイナズマホーン */}
+      <polygon points="142,65 188,28 172,48 202,16 158,48" fill={electricCyan} />
+      <polygon points="148,62 178,36 166,48 184,26 158,48" fill={lightningYellow} />
+
+      {/* ★ デジタルネオンバイザーの瞳 (CYBER DIGITAL VISOR EYES) ★ */}
+      {!silhouette ? (
         <g>
-          <circle cx="112" cy="95" r="9" fill={blackColor} stroke="none" />
-          <circle cx="114" cy="93" r="3.5" fill="#ffffff" stroke="none" />
-          <circle cx="148" cy="95" r="9" fill={blackColor} stroke="none" />
-          <circle cx="146" cy="93" r="3.5" fill="#ffffff" stroke="none" />
-
-          <circle cx="130" cy="104" r="2.5" fill={blackColor} stroke="none" />
-          <path d="M124 110 Q130 124, 136 110 Z" fill="#f43f5e" stroke="#0f172a" strokeWidth="2" />
+          {/* 青く光るデジタルアイ */}
+          <polygon points="112,74 124,76 116,84" fill={electricCyan} stroke="#0f172a" strokeWidth="1.5" />
+          <rect x="114" y="76" width="6" height="4" fill="#ffffff" rx="1" stroke="none" />
+          <polygon points="148,74 136,76 144,84" fill={electricCyan} stroke="#0f172a" strokeWidth="1.5" />
+          <rect x="140" y="76" width="6" height="4" fill="#ffffff" rx="1" stroke="none" />
+          {/* 額のネオンシンボル */}
+          <circle cx="130" cy="68" r="3.5" fill={lightningYellow} stroke="#ffffff" strokeWidth="1.5" />
+        </g>
+      ) : (
+        <g fill={secondary}>
+          <polygon points="112,74 124,76 116,84" />
+          <polygon points="148,74 136,76 144,84" />
         </g>
       )}
+
+      {/* 前脚のサイバークロー */}
+      <path d="M102 142 L84 158 L92 166 L108 152 Z" fill={violetBody} />
+      <polygon points="80,160 74,156 78,168" fill={silverArmor} />
+      <path d="M158 142 L176 158 L168 166 L152 152 Z" fill={violetBody} />
+      <polygon points="180,160 186,156 182,168" fill={silverArmor} />
     </g>
   );
 }
@@ -3581,8 +3639,9 @@ function KaijuSpecificSvgDispatcher({
       return <PiplupSvg {...partProps} />;
     case 'thunder-pkmn-lucario':
       return <LucarioSvg {...partProps} />;
+    case 'thunder-pkmn-miraidon':
     case 'thunder-pkmn-pikachu':
-      return <PikachuSvg {...partProps} />;
+      return <MiraidonSvg {...partProps} />;
     case 'nature-pkmn-eevee':
       return <EeveeSvg {...partProps} />;
     case 'nature-pkmn-bulbasaur':
