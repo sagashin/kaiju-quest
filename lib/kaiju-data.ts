@@ -1989,6 +1989,7 @@ export function findKaiju(element: ElementId, type: KaijuTypeId): KaijuData {
 
 /**
  * 召喚時に同じ属性×タイプの怪獣から、未解放のものを優先して返す（すべて解放済みならランダム抽選）
+ * ※ 大魔王（-dq-）はレイド対戦ボス討伐でのみ仲間になるため、タマゴ・ガチャからは完全に除外されます
  */
 export function findKaijuForSummon(
   element: ElementId,
@@ -1996,25 +1997,28 @@ export function findKaijuForSummon(
   unlockedIds: string[],
   category: CreatureCategory = 'kaiju'
 ): KaijuData {
+  // 大魔王（-dq-）はタマゴ・ガチャ候補から除外
   const candidates = KAIJU_LIST.filter(
-    (k) => (k.category ?? 'kaiju') === category && k.element === element && k.type === type
+    (k) =>
+      (k.category ?? 'kaiju') === category &&
+      !k.id.includes('-dq-') &&
+      k.element === element &&
+      k.type === type
   );
   if (candidates.length === 0) {
-    const fallback = KAIJU_LIST.filter((k) => (k.category ?? 'kaiju') === category);
+    const fallback = KAIJU_LIST.filter(
+      (k) => (k.category ?? 'kaiju') === category && !k.id.includes('-dq-')
+    );
     return fallback[0] ?? KAIJU_LIST[0];
   }
 
-  const normalLocked = candidates.filter(
-    (k) => !unlockedIds.includes(k.id) && !k.id.includes('-dq-')
-  );
+  const normalLocked = candidates.filter((k) => !unlockedIds.includes(k.id));
   if (normalLocked.length > 0) {
     return normalLocked[0];
   }
 
-  const normalPool = candidates.filter((k) => !k.id.includes('-dq-'));
-  const poolToPick = normalPool.length > 0 ? normalPool : candidates;
-  const randomIndex = Math.floor(Math.random() * poolToPick.length);
-  return poolToPick[randomIndex];
+  const randomIndex = Math.floor(Math.random() * candidates.length);
+  return candidates[randomIndex];
 }
 
 export function getElementMeta(element: ElementId): ElementOption {
@@ -2200,17 +2204,18 @@ export interface QuizQuestion {
 }
 
 /**
- * 知育3択クイズ生成関数
+ * 知育3択クイズ生成関数（大魔王は除外して子供向けにわかりやすくする）
  */
 export function generateQuizQuestion(excludeIds: string[] = []): QuizQuestion {
-  const pool = KAIJU_LIST.filter((k) => !excludeIds.includes(k.id));
-  const candidatePool = pool.length >= 3 ? pool : KAIJU_LIST;
+  const nonDqList = KAIJU_LIST.filter((k) => !k.id.includes('-dq-'));
+  const pool = nonDqList.filter((k) => !excludeIds.includes(k.id));
+  const candidatePool = pool.length >= 3 ? pool : nonDqList;
 
   const correctIndex = Math.floor(Math.random() * candidatePool.length);
   const correctKaiju = candidatePool[correctIndex];
 
-  // ダミー選択肢を2体選ぶ（できるだけ同じカテゴリから選ぶと楽しい）
-  const others = KAIJU_LIST.filter((k) => k.id !== correctKaiju.id);
+  // ダミー選択肢を2体選ぶ（できるだけ同じカテゴリから選ぶ、大魔王は除外）
+  const others = nonDqList.filter((k) => k.id !== correctKaiju.id);
   const sameCategoryOthers = others.filter(
     (k) => (k.category ?? 'kaiju') === (correctKaiju.category ?? 'kaiju')
   );

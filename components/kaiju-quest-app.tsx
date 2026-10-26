@@ -66,6 +66,7 @@ interface SavedAppState {
   starBalls?: number;
   rewardedMorningBonus?: boolean;
   rewardedNightBonus?: boolean;
+  recruitedBossKaijuIds?: string[];
 }
 
 const STORAGE_KEY = 'kaiju_oshitaku_quest_v1';
@@ -75,6 +76,7 @@ export default function KaijuQuestApp() {
   const [energy, setEnergy] = useState<number>(0);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
   const [unlockedKaijuIds, setUnlockedKaijuIds] = useState<string[]>(['fire-dino']);
+  const [recruitedBossKaijuIds, setRecruitedBossKaijuIds] = useState<string[]>([]);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [kaijuProgress, setKaijuProgress] = useState<Record<string, KaijuProgress>>({
     'fire-dino': { level: 1, exp: 0 },
@@ -128,18 +130,27 @@ export default function KaijuQuestApp() {
             setCompletedQuests(migrated);
           }
 
+          const savedRecruitedBosses: string[] = Array.isArray(parsed.recruitedBossKaijuIds)
+            ? parsed.recruitedBossKaijuIds
+            : [];
+          setRecruitedBossKaijuIds(savedRecruitedBosses);
+
           const rawUnlocked: string[] =
             Array.isArray(parsed.unlockedKaijuIds) && parsed.unlockedKaijuIds.length > 0
               ? parsed.unlockedKaijuIds
               : ['fire-dino'];
+          // 大魔王（-dq-）は対戦ボス討伐でのみ仲間にできる特別な怪獣。
+          // ガチャ等で誤って解放された大魔王はリセットし、対戦で正式に仲間にした大魔王のみ解放維持する。
           const loadedUnlocked = Array.from(
             new Set(
-              rawUnlocked.map((id) =>
-                id === 'thunder-pkmn-pikachu' ? 'thunder-pkmn-miraidon' : id
-              )
+              rawUnlocked
+                .map((id) =>
+                  id === 'thunder-pkmn-pikachu' ? 'thunder-pkmn-miraidon' : id
+                )
+                .filter((id) => !id.includes('-dq-') || savedRecruitedBosses.includes(id))
             )
           );
-          setUnlockedKaijuIds(loadedUnlocked);
+          setUnlockedKaijuIds(loadedUnlocked.length > 0 ? loadedUnlocked : ['fire-dino']);
 
           if (typeof parsed.soundEnabled === 'boolean') setSoundEnabled(parsed.soundEnabled);
 
@@ -167,7 +178,11 @@ export default function KaijuQuestApp() {
             parsed.partnerKaijuId === 'thunder-pkmn-pikachu'
               ? 'thunder-pkmn-miraidon'
               : parsed.partnerKaijuId;
-          if (candidatePartner && KAIJU_LIST.some((k) => k.id === candidatePartner)) {
+          if (
+            candidatePartner &&
+            loadedUnlocked.includes(candidatePartner) &&
+            KAIJU_LIST.some((k) => k.id === candidatePartner)
+          ) {
             setPartnerKaijuId(candidatePartner);
           } else {
             setPartnerKaijuId(loadedUnlocked[0] || 'fire-dino');
@@ -204,6 +219,7 @@ export default function KaijuQuestApp() {
         starBalls,
         rewardedMorningBonus,
         rewardedNightBonus,
+        recruitedBossKaijuIds,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch {
@@ -220,6 +236,7 @@ export default function KaijuQuestApp() {
     starBalls,
     rewardedMorningBonus,
     rewardedNightBonus,
+    recruitedBossKaijuIds,
     isHydrated,
   ]);
 
@@ -614,6 +631,9 @@ export default function KaijuQuestApp() {
       setStarBalls((prev) => prev + 1);
     }
     if (recruitedBossKaijuId) {
+      setRecruitedBossKaijuIds((prev) =>
+        prev.includes(recruitedBossKaijuId) ? prev : [...prev, recruitedBossKaijuId]
+      );
       setUnlockedKaijuIds((prev) =>
         prev.includes(recruitedBossKaijuId) ? prev : [...prev, recruitedBossKaijuId]
       );
@@ -652,7 +672,9 @@ export default function KaijuQuestApp() {
     const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
 
     if (wishType === 'new-kaiju') {
-      const lockedPool = KAIJU_LIST.filter((k) => !unlockedKaijuIds.includes(k.id));
+      const lockedPool = KAIJU_LIST.filter(
+        (k) => !unlockedKaijuIds.includes(k.id) && !k.id.includes('-dq-')
+      );
       if (lockedPool.length > 0) {
         const picked = lockedPool[Math.floor(Math.random() * lockedPool.length)];
         setUnlockedKaijuIds((prev) => [...prev, picked.id]);
@@ -726,10 +748,11 @@ export default function KaijuQuestApp() {
   const partnerKaiju = KAIJU_LIST.find((k) => k.id === activePartnerId) || KAIJU_LIST[0];
   const partnerStats = getKaijuStats(partnerKaiju, kaijuProgress[partnerKaiju.id]);
 
-  // 選択中の属性×タイプに未解放の怪獣がいるかチェック
+  // 選択中の属性×タイプに未解放の怪獣がいるかチェック（大魔王は対戦限定のため除外）
   const hasLockedCandidateForSelection = KAIJU_LIST.some(
     (k) =>
       (k.category || 'kaiju') === summonCategory &&
+      !k.id.includes('-dq-') &&
       k.element === selectedElement &&
       k.type === selectedType &&
       !unlockedKaijuIds.includes(k.id)
@@ -1656,12 +1679,18 @@ export default function KaijuQuestApp() {
                           <div className="text-sm font-black text-slate-400">？？？</div>
                           <div className="mt-1 flex items-center gap-1 text-[11px] font-bold text-slate-500">
                             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">
-                              {kaiju.category === 'insect' && elMeta.insectFieldLabel
-                                ? elMeta.insectFieldLabel
-                                : elMeta.label}
-                              ×{typeMeta.label}
-                            </span>
+                            {kaiju.id.includes('-dq-') ? (
+                              <span className="truncate text-rose-400 font-black">
+                                ⚔️ ボス討伐で なかまになる！
+                              </span>
+                            ) : (
+                              <span className="truncate">
+                                {kaiju.category === 'insect' && elMeta.insectFieldLabel
+                                  ? elMeta.insectFieldLabel
+                                  : elMeta.label}
+                                ×{typeMeta.label}
+                              </span>
+                            )}
                           </div>
                         </div>
                       )}
