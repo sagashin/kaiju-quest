@@ -4042,14 +4042,6 @@ export function KaijuSvgIllustration({
         />
       )}
 
-      {/* Stage 1 キッズ期の可愛い新米マークバッジ */}
-      {!silhouette && evolutionStage === 1 && (
-        <div className="absolute -top-1 right-1 z-20 bg-emerald-950/90 border-2 border-emerald-300 text-emerald-200 text-xs font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-0.5 pointer-events-none">
-          <span>🌱</span>
-          <span>キッズ</span>
-        </div>
-      )}
-
       <div
         className={`w-full h-full flex items-center justify-center ${flipHorizontal ? 'scale-x-[-1]' : ''}`}
       >
