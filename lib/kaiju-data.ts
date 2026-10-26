@@ -357,9 +357,13 @@ export interface KaijuSkill {
   isUltimate?: boolean;
 }
 
+export type AwakeningStar = 0 | 1 | 2 | 3; // 0:通常, 1:★1黄金, 2:★2ダイヤ, 3:★3虹色ゴッド
+export const MAX_AWAKENING_STAR = 3;
+
 export interface KaijuProgress {
   level: number;
   exp: number;
+  awakeningStar?: AwakeningStar;
 }
 
 export interface KaijuComputedStats {
@@ -367,6 +371,8 @@ export interface KaijuComputedStats {
   exp: number;
   nextLevelExp: number;
   stage: EvolutionStage;
+  awakeningStar: AwakeningStar;
+  awakeningTitle: string;
   displayName: string;
   stageTitle: string;
   maxHp: number;
@@ -1913,11 +1919,49 @@ export function getKaijuSkills(kaiju: KaijuData): KaijuSkill[] {
 }
 
 /**
- * 怪獣の現在のレベル・進化段階・ドラクエ風ステータス・習得技を計算する
+ * 覚醒ランク（★1黄金 / ★2ダイヤ / ★3虹色ゴッド）に応じた色違いカラーパレットを返す
+ */
+export function getAwakeningOverrideColors(
+  kaiju: KaijuData,
+  awakeningStar: AwakeningStar
+): { primary: string; secondary: string; accent: string } | undefined {
+  if (awakeningStar === 0) {
+    return kaiju.realColors;
+  }
+  if (awakeningStar === 1) {
+    // ★1 黄金（ゴールデン）カラー
+    return {
+      primary: '#facc15',
+      secondary: '#b45309',
+      accent: '#fef08a',
+    };
+  }
+  if (awakeningStar === 2) {
+    // ★2 ダイヤ・プラチナカラー
+    return {
+      primary: '#38bdf8',
+      secondary: '#6366f1',
+      accent: '#f0abfc',
+    };
+  }
+  // ★3 虹色ゴッドカラー
+  return {
+    primary: '#f43f5e',
+    secondary: '#eab308',
+    accent: '#22d3ee',
+  };
+}
+
+/**
+ * 怪獣の現在のレベル・進化段階・色違い覚醒ランク・ドラクエ風ステータス・習得技を計算する
  */
 export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): KaijuComputedStats {
   const level = Math.min(MAX_KAIJU_LEVEL, Math.max(1, progress?.level ?? 1));
   const exp = Math.max(0, progress?.exp ?? 0);
+  const awakeningStar = Math.min(
+    MAX_AWAKENING_STAR,
+    Math.max(0, progress?.awakeningStar ?? 0)
+  ) as AwakeningStar;
   const nextLevelExp = 100;
   const stage = getEvolutionStage(level);
   const isMaxLevel = level >= MAX_KAIJU_LEVEL;
@@ -1953,14 +1997,52 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     }
   }
 
-  // 3〜4ターン前後で白熱してサクッと決着がつくスピーディなバトルバランス
-  const maxHp = 140 + kaiju.stars * 12 + (level - 1) * 22 + (stage - 1) * 35;
-  const maxMp = 35 + kaiju.stars * 5 + (level - 1) * 6 + (stage - 1) * 12;
-  const attack = 34 + kaiju.stars * 5 + (level - 1) * 9 + (stage - 1) * 14;
-  const defense = 18 + kaiju.stars * 3 + (level - 1) * 4 + (stage - 1) * 8;
-  const speed = 22 + (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 10 : 4) + (level - 1) * 5;
+  // 色違い覚醒タイトルの設定
+  const awakeningTitle =
+    awakeningStar === 1
+      ? '✨★1 黄金の色違い'
+      : awakeningStar === 2
+      ? '💎★2 ダイヤ色違い'
+      : awakeningStar === 3
+      ? '🌈★3 虹色ゴッド【極】'
+      : '';
 
-  const allSkills = getKaijuSkills(kaiju);
+  if (awakeningStar === 1) {
+    displayName = `【黄金】${displayName}`;
+  } else if (awakeningStar === 2) {
+    displayName = `【ダイヤ】${displayName}`;
+  } else if (awakeningStar === 3) {
+    displayName = `【虹神】${displayName}`;
+  }
+
+  // ステータス計算（色違い覚醒ランクごとに大幅ボーナス加算！）
+  const maxHp =
+    140 + kaiju.stars * 12 + (level - 1) * 22 + (stage - 1) * 35 + awakeningStar * 45;
+  const maxMp =
+    35 + kaiju.stars * 5 + (level - 1) * 6 + (stage - 1) * 12 + awakeningStar * 15;
+  const attack =
+    34 + kaiju.stars * 5 + (level - 1) * 9 + (stage - 1) * 14 + awakeningStar * 18;
+  const defense =
+    18 + kaiju.stars * 3 + (level - 1) * 4 + (stage - 1) * 8 + awakeningStar * 10;
+  const speed =
+    22 +
+    (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 10 : 4) +
+    (level - 1) * 5 +
+    awakeningStar * 8;
+
+  // 覚醒ランクに応じて究極奥義（スキル4）の威力を強化
+  const baseSkills = getKaijuSkills(kaiju);
+  const allSkills = baseSkills.map((sk) => {
+    if (sk.isUltimate && awakeningStar > 0) {
+      const prefix = awakeningStar === 3 ? '🌈真・' : awakeningStar === 2 ? '💎超・' : '✨黄金・';
+      return {
+        ...sk,
+        name: `${prefix}${sk.name}`,
+        power: sk.power + awakeningStar * 25,
+      };
+    }
+    return sk;
+  });
   const unlockedSkills = allSkills.filter((s) => s.unlockLevel <= level);
 
   return {
@@ -1968,6 +2050,8 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     exp,
     nextLevelExp,
     stage,
+    awakeningStar,
+    awakeningTitle,
     displayName,
     stageTitle,
     maxHp,
@@ -2063,10 +2147,14 @@ export interface HeroRankInfo {
 }
 
 /**
- * 勇者称号判定ヘルパー
+ * 勇者称号判定ヘルパー（色違い覚醒ボーナスも加算！）
  */
-export function getHeroRank(unlockedCount: number, totalLevelSum: number): HeroRankInfo {
-  const score = unlockedCount * 2 + totalLevelSum;
+export function getHeroRank(
+  unlockedCount: number,
+  totalLevelSum: number,
+  totalAwakeningSum: number = 0
+): HeroRankInfo {
+  const score = unlockedCount * 2 + totalLevelSum + totalAwakeningSum * 5;
   if (score < 10) {
     return {
       badge: '🌱',

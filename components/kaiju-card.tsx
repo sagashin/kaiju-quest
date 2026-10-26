@@ -7,10 +7,13 @@ import {
   KaijuProgress,
   KaijuSkill,
   EvolutionStage,
+  AwakeningStar,
   getElementMeta,
   getTypeMeta,
   getKaijuStats,
+  getAwakeningOverrideColors,
   MAX_KAIJU_LEVEL,
+  MAX_AWAKENING_STAR,
 } from '@/lib/kaiju-data';
 import { KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import {
@@ -18,6 +21,7 @@ import {
   playSpecialAttackSound,
   playLevelUpSound,
   playEvolutionSound,
+  playAwakeningSound,
   speakJapanese,
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
@@ -50,6 +54,7 @@ export function KaijuHeroCard({
   const [isAttacking, setIsAttacking] = useState(false);
   const [activeSkillBanner, setActiveSkillBanner] = useState<string | null>(null);
   const [previewStage, setPreviewStage] = useState<EvolutionStage | null>(null);
+  const [previewAwakening, setPreviewAwakening] = useState<AwakeningStar | null>(null);
   const [levelUpMessages, setLevelUpMessages] = useState<string[] | null>(null);
 
   const elMeta = getElementMeta(kaiju.element);
@@ -61,12 +66,37 @@ export function KaijuHeroCard({
   const displayedStage: EvolutionStage =
     previewStage && previewStage <= stats.stage ? previewStage : stats.stage;
 
-  const displayedName =
+  // プレビュー選択中ならその色違いランク、未選択なら現在の覚醒ランクを表示
+  const displayedAwakening: AwakeningStar =
+    previewAwakening !== null && previewAwakening <= stats.awakeningStar
+      ? previewAwakening
+      : stats.awakeningStar;
+
+  const baseStageName =
     displayedStage === 1
       ? kaiju.stageNames?.[0] ?? (isInsect ? `ちび${kaiju.name}` : `プチ${kaiju.name}`)
       : displayedStage === 2
       ? kaiju.stageNames?.[1] ?? kaiju.name
       : kaiju.stageNames?.[2] ?? (isInsect ? `ギネス級${kaiju.name}` : `キング${kaiju.name}`);
+
+  const displayedName =
+    displayedAwakening === 1
+      ? `【黄金】${baseStageName}`
+      : displayedAwakening === 2
+      ? `【ダイヤ】${baseStageName}`
+      : displayedAwakening === 3
+      ? `【虹神】${baseStageName}`
+      : baseStageName;
+
+  const overrideColors = getAwakeningOverrideColors(kaiju, displayedAwakening);
+  const auraClass =
+    displayedAwakening === 1
+      ? 'awakening-aura-1'
+      : displayedAwakening === 2
+      ? 'awakening-aura-2'
+      : displayedAwakening === 3
+      ? 'awakening-aura-3'
+      : '';
 
   const handlePlaySkillAttack = (skill?: KaijuSkill) => {
     const moveName = skill ? skill.name : kaiju.specialMove;
@@ -86,10 +116,11 @@ export function KaijuHeroCard({
   const handleOneTapLevelUp = () => {
     if (!onLevelUp) return;
 
-    if (stats.level >= MAX_KAIJU_LEVEL) {
+    // Lv.10 かつ 覚醒★3（極）まで到達済みの場合
+    if (stats.level >= MAX_KAIJU_LEVEL && stats.awakeningStar >= MAX_AWAKENING_STAR) {
       playTapSound(320);
       speakJapanese(
-        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
+        'この なかまは 虹色ゴッドの 究極完全体MAXだよ！すべての パワーを きわめた 最強の なかまだね！',
         soundEnabled
       );
       return;
@@ -105,11 +136,48 @@ export function KaijuHeroCard({
     }
 
     const oldStats = stats;
-    // 親コンポーネントのレベルアップ処理を実行（EXP+50加算）
     onLevelUp(kaiju.id);
     setPreviewStage(null);
+    setPreviewAwakening(null);
 
-    // 次の予測ステータス（100EXPごとにレベルアップ）
+    // ★ Lv.10到達済みの場合は「キラキラ色違い超覚醒（★1 → ★2 → ★3）」発動！
+    if (oldStats.level >= MAX_KAIJU_LEVEL && oldStats.awakeningStar < MAX_AWAKENING_STAR) {
+      const nextStar = (oldStats.awakeningStar + 1) as AwakeningStar;
+      const nextStats = getKaijuStats(kaiju, {
+        level: MAX_KAIJU_LEVEL,
+        exp: 0,
+        awakeningStar: nextStar,
+      });
+
+      playAwakeningSound();
+
+      const starLabel =
+        nextStar === 1
+          ? '✨★1 黄金（ゴールデン）色違い'
+          : nextStar === 2
+          ? '💎★2 ダイヤ（プラチナ）色違い'
+          : '🌈★3 虹色ゴッド【極】';
+
+      const msgs: string[] = [
+        `🌈 キターーー！！ 超キラキラ覚醒 せいこう！！`,
+        `✨ 『${nextStats.displayName}』（${starLabel}）に 生まれ変わった！！`,
+        `💪 HP＋45 ／ MP＋15 ／ ちから＋18 ／ 究極わざ威力＋25 アップ！`,
+      ];
+
+      setLevelUpMessages(msgs);
+      setIsAttacking(true);
+      speakJapanese(
+        `キターーー！うおおおーっ！${oldStats.displayName}が 光りかがやいて、${starLabel}の、${nextStats.displayName} に 超覚醒したぞーっ！これマジで神ってるー！`,
+        soundEnabled
+      );
+
+      setTimeout(() => {
+        setIsAttacking(false);
+      }, 1400);
+      return;
+    }
+
+    // 通常のレベルアップ予測ステータス（100EXPごとにレベルアップ）
     const nextExpTotal = oldStats.exp + 50;
     const nextLvCandidate = Math.min(
       MAX_KAIJU_LEVEL,
@@ -118,6 +186,7 @@ export function KaijuHeroCard({
     const nextStats = getKaijuStats(kaiju, {
       level: nextLvCandidate,
       exp: nextExpTotal >= 100 ? nextExpTotal - 100 : nextExpTotal,
+      awakeningStar: oldStats.awakeningStar,
     });
     const leveledUp = nextStats.level > oldStats.level;
     const didEvolve = nextStats.stage > oldStats.stage;
@@ -143,9 +212,9 @@ export function KaijuHeroCard({
 
       if (reachedMax) {
         msgs.push(
-          `👑 ついに レベルMAX（Lv.10）とうたつ！！ 『${nextStats.displayName}』の 究極完全体になったぞーーっ！！`
+          `👑 ついに レベルMAX（Lv.10）とうたつ！！ さらに『キラキラ色違い覚醒』が 解放されたぞーーっ！！`
         );
-        speech += ` ついに、レベルMAXの 究極完全体になったぞーっ！やばすぎるーー！！`;
+        speech += ` ついに、レベルMAXの 究極完全体になったぞーっ！ここからは キラキラ色違いに 超覚醒できるよ！やばすぎるーー！！`;
         playEvolutionSound();
         fireSummonConfetti(['#facc15', '#fef08a', '#f97316', '#ffffff', '#ec4899']);
       } else if (didEvolve) {
@@ -184,9 +253,15 @@ export function KaijuHeroCard({
     <div className="w-full max-w-md mx-auto">
       {/* キラキラ黄金＆属性グラデーション枠の怪獣カード */}
       <div
-        className={`relative rounded-3xl p-1.5 bg-gradient-to-br ${elMeta.bgGradient} shadow-[0_0_40px_rgba(250,204,21,0.5)] transition-transform duration-200 ${
-          isAttacking ? 'scale-[1.02]' : ''
-        }`}
+        className={`relative rounded-3xl p-1.5 bg-gradient-to-br ${
+          displayedAwakening === 3
+            ? 'from-yellow-300 via-pink-500 to-cyan-400 shadow-[0_0_50px_rgba(244,63,94,0.8)]'
+            : displayedAwakening === 2
+            ? 'from-cyan-300 via-indigo-500 to-fuchsia-400 shadow-[0_0_45px_rgba(56,189,248,0.8)]'
+            : displayedAwakening === 1
+            ? 'from-yellow-200 via-amber-400 to-yellow-600 shadow-[0_0_45px_rgba(250,204,21,0.9)]'
+            : `${elMeta.bgGradient} shadow-[0_0_40px_rgba(250,204,21,0.5)]`
+        } transition-transform duration-200 ${isAttacking ? 'scale-[1.02]' : ''}`}
       >
         {/* NEWバッジ */}
         {isNewUnlock && (
@@ -197,7 +272,11 @@ export function KaijuHeroCard({
 
         <div className="relative rounded-[20px] bg-slate-900/95 p-4 sm:p-5 overflow-hidden border border-white/25 space-y-3">
           {/* ホログラムのキラキラ反射レイヤー */}
-          <div className="pointer-events-none absolute inset-0 animate-holo opacity-35" />
+          <div
+            className={`pointer-events-none absolute inset-0 animate-holo ${
+              displayedAwakening > 0 ? 'opacity-65' : 'opacity-35'
+            }`}
+          />
 
           {/* カード上部：図鑑ナンバー・形態タイトル・属性・タイプ */}
           <div className="relative z-10 flex items-center justify-between gap-2">
@@ -207,6 +286,11 @@ export function KaijuHeroCard({
               <span className="bg-amber-400/20 text-amber-200 border border-amber-400/50 px-2 py-0.5 rounded-full text-xs">
                 {stats.stageTitle}
               </span>
+              {stats.awakeningStar > 0 && (
+                <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2.5 py-0.5 rounded-full text-xs shadow animate-pulse">
+                  {stats.awakeningTitle}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-1.5 text-xl bg-slate-800/90 px-3 py-1 rounded-xl border border-white/15 shrink-0">
               <span>{elMeta.emoji}</span>
@@ -226,13 +310,18 @@ export function KaijuHeroCard({
                   👑 MAX
                 </span>
               )}
+              {stats.awakeningStar > 0 && (
+                <span className="text-sm font-black text-yellow-300">
+                  {'★'.repeat(stats.awakeningStar)}
+                </span>
+              )}
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
               {displayedName}
             </h2>
           </div>
 
-          {/* 進化段階プレビュー切り替えボタン（Lv3以上で解放された形態を見比べられる） */}
+          {/* 進化段階プレビュー切り替えボタン */}
           {stats.stage >= 2 && (
             <div className="relative z-10 flex items-center justify-center gap-1.5">
               {([1, 2, 3] as EvolutionStage[]).map((st) => {
@@ -273,11 +362,57 @@ export function KaijuHeroCard({
             </div>
           )}
 
+          {/* 🌈 色違いカラー切り替えボタン（超覚醒した怪獣のみ表示！） */}
+          {stats.awakeningStar >= 1 && (
+            <div className="relative z-10 flex flex-wrap items-center justify-center gap-1.5 bg-slate-950/80 p-1.5 rounded-xl border border-yellow-400/40">
+              {([0, 1, 2, 3] as AwakeningStar[]).map((star) => {
+                const isUnlockedStar = star <= stats.awakeningStar;
+                const isSelected = displayedAwakening === star;
+                const label =
+                  star === 0
+                    ? '🎨通常'
+                    : star === 1
+                    ? '✨★1黄金'
+                    : star === 2
+                    ? '💎★2ダイヤ'
+                    : '🌈★3虹神';
+                return (
+                  <button
+                    key={star}
+                    type="button"
+                    disabled={!isUnlockedStar}
+                    onClick={() => {
+                      playTapSound(680);
+                      setPreviewAwakening(star);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-black border transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400 text-slate-950 border-white shadow'
+                        : isUnlockedStar
+                        ? 'bg-slate-800 text-amber-200 border-amber-400/40 hover:bg-slate-700'
+                        : 'bg-slate-950/60 text-slate-600 border-slate-800 cursor-not-allowed'
+                    }`}
+                  >
+                    {isUnlockedStar ? label : `🔒${label}`}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {/* 中央：怪獣SVGイラストステージ（タップでも必殺技発動！） */}
           <button
             type="button"
             onClick={() => handlePlaySkillAttack()}
-            className="relative z-10 w-full h-52 sm:h-60 rounded-2xl bg-slate-950/80 border-2 border-white/20 flex items-center justify-center overflow-hidden group cursor-pointer active:scale-95 transition-transform"
+            className={`relative z-10 w-full h-52 sm:h-60 rounded-2xl border-2 flex items-center justify-center overflow-hidden group cursor-pointer active:scale-95 transition-transform ${
+              displayedAwakening === 3
+                ? 'bg-gradient-to-b from-purple-950/90 via-slate-950 to-amber-950/90 border-yellow-300'
+                : displayedAwakening === 2
+                ? 'bg-gradient-to-b from-cyan-950/90 via-slate-950 to-indigo-950/90 border-cyan-300'
+                : displayedAwakening === 1
+                ? 'bg-gradient-to-b from-amber-950/90 via-slate-950 to-yellow-950/90 border-yellow-400'
+                : 'bg-slate-950/80 border-white/20'
+            }`}
             aria-label={`${displayedName}のひっさつわざを発動`}
           >
             {/* 鳴き声吹き出し */}
@@ -292,14 +427,14 @@ export function KaijuHeroCard({
               </div>
             )}
 
-            <div className="w-44 h-44 sm:w-52 sm:h-52">
+            <div className={`w-44 h-44 sm:w-52 sm:h-52 ${auraClass}`}>
               <KaijuSvgIllustration
                 element={kaiju.element}
                 type={kaiju.type}
                 kaijuId={kaiju.id}
                 category={kaiju.category}
                 insectStyle={kaiju.insectStyle}
-                realColors={kaiju.realColors}
+                realColors={overrideColors}
                 evolutionStage={displayedStage}
                 isAttacking={isAttacking}
                 isFloating={true}
@@ -317,18 +452,33 @@ export function KaijuHeroCard({
             </div>
           </button>
 
-          {/* 4歳児向けワンタップ「⚡レベルアップ！」特大ボタン ＆ あいぼうボタン */}
+          {/* 4歳児向けワンタップ「⚡レベルアップ / 🌈キラキラ色違い超覚醒！」特大ボタン */}
           {(onLevelUp || onSelectPartner) && (
             <div className="relative z-10 space-y-2">
               {onLevelUp && (
-                stats.level >= MAX_KAIJU_LEVEL ? (
+                stats.level >= MAX_KAIJU_LEVEL && stats.awakeningStar >= MAX_AWAKENING_STAR ? (
                   <button
                     type="button"
                     disabled
-                    className="min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 bg-slate-900/90 border-yellow-400/60 text-yellow-300 shadow cursor-default"
+                    className="min-h-[64px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 bg-gradient-to-r from-yellow-500/30 via-pink-500/30 to-cyan-500/30 border-yellow-300 text-yellow-200 shadow cursor-default"
                   >
-                    <span className="text-2xl">👑</span>
-                    <span>レベルMAX（究極完全体）！</span>
+                    <span className="text-2xl">🌈</span>
+                    <span>虹色ゴッド【極】（完全体MAX）！</span>
+                  </button>
+                ) : stats.level >= MAX_KAIJU_LEVEL ? (
+                  <button
+                    type="button"
+                    onClick={handleOneTapLevelUp}
+                    className={`min-h-[68px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
+                      expOrbs > 0
+                        ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 border-white shadow-[0_5px_0_#9333ea,0_0_30px_rgba(244,114,182,0.85)] animate-pulse'
+                        : 'bg-slate-800 text-slate-400 border-slate-600'
+                    }`}
+                  >
+                    <span className="text-2xl">🌈</span>
+                    <span>
+                      キラキラ色違いに 超覚醒！（★{stats.awakeningStar}→★{stats.awakeningStar + 1} / のこり{expOrbs}こ）
+                    </span>
                   </button>
                 ) : (
                   <button
@@ -374,11 +524,11 @@ export function KaijuHeroCard({
             </div>
           )}
 
-          {/* ドラクエ風レベルアップ＆進化実況ウィンドウ（レベルアップ時に出現！） */}
+          {/* ドラクエ風レベルアップ＆超覚醒実況ウィンドウ */}
           {levelUpMessages && (
             <div className="relative z-20 dq-window p-3.5 text-white space-y-1.5 animate-bounce">
               <div className="text-xs font-black text-yellow-300 flex items-center justify-between">
-                <span>🎺 レベルアップ じっきょう！</span>
+                <span>🎺 レベルアップ＆超覚醒 じっきょう！</span>
                 <button
                   type="button"
                   onClick={() => setLevelUpMessages(null)}
@@ -404,19 +554,38 @@ export function KaijuHeroCard({
                   Lv.{stats.level} / {MAX_KAIJU_LEVEL}
                 </span>
                 <span className="text-xs font-bold text-slate-300">
-                  （つぎの進化: {stats.level < 5 ? 'Lv.5 せいちょう期' : stats.level < 10 ? 'Lv.10 キング形態' : '👑究極キングMAX！'}）
+                  （
+                  {stats.level < 5
+                    ? 'つぎ: Lv.5 せいちょう期'
+                    : stats.level < 10
+                    ? 'つぎ: Lv.10 キング形態'
+                    : stats.awakeningStar < 3
+                    ? `🌈色違い覚醒 ★${stats.awakeningStar}/3`
+                    : '🌈虹色ゴッド【極】MAX！'}
+                  ）
                 </span>
               </div>
               <span className="text-xs font-black text-amber-200 tabular-nums">
-                EXP {stats.exp}/100
+                {stats.level >= MAX_KAIJU_LEVEL
+                  ? `覚醒 ★${stats.awakeningStar}/3`
+                  : `EXP ${stats.exp}/100`}
               </span>
             </div>
 
             {/* EXPバー */}
             <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-white/20">
               <div
-                className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 transition-all duration-300"
-                style={{ width: `${Math.min(100, stats.exp)}%` }}
+                className={`h-full transition-all duration-300 ${
+                  stats.level >= MAX_KAIJU_LEVEL
+                    ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-400'
+                    : 'bg-gradient-to-r from-amber-400 to-yellow-300'
+                }`}
+                style={{
+                  width:
+                    stats.level >= MAX_KAIJU_LEVEL
+                      ? `${(stats.awakeningStar / 3) * 100}%`
+                      : `${Math.min(100, stats.exp)}%`,
+                }}
               />
             </div>
 

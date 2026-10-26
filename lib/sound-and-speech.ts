@@ -986,3 +986,72 @@ export function playTagUltimateSound() {
     playBattleAttackSound(true);
   }, 320);
 }
+
+/**
+ * 10. 超キラキラ色違い覚醒サウンド（ポケモンの色違いキラーン音＋超サイヤ人風オーラ＋祝福ファンファーレ）
+ */
+export function playAwakeningSound() {
+  fireSummonConfetti(['#facc15', '#fef08a', '#38bdf8', '#e879f9', '#f43f5e', '#4ade80']);
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // 1. 色違い特有の「キラーン✨（超高音クリスタルチャイム）」
+  const sparkleNotes = [1567.98, 2093.0, 2637.02, 3135.96, 4186.01]; // G6, C7, E7, G7, C8
+  sparkleNotes.forEach((freq, idx) => {
+    const start = now + idx * 0.055;
+    const dur = 0.35;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.28, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  });
+
+  // 2. 黄金・虹色の壮大な覚醒ファンファーレ
+  const fanfare = [
+    { freq: 523.25, delay: 0.3, dur: 0.14 },  // C5
+    { freq: 659.25, delay: 0.45, dur: 0.14 }, // E5
+    { freq: 783.99, delay: 0.6, dur: 0.14 },  // G5
+    { freq: 1046.5, delay: 0.75, dur: 0.25 }, // C6
+    { freq: 987.77, delay: 1.02, dur: 0.18 }, // B5
+    { freq: 1046.5, delay: 1.22, dur: 0.18 }, // C6
+    { freq: 1318.5, delay: 1.42, dur: 0.85 }, // E6
+    { freq: 1567.98, delay: 1.42, dur: 0.85 }, // G6 (Harmony)
+  ];
+
+  fanfare.forEach(({ freq, delay, dur }) => {
+    const start = now + delay;
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc2.type = 'triangle';
+    osc1.frequency.setValueAtTime(freq, start);
+    osc2.frequency.setValueAtTime(freq * 0.5, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.22, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start(start);
+    osc2.start(start);
+    osc1.stop(start + dur + 0.02);
+    osc2.stop(start + dur + 0.02);
+  });
+}

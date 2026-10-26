@@ -31,7 +31,10 @@ import {
   getElementMeta,
   getTypeMeta,
   getHeroRank,
+  getAwakeningOverrideColors,
   MAX_KAIJU_LEVEL,
+  MAX_AWAKENING_STAR,
+  AwakeningStar,
 } from '@/lib/kaiju-data';
 import { MonsterEggSvg, KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import { KaijuHeroCard } from '@/components/kaiju-card';
@@ -266,7 +269,11 @@ export default function KaijuQuestApp() {
       nextExp = 100;
     }
 
-    const nextProg: KaijuProgress = { level: nextLevel, exp: nextExp };
+    const nextProg: KaijuProgress = {
+      level: nextLevel,
+      exp: nextExp,
+      awakeningStar: currentProg.awakeningStar,
+    };
     const nextStats = getKaijuStats(targetKaiju, nextProg);
     const leveledUp = nextLevel > currentProg.level;
     const evolved = nextStats.stage > oldStats.stage;
@@ -301,19 +308,41 @@ export default function KaijuQuestApp() {
     return { leveledUp, newLevel: nextLevel, evolved };
   };
 
-  // ワンタップ「🌟けいけんち玉でレベルアップ！」ハンドラ（1個でEXP+50、2個で1Lvアップ）
+  // けいけんち玉でレベルアップ ＆ Lv.10到達後は「キラキラ色違い超覚醒（★1〜★3）」
   const handleUseExpOrb = (kaijuId: string) => {
     if (expOrbs <= 0) return;
-    const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0 };
-    if (currentProg.level >= MAX_KAIJU_LEVEL) {
+
+    const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0, awakeningStar: 0 };
+    const currentStar = currentProg.awakeningStar ?? 0;
+
+    // すでにLv.10かつ覚醒★3（MAX）なら何もしない
+    if (currentProg.level >= MAX_KAIJU_LEVEL && currentStar >= 3) {
       playTapSound(320);
       speakJapanese(
-        'この なかまは もう レベルMAX（Lv.10）の 究極キングだよ！ほかの なかまを そだててね！',
+        'この なかまは 虹色ゴッドの 究極完全体MAXだよ！すべての パワーを きわめた 最強の なかまだね！',
         soundEnabled
       );
       return;
     }
+
+    // けいけんち玉を1つ消費
     setExpOrbs((prev) => Math.max(0, prev - 1));
+
+    // Lv.10到達済みの場合は「キラキラ色違い超覚醒」ランクを +1 アップ！
+    if (currentProg.level >= MAX_KAIJU_LEVEL) {
+      const nextStar = Math.min(3, currentStar + 1) as AwakeningStar;
+      setKaijuProgress((prev) => ({
+        ...prev,
+        [kaijuId]: {
+          ...currentProg,
+          level: MAX_KAIJU_LEVEL,
+          exp: 0,
+          awakeningStar: nextStar,
+        },
+      }));
+      return;
+    }
+
     addExpToKaiju(kaijuId, 50, { showToast: true });
   };
 
@@ -716,12 +745,16 @@ export default function KaijuQuestApp() {
   const canSummon = energy >= 3;
   const meterSlots = Math.min(3, energy);
 
-  // プレイヤーの合計レベル＆勇者ランク称号
+  // プレイヤーの合計レベル＆勇者ランク称号（超覚醒ボーナスも加算）
   const totalKaijuLevelSum = Object.values(kaijuProgress).reduce(
     (sum, p) => sum + (p?.level || 1),
     0
   );
-  const heroRank = getHeroRank(unlockedKaijuIds.length, totalKaijuLevelSum);
+  const totalAwakeningSum = Object.values(kaijuProgress).reduce(
+    (sum, p) => sum + (p?.awakeningStar || 0),
+    0
+  );
+  const heroRank = getHeroRank(unlockedKaijuIds.length, totalKaijuLevelSum, totalAwakeningSum);
 
   // クエストの朝・夜フィルターリスト
   const filteredQuestList =
@@ -912,7 +945,17 @@ export default function KaijuQuestApp() {
                 }}
                 className="lg:col-span-5 dq-window p-4 text-left text-white flex items-center gap-3.5 hover:border-yellow-300 transition-all active:scale-95 cursor-pointer"
               >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-900/90 rounded-2xl border border-white/20 p-1">
+                <div
+                  className={`w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-900/90 rounded-2xl border border-white/20 p-1 ${
+                    partnerStats.awakeningStar === 1
+                      ? 'awakening-aura-1'
+                      : partnerStats.awakeningStar === 2
+                      ? 'awakening-aura-2'
+                      : partnerStats.awakeningStar === 3
+                      ? 'awakening-aura-3'
+                      : ''
+                  }`}
+                >
                   <KaijuSvgIllustration
                     element={partnerKaiju.element}
                     type={partnerKaiju.type}
@@ -920,15 +963,22 @@ export default function KaijuQuestApp() {
                     evolutionStage={partnerStats.stage}
                     category={partnerKaiju.category}
                     insectStyle={partnerKaiju.insectStyle}
-                    realColors={partnerKaiju.realColors}
+                    realColors={getAwakeningOverrideColors(partnerKaiju, partnerStats.awakeningStar)}
                   />
                 </div>
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center justify-between gap-1">
-                    <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded-full border border-emerald-400/50">
-                      <HeartHandshake className="w-3.5 h-3.5" />
-                      <span>あいぼう</span>
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-300 bg-emerald-950/90 px-2 py-0.5 rounded-full border border-emerald-400/50">
+                        <HeartHandshake className="w-3.5 h-3.5" />
+                        <span>あいぼう</span>
+                      </span>
+                      {partnerStats.awakeningStar > 0 && (
+                        <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2 py-0.5 rounded-full text-[10px] shadow animate-pulse">
+                          {partnerStats.awakeningStar === 3 ? '🌈★3' : partnerStats.awakeningStar === 2 ? '💎★2' : '✨★1'}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-sm font-black text-yellow-300 tabular-nums">
                       Lv.{partnerStats.level} / {MAX_KAIJU_LEVEL}
                       {partnerStats.level >= MAX_KAIJU_LEVEL && ' 👑MAX'}
@@ -1636,16 +1686,33 @@ export default function KaijuQuestApp() {
                         )}
                       </div>
 
-                      {/* あいぼうバッジ */}
-                      {isUnlocked && isCurrentPartner && (
-                        <div className="mt-1 inline-flex items-center gap-1 self-start bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
-                          🤝 あいぼう
-                        </div>
-                      )}
+                      {/* あいぼうバッジ ＆ 覚醒バッジ */}
+                      <div className="flex flex-wrap items-center gap-1 mt-1">
+                        {isUnlocked && isCurrentPartner && (
+                          <div className="inline-flex items-center gap-1 self-start bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
+                            🤝 あいぼう
+                          </div>
+                        )}
+                        {isUnlocked && stats.awakeningStar > 0 && (
+                          <div className="inline-flex items-center gap-1 self-start bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow animate-pulse">
+                            {stats.awakeningStar === 3 ? '🌈★3' : stats.awakeningStar === 2 ? '💎★2' : '✨★1'}
+                          </div>
+                        )}
+                      </div>
 
                       {/* イラストまたは未発見シルエット */}
                       <div className="relative w-full h-32 sm:h-36 my-1.5 flex items-center justify-center">
-                        <div className="w-28 h-28 sm:w-32 sm:h-32 transition-all">
+                        <div
+                          className={`w-28 h-28 sm:w-32 sm:h-32 transition-all ${
+                            isUnlocked && stats.awakeningStar === 1
+                              ? 'awakening-aura-1'
+                              : isUnlocked && stats.awakeningStar === 2
+                              ? 'awakening-aura-2'
+                              : isUnlocked && stats.awakeningStar === 3
+                              ? 'awakening-aura-3'
+                              : ''
+                          }`}
+                        >
                           <KaijuSvgIllustration
                             element={kaiju.element}
                             type={kaiju.type}
@@ -1654,7 +1721,11 @@ export default function KaijuQuestApp() {
                             silhouette={!isUnlocked}
                             category={kaiju.category}
                             insectStyle={kaiju.insectStyle}
-                            realColors={kaiju.realColors}
+                            realColors={
+                              isUnlocked
+                                ? getAwakeningOverrideColors(kaiju, stats.awakeningStar)
+                                : kaiju.realColors
+                            }
                           />
                         </div>
                       </div>

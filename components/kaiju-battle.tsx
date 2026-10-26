@@ -25,6 +25,7 @@ import {
   KaijuSkill,
   KaijuComputedStats,
   getKaijuStats,
+  getAwakeningOverrideColors,
   getElementMeta,
   getTypeMeta,
   getElementAdvantage,
@@ -161,6 +162,7 @@ export function KaijuBattle({
   const p2BaseStats: KaijuComputedStats = getKaijuStats(p2Kaiju, {
     level: p2Level,
     exp: 0,
+    awakeningStar: kaijuProgress[p2Kaiju.id]?.awakeningStar,
   });
 
   const hpMult =
@@ -176,6 +178,27 @@ export function KaijuBattle({
     ...p2BaseStats,
     maxHp: Math.max(80, Math.round(p2BaseStats.maxHp * hpMult)),
   };
+
+  const p1OverrideColors = getAwakeningOverrideColors(p1Kaiju, p1Stats.awakeningStar);
+  const p2OverrideColors = getAwakeningOverrideColors(p2Kaiju, p2Stats.awakeningStar);
+
+  const p1AuraClass =
+    p1Stats.awakeningStar === 1
+      ? 'awakening-aura-1'
+      : p1Stats.awakeningStar === 2
+      ? 'awakening-aura-2'
+      : p1Stats.awakeningStar === 3
+      ? 'awakening-aura-3'
+      : '';
+
+  const p2AuraClass =
+    p2Stats.awakeningStar === 1
+      ? 'awakening-aura-1'
+      : p2Stats.awakeningStar === 2
+      ? 'awakening-aura-2'
+      : p2Stats.awakeningStar === 3
+      ? 'awakening-aura-3'
+      : '';
 
   // COOPタッグ時の合算最大HP / 最大MP
   const tagMaxHp = p1Stats.maxHp + p2Stats.maxHp;
@@ -938,13 +961,13 @@ export function KaijuBattle({
               </div>
 
               <div className="dq-window p-2 flex items-center gap-3">
-                <div className="w-16 h-16 shrink-0">
+                <div className={`w-16 h-16 shrink-0 ${p1AuraClass}`}>
                   <KaijuSvgIllustration
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
                     kaijuId={p1Kaiju.id}
                     category={p1Kaiju.category}
-                    realColors={p1Kaiju.realColors}
+                    realColors={p1OverrideColors}
                     insectStyle={p1Kaiju.insectStyle}
                     evolutionStage={p1Stats.stage}
                   />
@@ -966,6 +989,14 @@ export function KaijuBattle({
                   const isSelected = k.id === p1Kaiju.id;
                   const el = getElementMeta(k.element);
                   const stats = getKaijuStats(k, kaijuProgress[k.id]);
+                  const kAuraClass =
+                    stats.awakeningStar === 1
+                      ? 'awakening-aura-1'
+                      : stats.awakeningStar === 2
+                      ? 'awakening-aura-2'
+                      : stats.awakeningStar === 3
+                      ? 'awakening-aura-3'
+                      : '';
                   return (
                     <button
                       key={k.id}
@@ -980,20 +1011,25 @@ export function KaijuBattle({
                           : 'bg-slate-950/90 text-slate-200 border-slate-700'
                       }`}
                     >
-                      <div className="w-9 h-9 shrink-0">
+                      <div className={`w-9 h-9 shrink-0 ${kAuraClass}`}>
                         <KaijuSvgIllustration
                           element={k.element}
                           type={k.type}
                           kaijuId={k.id}
                           category={k.category}
-                          realColors={k.realColors}
+                          realColors={getAwakeningOverrideColors(k, stats.awakeningStar)}
                           insectStyle={k.insectStyle}
                           evolutionStage={stats.stage}
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[10px] font-black text-yellow-300">
-                          Lv.{stats.level} {el.emoji}
+                        <div className="text-[10px] font-black text-yellow-300 flex items-center gap-1">
+                          <span>Lv.{stats.level} {el.emoji}</span>
+                          {stats.awakeningStar > 0 && (
+                            <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-1 rounded text-[9px]">
+                              {stats.awakeningStar === 3 ? '🌈★3' : stats.awakeningStar === 2 ? '💎★2' : '✨★1'}
+                            </span>
+                          )}
                         </div>
                         <div className="text-[11px] font-black truncate">{stats.displayName}</div>
                       </div>
@@ -1069,13 +1105,13 @@ export function KaijuBattle({
               )}
 
               <div className="dq-window p-2 flex items-center gap-3">
-                <div className="w-16 h-16 shrink-0">
+                <div className={`w-16 h-16 shrink-0 ${p2AuraClass}`}>
                   <KaijuSvgIllustration
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
                     kaijuId={p2Kaiju.id}
                     category={p2Kaiju.category}
-                    realColors={p2Kaiju.realColors}
+                    realColors={p2OverrideColors}
                     insectStyle={p2Kaiju.insectStyle}
                     evolutionStage={p2Stats.stage}
                     flipHorizontal={battleMode === 'vs'}
@@ -1098,6 +1134,14 @@ export function KaijuBattle({
                   const isSelected = k.id === p2Kaiju.id;
                   const el = getElementMeta(k.element);
                   const stats = getKaijuStats(k, kaijuProgress[k.id]);
+                  const kAuraClass =
+                    stats.awakeningStar === 1
+                      ? 'awakening-aura-1'
+                      : stats.awakeningStar === 2
+                      ? 'awakening-aura-2'
+                      : stats.awakeningStar === 3
+                      ? 'awakening-aura-3'
+                      : '';
                   return (
                     <button
                       key={k.id}
@@ -1112,13 +1156,13 @@ export function KaijuBattle({
                           : 'bg-slate-950/90 text-slate-200 border-slate-700'
                       }`}
                     >
-                      <div className="w-9 h-9 shrink-0">
+                      <div className={`w-9 h-9 shrink-0 ${kAuraClass}`}>
                         <KaijuSvgIllustration
                           element={k.element}
                           type={k.type}
                           kaijuId={k.id}
                           category={k.category}
-                          realColors={k.realColors}
+                          realColors={getAwakeningOverrideColors(k, stats.awakeningStar)}
                           insectStyle={k.insectStyle}
                           evolutionStage={stats.stage}
                         />
@@ -1128,6 +1172,11 @@ export function KaijuBattle({
                           <span>
                             Lv.{stats.level} {el.emoji}
                           </span>
+                          {stats.awakeningStar > 0 && (
+                            <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-1 rounded text-[9px]">
+                              {stats.awakeningStar === 3 ? '🌈★3' : stats.awakeningStar === 2 ? '💎★2' : '✨★1'}
+                            </span>
+                          )}
                           {k.id.includes('-dq-') && (
                             <span className="px-1 rounded bg-rose-600 text-yellow-200 text-[9px]">
                               😈大魔王
@@ -1314,14 +1363,14 @@ export function KaijuBattle({
                     <div
                       className={`w-20 h-20 sm:w-28 sm:h-28 transition-transform duration-200 ${
                         p1Attacking ? 'translate-x-5 scale-110' : ''
-                      } ${turn === 1 ? 'ring-2 ring-amber-400 rounded-2xl bg-amber-400/10' : ''}`}
+                      } ${turn === 1 ? 'ring-2 ring-amber-400 rounded-2xl bg-amber-400/10' : ''} ${p1AuraClass}`}
                     >
                       <KaijuSvgIllustration
                         element={p1Kaiju.element}
                         type={p1Kaiju.type}
                         kaijuId={p1Kaiju.id}
                         category={p1Kaiju.category}
-                        realColors={p1Kaiju.realColors}
+                        realColors={p1OverrideColors}
                         insectStyle={p1Kaiju.insectStyle}
                         evolutionStage={p1Stats.stage}
                         isAttacking={p1Attacking}
@@ -1332,14 +1381,14 @@ export function KaijuBattle({
                     <div
                       className={`w-20 h-20 sm:w-28 sm:h-28 transition-transform duration-200 ${
                         p2Attacking ? 'translate-x-5 scale-110' : ''
-                      } ${turn === 2 ? 'ring-2 ring-cyan-400 rounded-2xl bg-cyan-400/10' : ''}`}
+                      } ${turn === 2 ? 'ring-2 ring-cyan-400 rounded-2xl bg-cyan-400/10' : ''} ${p2AuraClass}`}
                     >
                       <KaijuSvgIllustration
                         element={p2Kaiju.element}
                         type={p2Kaiju.type}
                         kaijuId={p2Kaiju.id}
                         category={p2Kaiju.category}
-                        realColors={p2Kaiju.realColors}
+                        realColors={p2OverrideColors}
                         insectStyle={p2Kaiju.insectStyle}
                         evolutionStage={p2Stats.stage}
                         isAttacking={p2Attacking}
@@ -1351,14 +1400,14 @@ export function KaijuBattle({
                   <div
                     className={`w-28 h-28 sm:w-40 sm:h-40 transition-transform duration-200 ${
                       p1Attacking ? 'translate-x-6 scale-110' : ''
-                    }`}
+                    } ${p1AuraClass}`}
                   >
                     <KaijuSvgIllustration
                       element={p1Kaiju.element}
                       type={p1Kaiju.type}
                       kaijuId={p1Kaiju.id}
                       category={p1Kaiju.category}
-                      realColors={p1Kaiju.realColors}
+                      realColors={p1OverrideColors}
                       insectStyle={p1Kaiju.insectStyle}
                       evolutionStage={p1Stats.stage}
                       isAttacking={p1Attacking}
@@ -1403,14 +1452,14 @@ export function KaijuBattle({
                   <div
                     className={`w-28 h-28 sm:w-40 sm:h-40 transition-transform duration-200 ${
                       p2Attacking ? '-translate-x-6 scale-110' : ''
-                    }`}
+                    } ${p2AuraClass}`}
                   >
                     <KaijuSvgIllustration
                       element={p2Kaiju.element}
                       type={p2Kaiju.type}
                       kaijuId={p2Kaiju.id}
                       category={p2Kaiju.category}
-                      realColors={p2Kaiju.realColors}
+                      realColors={p2OverrideColors}
                       insectStyle={p2Kaiju.insectStyle}
                       evolutionStage={p2Stats.stage}
                       isAttacking={p2Attacking}
@@ -1652,37 +1701,37 @@ export function KaijuBattle({
           <div className="max-w-md mx-auto py-2">
             {battleMode === 'coop' ? (
               <div className="flex items-center justify-center gap-4">
-                <div className="w-28 h-28 sm:w-32 sm:h-32">
+                <div className={`w-28 h-28 sm:w-32 sm:h-32 ${p1AuraClass}`}>
                   <KaijuSvgIllustration
                     element={p1Kaiju.element}
                     type={p1Kaiju.type}
                     kaijuId={p1Kaiju.id}
                     category={p1Kaiju.category}
-                    realColors={p1Kaiju.realColors}
+                    realColors={p1OverrideColors}
                     insectStyle={p1Kaiju.insectStyle}
                     evolutionStage={p1Stats.stage}
                   />
                 </div>
-                <div className="w-28 h-28 sm:w-32 sm:h-32">
+                <div className={`w-28 h-28 sm:w-32 sm:h-32 ${p2AuraClass}`}>
                   <KaijuSvgIllustration
                     element={p2Kaiju.element}
                     type={p2Kaiju.type}
                     kaijuId={p2Kaiju.id}
                     category={p2Kaiju.category}
-                    realColors={p2Kaiju.realColors}
+                    realColors={p2OverrideColors}
                     insectStyle={p2Kaiju.insectStyle}
                     evolutionStage={p2Stats.stage}
                   />
                 </div>
               </div>
             ) : (
-              <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto">
+              <div className={`w-32 h-32 sm:w-40 sm:h-40 mx-auto ${winner === 1 ? p1AuraClass : p2AuraClass}`}>
                 <KaijuSvgIllustration
                   element={winner === 1 ? p1Kaiju.element : p2Kaiju.element}
                   type={winner === 1 ? p1Kaiju.type : p2Kaiju.type}
                   kaijuId={winner === 1 ? p1Kaiju.id : p2Kaiju.id}
                   category={winner === 1 ? p1Kaiju.category : p2Kaiju.category}
-                  realColors={winner === 1 ? p1Kaiju.realColors : p2Kaiju.realColors}
+                  realColors={winner === 1 ? p1OverrideColors : p2OverrideColors}
                   insectStyle={winner === 1 ? p1Kaiju.insectStyle : p2Kaiju.insectStyle}
                   evolutionStage={winner === 1 ? p1Stats.stage : p2Stats.stage}
                 />
