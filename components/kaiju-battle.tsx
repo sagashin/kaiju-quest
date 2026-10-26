@@ -72,18 +72,14 @@ export function KaijuBattle({
   soundEnabled,
   onBattleComplete,
 }: KaijuBattleProps) {
-  // 1Pが選べる怪獣リスト（解放済みの怪獣のみ）
-  const p1AvailableList =
+  // 選択可能な怪獣リスト（解放済みの怪獣のみ。大魔王もレイド討伐で仲間にすると選択可能）
+  const availableList =
     unlockedKaijuIds.length > 0
       ? KAIJU_LIST.filter((k) => unlockedKaijuIds.includes(k.id))
       : KAIJU_LIST.slice(0, 4);
 
-  // 2P（パパ）は解放済み怪獣 ＋ ドラクエ風4大魔王（りゅうおう・ハーゴン・ダークドレアム・デスピサロ）も選択可能！
-  const dqBossKaijuList = KAIJU_LIST.filter((k) => k.id.includes('-dq-'));
-  const p2AvailableList = [
-    ...dqBossKaijuList,
-    ...p1AvailableList.filter((k) => !k.id.includes('-dq-')),
-  ];
+  const p1AvailableList = availableList;
+  const p2AvailableList = availableList;
 
   const [battleMode, setBattleMode] = useState<BattleMode>('coop');
   const [phase, setPhase] = useState<BattlePhase>('select');
