@@ -32,6 +32,7 @@ import {
   getTypeMeta,
   getHeroRank,
   getAwakeningOverrideColors,
+  getAwakeningCost,
   MAX_KAIJU_LEVEL,
   MAX_AWAKENING_STAR,
   AwakeningStar,
@@ -313,7 +314,7 @@ export default function KaijuQuestApp() {
     if (expOrbs <= 0) return;
 
     const currentProg = kaijuProgress[kaijuId] || { level: 1, exp: 0, awakeningStar: 0 };
-    const currentStar = currentProg.awakeningStar ?? 0;
+    const currentStar = (currentProg.awakeningStar ?? 0) as AwakeningStar;
 
     // すでにLv.10かつ覚醒★3（MAX）なら何もしない
     if (currentProg.level >= MAX_KAIJU_LEVEL && currentStar >= 3) {
@@ -325,11 +326,20 @@ export default function KaijuQuestApp() {
       return;
     }
 
-    // けいけんち玉を1つ消費
-    setExpOrbs((prev) => Math.max(0, prev - 1));
-
-    // Lv.10到達済みの場合は「キラキラ色違い超覚醒」ランクを +1 アップ！
+    // Lv.10到達済みの場合は「キラキラ色違い超覚醒」コストを判定（案A: 3個 → 5個 → 8個）
     if (currentProg.level >= MAX_KAIJU_LEVEL) {
+      const cost = getAwakeningCost(currentStar);
+      if (expOrbs < cost) {
+        playTapSound(340);
+        speakJapanese(
+          `おっとー！けいけんち玉があと ${cost - expOrbs}こ たりないよ！お支度クエストや クイズで ゲットしよう！`,
+          soundEnabled
+        );
+        return;
+      }
+
+      setExpOrbs((prev) => Math.max(0, prev - cost));
+
       const nextStar = Math.min(3, currentStar + 1) as AwakeningStar;
       setKaijuProgress((prev) => ({
         ...prev,
@@ -343,6 +353,8 @@ export default function KaijuQuestApp() {
       return;
     }
 
+    // 通常のレベルアップ（1個消費・EXP+50）
+    setExpOrbs((prev) => Math.max(0, prev - 1));
     addExpToKaiju(kaijuId, 50, { showToast: true });
   };
 

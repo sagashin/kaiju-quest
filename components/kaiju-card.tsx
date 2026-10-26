@@ -12,6 +12,7 @@ import {
   getTypeMeta,
   getKaijuStats,
   getAwakeningOverrideColors,
+  getAwakeningCost,
   MAX_KAIJU_LEVEL,
   MAX_AWAKENING_STAR,
 } from '@/lib/kaiju-data';
@@ -126,22 +127,24 @@ export function KaijuHeroCard({
       return;
     }
 
-    if (expOrbs <= 0) {
-      playTapSound(340);
-      speakJapanese(
-        'おっとー！けいけんち玉が たりないよ！お支度クエストをクリアするか、バトルをして けいけんち玉を ゲットしよう！',
-        soundEnabled
-      );
-      return;
-    }
-
     const oldStats = stats;
-    onLevelUp(kaiju.id);
-    setPreviewStage(null);
-    setPreviewAwakening(null);
 
     // ★ Lv.10到達済みの場合は「キラキラ色違い超覚醒（★1 → ★2 → ★3）」発動！
     if (oldStats.level >= MAX_KAIJU_LEVEL && oldStats.awakeningStar < MAX_AWAKENING_STAR) {
+      const cost = getAwakeningCost(oldStats.awakeningStar);
+      if (expOrbs < cost) {
+        playTapSound(340);
+        speakJapanese(
+          `おっとー！けいけんち玉があと ${cost - expOrbs}こ たりないよ！お支度クエストや クイズで ゲットしよう！`,
+          soundEnabled
+        );
+        return;
+      }
+
+      onLevelUp(kaiju.id);
+      setPreviewStage(null);
+      setPreviewAwakening(null);
+
       const nextStar = (oldStats.awakeningStar + 1) as AwakeningStar;
       const nextStats = getKaijuStats(kaiju, {
         level: MAX_KAIJU_LEVEL,
@@ -176,6 +179,19 @@ export function KaijuHeroCard({
       }, 1400);
       return;
     }
+
+    if (expOrbs <= 0) {
+      playTapSound(340);
+      speakJapanese(
+        'おっとー！けいけんち玉が たりないよ！お支度クエストをクリアするか、バトルをして けいけんち玉を ゲットしよう！',
+        soundEnabled
+      );
+      return;
+    }
+
+    onLevelUp(kaiju.id);
+    setPreviewStage(null);
+    setPreviewAwakening(null);
 
     // 通常のレベルアップ予測ステータス（100EXPごとにレベルアップ）
     const nextExpTotal = oldStats.exp + 50;
@@ -466,20 +482,28 @@ export function KaijuHeroCard({
                     <span>虹色ゴッド【極】（完全体MAX）！</span>
                   </button>
                 ) : stats.level >= MAX_KAIJU_LEVEL ? (
-                  <button
-                    type="button"
-                    onClick={handleOneTapLevelUp}
-                    className={`min-h-[68px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
-                      expOrbs > 0
-                        ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 border-white shadow-[0_5px_0_#9333ea,0_0_30px_rgba(244,114,182,0.85)] animate-pulse'
-                        : 'bg-slate-800 text-slate-400 border-slate-600'
-                    }`}
-                  >
-                    <span className="text-2xl">🌈</span>
-                    <span>
-                      キラキラ色違いに 超覚醒！（★{stats.awakeningStar}→★{stats.awakeningStar + 1} / のこり{expOrbs}こ）
-                    </span>
-                  </button>
+                  (() => {
+                    const cost = getAwakeningCost(stats.awakeningStar);
+                    const canAfford = expOrbs >= cost;
+                    return (
+                      <button
+                        type="button"
+                        onClick={handleOneTapLevelUp}
+                        className={`min-h-[68px] w-full rounded-2xl p-3 font-black text-base sm:text-lg flex items-center justify-center gap-2 border-2 transition-all active:scale-95 cursor-pointer shadow-lg ${
+                          canAfford
+                            ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 border-white shadow-[0_5px_0_#9333ea,0_0_30px_rgba(244,114,182,0.85)] animate-pulse'
+                            : 'bg-slate-800 text-slate-400 border-slate-600'
+                        }`}
+                      >
+                        <span className="text-2xl">{canAfford ? '🌈' : '🔒'}</span>
+                        <span>
+                          {canAfford
+                            ? `キラキラ色違いに 超覚醒！（★${stats.awakeningStar}→★${stats.awakeningStar + 1} / 🌟玉${cost}こ / のこり${expOrbs}こ）`
+                            : `けいけんち玉が たりないよ（ひつよう: 🌟玉${cost}こ / いま: ${expOrbs}こ）`}
+                        </span>
+                      </button>
+                    );
+                  })()
                 ) : (
                   <button
                     type="button"

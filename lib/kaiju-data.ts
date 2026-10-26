@@ -360,6 +360,19 @@ export interface KaijuSkill {
 export type AwakeningStar = 0 | 1 | 2 | 3; // 0:通常, 1:★1黄金, 2:★2ダイヤ, 3:★3虹色ゴッド
 export const MAX_AWAKENING_STAR = 3;
 
+/**
+ * 案A：超覚醒に必要な「けいけんち玉」の個数（王道ステップアップ型）
+ * ★0 → ★1（黄金）: 3個
+ * ★1 → ★2（ダイヤ）: 5個
+ * ★2 → ★3（虹色ゴッド【極】）: 8個
+ */
+export function getAwakeningCost(currentStar: AwakeningStar): number {
+  if (currentStar === 0) return 3;
+  if (currentStar === 1) return 5;
+  if (currentStar === 2) return 8;
+  return 0;
+}
+
 export interface KaijuProgress {
   level: number;
   exp: number;
