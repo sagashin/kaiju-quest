@@ -1104,7 +1104,7 @@ const RAW_KAIJU_LIST: KaijuData[] = [
     id: 'nature-avengers-spiderman',
     dexNumber: 52,
     element: 'nature',
-    type: 'hunter',
+    type: 'beast',
     name: 'スパイダーマン',
     roar: '親愛なる隣人、スパイダーマン登場！シュッ！',
     specialMove: 'ギガウェブ・スイングストライク',
