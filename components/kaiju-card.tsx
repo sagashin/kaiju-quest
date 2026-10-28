@@ -15,6 +15,8 @@ import {
   getAwakeningCost,
   MAX_KAIJU_LEVEL,
   MAX_AWAKENING_STAR,
+  EQUIPMENT_LIST,
+  getEquipmentById,
 } from '@/lib/kaiju-data';
 import { KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import {
@@ -23,6 +25,7 @@ import {
   playLevelUpSound,
   playEvolutionSound,
   playAwakeningSound,
+  playEquipSound,
   speakJapanese,
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
@@ -38,6 +41,8 @@ export interface KaijuCardProps {
   onSelectPartner?: (kaijuId: string) => void;
   onClose?: () => void;
   closeButtonLabel?: string;
+  unlockedEquipmentIds?: string[];
+  onEquipItem?: (kaijuId: string, itemId: string | undefined) => void;
 }
 
 export function KaijuHeroCard({
@@ -51,6 +56,8 @@ export function KaijuHeroCard({
   onSelectPartner,
   onClose,
   closeButtonLabel = 'とじる',
+  unlockedEquipmentIds = [],
+  onEquipItem,
 }: KaijuCardProps) {
   const [isAttacking, setIsAttacking] = useState(false);
   const [activeSkillBanner, setActiveSkillBanner] = useState<string | null>(null);
@@ -436,6 +443,14 @@ export function KaijuHeroCard({
               {kaiju.roar}
             </div>
 
+            {/* 装備中の伝説アイテムバッジ */}
+            {stats.equippedItem && !isAttacking && (
+              <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs px-2.5 py-1 rounded-xl shadow-lg border border-white animate-pulse">
+                <span>{stats.equippedItem.icon}</span>
+                <span>{stats.equippedItem.name}</span>
+              </div>
+            )}
+
             {/* 発動中の技名カットイン */}
             {isAttacking && activeSkillBanner && (
               <div className="absolute top-2.5 right-2.5 z-30 bg-gradient-to-r from-rose-600 to-amber-500 text-white font-black text-xs sm:text-sm px-3 py-1 rounded-xl border-2 border-white shadow-xl animate-bounce">
@@ -651,6 +666,107 @@ export function KaijuHeroCard({
                 <div className="text-base font-black text-white tabular-nums">{stats.speed}</div>
               </div>
             </div>
+          </div>
+
+          {/* ⚔️ でんせつの そうび（ワンタップで着脱！） */}
+          <div className="relative z-10 space-y-2 bg-slate-950/85 p-3 rounded-2xl border border-amber-400/50">
+            <div className="flex items-center justify-between text-xs font-black text-amber-300">
+              <span className="flex items-center gap-1.5">
+                <span className="text-sm">⚔️</span>
+                <span>でんせつの そうび（タップで そうちゃく！）</span>
+              </span>
+              {stats.equippedItem ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onEquipItem) {
+                      playTapSound(400);
+                      onEquipItem(kaiju.id, undefined);
+                      speakJapanese(`${stats.displayName}の そうびを はずしたよ！`, soundEnabled);
+                    }
+                  }}
+                  className="text-[11px] font-black text-rose-300 hover:text-rose-200 underline cursor-pointer"
+                >
+                  はずす
+                </button>
+              ) : (
+                <span className="text-[11px] text-slate-400">未そうび</span>
+              )}
+            </div>
+
+            {/* 現在装備中のアイテム詳細表示 */}
+            {stats.equippedItem && (
+              <div className="flex items-center gap-2.5 bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-transparent p-2.5 rounded-xl border border-yellow-400/50">
+                <div className="w-10 h-10 rounded-xl bg-amber-400/30 flex items-center justify-center text-2xl shrink-0 border border-yellow-300 shadow">
+                  {stats.equippedItem.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-black text-sm text-yellow-200 truncate">
+                      {stats.equippedItem.name}
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-amber-400/30 text-amber-300 border border-amber-400/40">
+                      そうび中
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 line-clamp-1">{stats.equippedItem.description}</p>
+                  <div className="flex flex-wrap gap-2 text-[10px] font-bold text-amber-300 mt-0.5">
+                    {stats.equippedItem.hpBonus > 0 && <span>HP+{stats.equippedItem.hpBonus}</span>}
+                    {stats.equippedItem.mpBonus > 0 && <span>MP+{stats.equippedItem.mpBonus}</span>}
+                    {stats.equippedItem.attackBonus > 0 && <span>ちから+{stats.equippedItem.attackBonus}</span>}
+                    {stats.equippedItem.defenseBonus > 0 && <span>まもり+{stats.equippedItem.defenseBonus}</span>}
+                    {stats.equippedItem.speedBonus > 0 && <span>すばやさ+{stats.equippedItem.speedBonus}</span>}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 所持している装備一覧（ワンタップで切り替え） */}
+            {unlockedEquipmentIds && unlockedEquipmentIds.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1">
+                {EQUIPMENT_LIST.filter((eq) => unlockedEquipmentIds.includes(eq.id)).map((item) => {
+                  const isCurrent = progress?.equippedItemId === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        if (onEquipItem) {
+                          if (isCurrent) {
+                            playTapSound(400);
+                            onEquipItem(kaiju.id, undefined);
+                            speakJapanese(`${item.name}を はずしたよ！`, soundEnabled);
+                          } else {
+                            playEquipSound();
+                            onEquipItem(kaiju.id, item.id);
+                            speakJapanese(`シャキーン！${item.name}を そうびしたぞ！`, soundEnabled);
+                          }
+                        }
+                      }}
+                      className={`flex items-center gap-1.5 p-2 rounded-xl text-left border transition-all active:scale-95 cursor-pointer ${
+                        isCurrent
+                          ? 'bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 border-white shadow-md font-black ring-2 ring-yellow-300'
+                          : 'bg-slate-900/90 hover:bg-slate-800 text-slate-200 border-white/20'
+                      }`}
+                    >
+                      <span className="text-xl shrink-0">{item.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-black truncate">{item.name}</div>
+                        <div className="text-[10px] text-amber-300 truncate font-semibold">
+                          {item.attackBonus > 0 && `攻+${item.attackBonus} `}
+                          {item.defenseBonus > 0 && `防+${item.defenseBonus} `}
+                          {item.speedBonus > 0 && `速+${item.speedBonus}`}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400 text-center py-2">
+                まだ装備を持っていません。金の宝箱を開けてゲットしよう！
+              </p>
+            )}
           </div>
 
           {/* 習得した「わざリスト」セクション（全4つ） */}

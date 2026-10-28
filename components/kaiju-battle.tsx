@@ -50,6 +50,7 @@ interface KaijuBattleProps {
   unlockedKaijuIds: string[];
   kaijuProgress: Record<string, KaijuProgress>;
   soundEnabled: boolean;
+  tournamentWins?: number;
   onBattleComplete: (
     p1KaijuId: string,
     p2KaijuId?: string,
@@ -71,6 +72,7 @@ export function KaijuBattle({
   unlockedKaijuIds,
   kaijuProgress,
   soundEnabled,
+  tournamentWins = 0,
   onBattleComplete,
 }: KaijuBattleProps) {
   // 選択可能な怪獣リスト（解放済みの怪獣のみ。大魔王もレイド討伐で仲間にすると選択可能）

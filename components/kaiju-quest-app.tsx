@@ -36,7 +36,9 @@ import {
   MAX_KAIJU_LEVEL,
   MAX_AWAKENING_STAR,
   AwakeningStar,
+  EquipmentItem,
 } from '@/lib/kaiju-data';
+import { KaijuTournamentAndChest } from '@/components/kaiju-tournament';
 import { MonsterEggSvg, KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import { KaijuHeroCard } from '@/components/kaiju-card';
 import { KaijuBattle } from '@/components/kaiju-battle';
@@ -71,6 +73,9 @@ interface SavedAppState {
   rewardedMorningBonus?: boolean;
   rewardedNightBonus?: boolean;
   recruitedBossKaijuIds?: string[];
+  unlockedEquipmentIds?: string[];
+  chestKeys?: number;
+  tournamentWins?: number;
 }
 
 const STORAGE_KEY = 'kaiju_oshitaku_quest_v1';
@@ -88,6 +93,10 @@ export default function KaijuQuestApp() {
   const [expOrbs, setExpOrbs] = useState<number>(3);
   const [partnerKaijuId, setPartnerKaijuId] = useState<string | null>('fire-dino');
   const [starBalls, setStarBalls] = useState<number>(2); // 初回から2個持っていてすぐ集まるワクワク感！
+  const [unlockedEquipmentIds, setUnlockedEquipmentIds] = useState<string[]>(['eq-arale-cap']); // 最初から1つプレゼント！
+  const [chestKeys, setChestKeys] = useState<number>(1); // 最初から金のたからばこ1個プレゼント！
+  const [tournamentWins, setTournamentWins] = useState<number>(0);
+  const [battleSubMode, setBattleSubMode] = useState<'tournament' | 'raid'>('tournament');
   const [questTimeFilter, setQuestTimeFilter] = useState<'morning' | 'night' | 'all'>(() => {
     if (typeof window !== 'undefined') {
       const hour = new Date().getHours();
@@ -199,6 +208,16 @@ export default function KaijuQuestApp() {
           if (typeof parsed.rewardedNightBonus === 'boolean') {
             setRewardedNightBonus(parsed.rewardedNightBonus);
           }
+
+          if (Array.isArray(parsed.unlockedEquipmentIds) && parsed.unlockedEquipmentIds.length > 0) {
+            setUnlockedEquipmentIds(parsed.unlockedEquipmentIds);
+          }
+          if (typeof parsed.chestKeys === 'number') {
+            setChestKeys(parsed.chestKeys);
+          }
+          if (typeof parsed.tournamentWins === 'number') {
+            setTournamentWins(parsed.tournamentWins);
+          }
         }
       } catch {
         // ignore localStorage read errors
@@ -224,6 +243,9 @@ export default function KaijuQuestApp() {
         rewardedMorningBonus,
         rewardedNightBonus,
         recruitedBossKaijuIds,
+        unlockedEquipmentIds,
+        chestKeys,
+        tournamentWins,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch {
@@ -307,6 +329,36 @@ export default function KaijuQuestApp() {
     }
 
     return { leveledUp, newLevel: nextLevel, evolved };
+  };
+
+  // 装備変更ハンドラー
+  const handleEquipItem = (kaijuId: string, itemId: string | undefined) => {
+    setKaijuProgress((prev) => {
+      const current = prev[kaijuId] ?? { level: 1, exp: 0, awakeningStar: 0 };
+      return {
+        ...prev,
+        [kaijuId]: {
+          ...current,
+          equippedItemId: itemId,
+        },
+      };
+    });
+  };
+
+  // たからばこ開封ハンドラー
+  const handleOpenChest = (obtainedItem: EquipmentItem) => {
+    setChestKeys((prev) => Math.max(0, prev - 1));
+    setUnlockedEquipmentIds((prev) =>
+      prev.includes(obtainedItem.id) ? prev : [...prev, obtainedItem.id]
+    );
+  };
+
+  // トーナメント優勝ごほうびハンドラー
+  const handleTournamentWinReward = () => {
+    setTournamentWins((prev) => prev + 1);
+    setChestKeys((prev) => prev + 1); // 金のたからばこ +1
+    setExpOrbs((prev) => prev + 2);   // けいけんち玉 +2
+    setStarBalls((prev) => Math.min(7, prev + 1)); // ほし玉 +1
   };
 
   // けいけんち玉でレベルアップ ＆ Lv.10到達後は「キラキラ色違い超覚醒（★1〜★3）」
@@ -440,15 +492,23 @@ export default function KaijuQuestApp() {
     const isAllNightDone = nightQuestIds.every((id) => nextCompleted.includes(id));
 
     let gotBonusStarBall = false;
+    // 30%の確率で「🎁金のたからばこ」ドロップ！
+    const gotChestKey = Math.random() < 0.3;
+    if (gotChestKey) {
+      setChestKeys((prev) => prev + 1);
+    }
+
     if (isAllMorningDone && !rewardedMorningBonus) {
       setRewardedMorningBonus(true);
       setStarBalls((prev) => prev + 1);
       setExpOrbs((prev) => prev + 2);
+      setChestKeys((prev) => prev + 1);
       gotBonusStarBall = true;
     } else if (isAllNightDone && !rewardedNightBonus) {
       setRewardedNightBonus(true);
       setStarBalls((prev) => prev + 1);
       setExpOrbs((prev) => prev + 2);
+      setChestKeys((prev) => prev + 1);
       gotBonusStarBall = true;
     }
 
@@ -466,7 +526,12 @@ export default function KaijuQuestApp() {
       playYoutuberAirhornSound();
       setDqToastMessages((prev) => [
         ...(prev || []),
-        '🎁 コンプリートたからばこ！🟠ほし玉 ＋1こ ＆ 🌟けいけんち玉 ＋2こ ゲット！！',
+        '🎁 コンプリートたからばこ！🟠ほし玉 ＋1こ ＆ 🌟けいけんち玉 ＋2こ ＆ 🎁金の宝箱 ＋1こ ゲット！！',
+      ]);
+    } else if (gotChestKey) {
+      setDqToastMessages((prev) => [
+        ...(prev || []),
+        '🎁 ラッキー！「金のたからばこ」を ひろったぞ！！',
       ]);
     }
 
@@ -766,7 +831,7 @@ export default function KaijuQuestApp() {
     (sum, p) => sum + (p?.awakeningStar || 0),
     0
   );
-  const heroRank = getHeroRank(unlockedKaijuIds.length, totalKaijuLevelSum, totalAwakeningSum);
+  const heroRank = getHeroRank(unlockedKaijuIds.length, totalKaijuLevelSum, totalAwakeningSum, unlockedEquipmentIds.length);
 
   // クエストの朝・夜フィルターリスト
   const filteredQuestList =
@@ -1239,8 +1304,10 @@ export default function KaijuQuestApp() {
                   progress={kaijuProgress[summonedKaiju.kaiju.id]}
                   expOrbs={expOrbs}
                   isPartner={partnerKaijuId === summonedKaiju.kaiju.id}
+                  unlockedEquipmentIds={unlockedEquipmentIds}
                   onLevelUp={handleUseExpOrb}
                   onSelectPartner={(id) => setPartnerKaijuId(id)}
+                  onEquipItem={handleEquipItem}
                   onClose={() => {
                     playTapSound(520);
                     setSummonedKaiju(null);
@@ -1800,15 +1867,77 @@ export default function KaijuQuestApp() {
         )}
 
         {/* ============================================================
-            TAB 5: ⚔️ バトルタブ（親子タッグ大魔王討伐 ＆ 2P対戦モード）
+            TAB 5: ⚔️ バトルタブ（🏆天下一トーナメント＆たからばこ ＆ 😈大魔王レイド・2P対戦）
            ============================================================ */}
         {activeTab === 'battle' && (
-          <KaijuBattle
-            unlockedKaijuIds={unlockedKaijuIds}
-            kaijuProgress={kaijuProgress}
-            soundEnabled={soundEnabled}
-            onBattleComplete={handleBattleReward}
-          />
+          <div className="space-y-4">
+            {/* バトルサブモード切り替えスイッチ */}
+            <div className="grid grid-cols-2 gap-2 max-w-lg mx-auto">
+              <button
+                type="button"
+                onClick={() => {
+                  playTapSound(600);
+                  setBattleSubMode('tournament');
+                }}
+                className={`relative min-h-[52px] rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all cursor-pointer ${
+                  battleSubMode === 'tournament'
+                    ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500 text-slate-950 border-white shadow-lg'
+                    : 'bg-slate-900/80 text-slate-300 border-white/20 hover:bg-slate-800'
+                }`}
+              >
+                <span className="text-lg">🏆</span>
+                <span>天下一トーナメント＆宝箱</span>
+                {chestKeys > 0 && (
+                  <span className="absolute -top-2 -right-1 bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border border-white shadow animate-bounce">
+                    🎁{chestKeys}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playTapSound(520);
+                  setBattleSubMode('raid');
+                }}
+                className={`min-h-[52px] rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border-2 transition-all cursor-pointer ${
+                  battleSubMode === 'raid'
+                    ? 'bg-gradient-to-r from-purple-600 to-rose-600 text-white border-white shadow-lg'
+                    : 'bg-slate-900/80 text-slate-300 border-white/20 hover:bg-slate-800'
+                }`}
+              >
+                <span className="text-lg">😈</span>
+                <span>大魔王ボス＆2P対戦</span>
+              </button>
+            </div>
+
+            {battleSubMode === 'tournament' ? (
+              <KaijuTournamentAndChest
+                partnerKaiju={partnerKaiju}
+                papaPartnerKaiju={
+                  KAIJU_LIST.find((k) => k.id !== partnerKaiju.id && unlockedKaijuIds.includes(k.id)) ||
+                  KAIJU_LIST.find((k) => k.id === 'thunder-pkmn-miraidon') ||
+                  KAIJU_LIST[1]
+                }
+                partnerProgress={kaijuProgress[partnerKaiju.id]}
+                unlockedEquipmentIds={unlockedEquipmentIds}
+                chestKeys={chestKeys}
+                tournamentWins={tournamentWins}
+                soundEnabled={soundEnabled}
+                onOpenChest={handleOpenChest}
+                onEquipItem={handleEquipItem}
+                onTournamentWinReward={handleTournamentWinReward}
+              />
+            ) : (
+              <KaijuBattle
+                unlockedKaijuIds={unlockedKaijuIds}
+                kaijuProgress={kaijuProgress}
+                soundEnabled={soundEnabled}
+                tournamentWins={tournamentWins}
+                onBattleComplete={handleBattleReward}
+              />
+            )}
+          </div>
         )}
       </main>
 
@@ -1904,8 +2033,10 @@ export default function KaijuQuestApp() {
               progress={kaijuProgress[selectedZukanKaiju.id]}
               expOrbs={expOrbs}
               isPartner={activePartnerId === selectedZukanKaiju.id}
+              unlockedEquipmentIds={unlockedEquipmentIds}
               onLevelUp={handleUseExpOrb}
               onSelectPartner={(id) => setPartnerKaijuId(id)}
+              onEquipItem={handleEquipItem}
               onClose={() => {
                 playTapSound(480);
                 setSelectedZukanKaiju(null);

@@ -373,10 +373,32 @@ export function getAwakeningCost(currentStar: AwakeningStar): number {
   return 0;
 }
 
+export type EquipmentRarity = 'R' | 'SR' | 'SSR';
+
+export interface EquipmentItem {
+  id: string;
+  name: string;
+  emoji: string;
+  icon?: string;
+  rarity: EquipmentRarity;
+  titleBadge: string;
+  description: string;
+  flavor?: string;
+  hpBonus: number;
+  mpBonus: number;
+  atkBonus: number;
+  defBonus: number;
+  spdBonus: number;
+  attackBonus: number;
+  defenseBonus: number;
+  speedBonus: number;
+}
+
 export interface KaijuProgress {
   level: number;
   exp: number;
   awakeningStar?: AwakeningStar;
+  equippedItemId?: string;
 }
 
 export interface KaijuComputedStats {
@@ -395,6 +417,7 @@ export interface KaijuComputedStats {
   speed: number;
   unlockedSkills: KaijuSkill[];
   allSkills: KaijuSkill[];
+  equippedItem?: EquipmentItem;
 }
 
 export interface KaijuData {
@@ -1989,6 +2012,28 @@ const RAW_KAIJU_LIST: KaijuData[] = [
       trivia: '日本の「国のチョウ（国蝶）」に選ばれている王様！花の蜜ではなく、カブトムシと一緒に木の樹液を飲みに来る力強いチョウだよ！',
     },
   }),
+  createCustomKaiju({
+    id: 'nature-omega-hercules',
+    dexNumber: 61,
+    category: 'insect',
+    element: 'nature',
+    type: 'kabuto',
+    name: 'ヘラクレス・オメガ',
+    insectStyle: 'long-horn',
+    roar: 'ガシィィィン！！黄金のハサミで 挟み砕く！',
+    specialMove: '皇帝黄金覇道・オメガギガホーン',
+    stars: 5,
+    titleBadge: '👑 黄金に輝く 昆虫界の絶対皇帝',
+    description: '全身が純金のように輝く、全甲虫の頂点に君臨する絶対皇帝！伝説の宝箱の守護神！',
+    realColors: { primary: '#f59e0b', secondary: '#78350f', accent: '#fef08a' },
+    insectInfo: {
+      habitat: '天空の幻影島',
+      food: '黄金の昆虫ゼリー',
+      realSize: '約 25 センチ（幻の超巨大個体！）',
+      trivia: '天下一トーナメントを勝ち抜いた勇者のみが出会える、黄金色に輝く奇跡のカブトムシ！',
+    },
+    stageNames: ['幼虫皇帝', '金甲ヘラクレス', '黄金皇帝ヘラクレス・オメガ'],
+  }),
 ];
 
 export const KAIJU_LIST: KaijuData[] = RAW_KAIJU_LIST.map((k, index) => ({
@@ -2129,6 +2174,238 @@ export function getAwakeningOverrideColors(
   };
 }
 
+
+/**
+ * 伝説の装備（全12種）
+ */
+export const EQUIPMENT_LIST: EquipmentItem[] = [
+  {
+    id: 'eq-roto-sword',
+    name: 'ロトのつるぎ',
+    emoji: '🗡️',
+    icon: '🗡️',
+    rarity: 'SSR',
+    titleBadge: 'でんせつの聖剣',
+    description: '伝説の勇者が つかった 光り輝く聖剣！すべての 闇を 切り裂く 最強の剣だ！',
+    hpBonus: 25,
+    mpBonus: 10,
+    atkBonus: 35,
+    defBonus: 10,
+    spdBonus: 10,
+    attackBonus: 35,
+    defenseBonus: 10,
+    speedBonus: 10,
+  },
+  {
+    id: 'eq-roto-shield',
+    name: 'ゆうしゃのたて',
+    emoji: '🛡️',
+    icon: '🛡️',
+    rarity: 'SSR',
+    titleBadge: '不滅の黄金盾',
+    description: 'どんな 激しい ほのおや 吹雪も はじき返す 勇者の 証の盾！',
+    hpBonus: 50,
+    mpBonus: 10,
+    atkBonus: 10,
+    defBonus: 35,
+    spdBonus: 5,
+    attackBonus: 10,
+    defenseBonus: 35,
+    speedBonus: 5,
+  },
+  {
+    id: 'eq-nyoibo',
+    name: 'にょいぼう',
+    emoji: '🦯',
+    icon: '🦯',
+    rarity: 'SR',
+    titleBadge: 'のびる不思議な棒',
+    description: '「のびろ如意棒！」のかけ声で 月まで 届くほど 長く のびる 赤い棒！',
+    hpBonus: 20,
+    mpBonus: 10,
+    atkBonus: 26,
+    defBonus: 12,
+    spdBonus: 20,
+    attackBonus: 26,
+    defenseBonus: 12,
+    speedBonus: 20,
+  },
+  {
+    id: 'eq-kintoun',
+    name: 'きんとうん',
+    emoji: '☁️',
+    icon: '☁️',
+    rarity: 'SR',
+    titleBadge: 'マッハで飛ぶ黄金雲',
+    description: 'お支度を がんばる 心の 清らかな よい子だけが 乗れる 黄金の雲！',
+    hpBonus: 20,
+    mpBonus: 20,
+    atkBonus: 12,
+    defBonus: 10,
+    spdBonus: 38,
+    attackBonus: 12,
+    defenseBonus: 10,
+    speedBonus: 38,
+  },
+  {
+    id: 'eq-scouter',
+    name: '赤いスカウター',
+    emoji: '👓',
+    icon: '👓',
+    rarity: 'SR',
+    titleBadge: '戦闘力計測メカ',
+    description: 'ピピッ！相手の 戦闘力と 弱点を 瞬時に みぬいて 攻撃力を 引き上げるぞ！',
+    hpBonus: 15,
+    mpBonus: 30,
+    atkBonus: 25,
+    defBonus: 8,
+    spdBonus: 18,
+    attackBonus: 25,
+    defenseBonus: 8,
+    speedBonus: 18,
+  },
+  {
+    id: 'eq-senzu',
+    name: 'カリン様の仙豆',
+    emoji: '🫘',
+    icon: '🫘',
+    rarity: 'SSR',
+    titleBadge: '奇跡の超回復マメ',
+    description: '1粒 かじれば お腹いっぱい！たいりょくと マジックが 爆発的に あふれるぞ！',
+    hpBonus: 95,
+    mpBonus: 35,
+    atkBonus: 15,
+    defBonus: 20,
+    spdBonus: 10,
+    attackBonus: 15,
+    defenseBonus: 20,
+    speedBonus: 10,
+  },
+  {
+    id: 'eq-golden-jelly',
+    name: '黄金の昆虫ゼリー',
+    emoji: '🍯',
+    icon: '🍯',
+    rarity: 'SR',
+    titleBadge: '千年樹液の特濃ゼリー',
+    description: 'カブトムシや クワガタ、怪獣たちも 大よろこびする 100倍 パワーの 黄金ゼリー！',
+    hpBonus: 65,
+    mpBonus: 20,
+    atkBonus: 20,
+    defBonus: 15,
+    spdBonus: 12,
+    attackBonus: 20,
+    defenseBonus: 15,
+    speedBonus: 12,
+  },
+  {
+    id: 'eq-mega-ring',
+    name: 'メガシンカリング',
+    emoji: '💍',
+    icon: '💍',
+    rarity: 'SSR',
+    titleBadge: '虹色に輝く絆の指輪',
+    description: 'じょうくんと あいぼうの 強い 絆に 反応して 未知の パワーを 解放するリング！',
+    hpBonus: 40,
+    mpBonus: 25,
+    atkBonus: 30,
+    defBonus: 20,
+    spdBonus: 20,
+    attackBonus: 30,
+    defenseBonus: 20,
+    speedBonus: 20,
+  },
+  {
+    id: 'eq-arale-cap',
+    name: 'んちゃキャップ',
+    emoji: '🧢',
+    icon: '🧢',
+    rarity: 'R',
+    titleBadge: 'ペンギン村の羽つき帽',
+    description: '白い 天使の 羽がついた 元気いっぱいの 帽子！キーンと 超高速で 走れるぞ！',
+    hpBonus: 35,
+    mpBonus: 15,
+    atkBonus: 15,
+    defBonus: 10,
+    spdBonus: 28,
+    attackBonus: 15,
+    defenseBonus: 10,
+    speedBonus: 28,
+  },
+  {
+    id: 'eq-star-bracelet',
+    name: 'ほしふるうでわ',
+    emoji: '💫',
+    icon: '💫',
+    rarity: 'R',
+    titleBadge: '流星スピードの秘宝',
+    description: 'つけるだけで 流れ星の ように すばやく 動ける ドラクエの 秘宝の腕輪！',
+    hpBonus: 15,
+    mpBonus: 15,
+    atkBonus: 14,
+    defBonus: 10,
+    spdBonus: 34,
+    attackBonus: 14,
+    defenseBonus: 10,
+    speedBonus: 34,
+  },
+  {
+    id: 'eq-hayabusa-sword',
+    name: 'はやぶさのけん',
+    emoji: '⚔️',
+    icon: '⚔️',
+    rarity: 'SR',
+    titleBadge: '電光石火の二連撃剣',
+    description: 'ハヤブサの ような 目にも とまらぬ スピードで 2回 連続 斬りつける 名剣！',
+    hpBonus: 20,
+    mpBonus: 15,
+    atkBonus: 28,
+    defBonus: 10,
+    spdBonus: 26,
+    attackBonus: 28,
+    defenseBonus: 10,
+    speedBonus: 26,
+  },
+  {
+    id: 'eq-king-crown',
+    name: 'かいじゅう王の冠',
+    emoji: '👑',
+    icon: '👑',
+    rarity: 'SSR',
+    titleBadge: '覇者のダイヤモンド王冠',
+    description: '天下一トーナメントを 制した チャンピオンに ふさわしい 究極の 黄金クラウン！',
+    hpBonus: 60,
+    mpBonus: 30,
+    atkBonus: 32,
+    defBonus: 25,
+    spdBonus: 22,
+    attackBonus: 32,
+    defenseBonus: 25,
+    speedBonus: 22,
+  },
+];
+
+export function getEquipmentById(id?: string): EquipmentItem | undefined {
+  if (!id) return undefined;
+  return EQUIPMENT_LIST.find((item) => item.id === id);
+}
+
+/**
+ * たからばこを開けたときに、まだ持っていない装備を最優先で抽選して返す
+ */
+export function rollTreasureChestEquipment(unlockedIds: string[] = []): {
+  item: EquipmentItem;
+  isNew: boolean;
+} {
+  const locked = EQUIPMENT_LIST.filter((item) => !unlockedIds.includes(item.id));
+  if (locked.length > 0) {
+    const picked = locked[Math.floor(Math.random() * locked.length)];
+    return { item: picked, isNew: true };
+  }
+  const picked = EQUIPMENT_LIST[Math.floor(Math.random() * EQUIPMENT_LIST.length)];
+  return { item: picked, isNew: false };
+}
+
 /**
  * 怪獣の現在のレベル・進化段階・色違い覚醒ランク・ドラクエ風ステータス・習得技を計算する
  */
@@ -2192,20 +2469,29 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     displayName = `【虹神】${displayName}`;
   }
 
-  // ステータス計算（色違い覚醒ランクごとに大幅ボーナス加算！）
+  // 装備アイテムのボーナス加算
+  const equippedItem = getEquipmentById(progress?.equippedItemId);
+  const equipHp = equippedItem?.hpBonus ?? 0;
+  const equipMp = equippedItem?.mpBonus ?? 0;
+  const equipAtk = equippedItem?.atkBonus ?? (equippedItem?.attackBonus ?? 0);
+  const equipDef = equippedItem?.defBonus ?? (equippedItem?.defenseBonus ?? 0);
+  const equipSpd = equippedItem?.spdBonus ?? (equippedItem?.speedBonus ?? 0);
+
+  // ステータス計算（色違い覚醒ランク＋装備ボーナス加算！）
   const maxHp =
-    140 + kaiju.stars * 12 + (level - 1) * 22 + (stage - 1) * 35 + awakeningStar * 45;
+    140 + kaiju.stars * 12 + (level - 1) * 22 + (stage - 1) * 35 + awakeningStar * 45 + equipHp;
   const maxMp =
-    35 + kaiju.stars * 5 + (level - 1) * 6 + (stage - 1) * 12 + awakeningStar * 15;
+    35 + kaiju.stars * 5 + (level - 1) * 6 + (stage - 1) * 12 + awakeningStar * 15 + equipMp;
   const attack =
-    34 + kaiju.stars * 5 + (level - 1) * 9 + (stage - 1) * 14 + awakeningStar * 18;
+    34 + kaiju.stars * 5 + (level - 1) * 9 + (stage - 1) * 14 + awakeningStar * 18 + equipAtk;
   const defense =
-    18 + kaiju.stars * 3 + (level - 1) * 4 + (stage - 1) * 8 + awakeningStar * 10;
+    18 + kaiju.stars * 3 + (level - 1) * 4 + (stage - 1) * 8 + awakeningStar * 10 + equipDef;
   const speed =
     22 +
     (kaiju.type === 'beast' || kaiju.type === 'dragon' ? 10 : 4) +
     (level - 1) * 5 +
-    awakeningStar * 8;
+    awakeningStar * 8 +
+    equipSpd;
 
   // 覚醒ランクに応じて究極奥義（スキル4）の威力を強化
   const baseSkills = getKaijuSkills(kaiju);
@@ -2238,6 +2524,7 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     speed,
     unlockedSkills,
     allSkills,
+    equippedItem,
   };
 }
 
@@ -2329,9 +2616,11 @@ export interface HeroRankInfo {
 export function getHeroRank(
   unlockedCount: number,
   totalLevelSum: number,
-  totalAwakeningSum: number = 0
+  totalAwakeningSum: number = 0,
+  unlockedEquipmentCount: number = 0
 ): HeroRankInfo {
-  const score = unlockedCount * 2 + totalLevelSum + totalAwakeningSum * 5;
+  const score =
+    unlockedCount * 2 + totalLevelSum + totalAwakeningSum * 5 + unlockedEquipmentCount * 4;
   if (score < 10) {
     return {
       badge: '🌱',
@@ -2383,6 +2672,7 @@ export interface RaidBossData {
   description: string;
   rewardOrbs: number;
   rewardExp: number;
+  isSecretBoss?: boolean;
 }
 
 /**
@@ -2473,6 +2763,7 @@ export const RAID_BOSS_LIST: RaidBossData[] = [
     description: '漆黒のローブと青い肌をもつ 伝説の絶対大魔王！倒すと まれに 起き上がって 仲間になるぞ！',
     rewardOrbs: 5,
     rewardExp: 135,
+    isSecretBoss: true,
   },
   {
     id: 'boss-dreamb',
@@ -2507,6 +2798,7 @@ export const RAID_BOSS_LIST: RaidBossData[] = [
     description: '太古の眠りより覚醒した 伝説の地獄の帝王！倒すと まれに 起き上がって 仲間になるぞ！',
     rewardOrbs: 6,
     rewardExp: 170,
+    isSecretBoss: true,
   },
   {
     id: 'boss-rhapthorne',
@@ -2524,6 +2816,42 @@ export const RAID_BOSS_LIST: RaidBossData[] = [
     description: '全宇宙を闇に沈めようとする 巨神・暗黒神！倒すと まれに 起き上がって 仲間になるぞ！',
     rewardOrbs: 7,
     rewardExp: 200,
+  },
+  {
+    id: 'boss-rayquaza',
+    name: '天空神レックウドラゴ',
+    titleBadge: '👑 オゾン層を統べる 伝説の天空神',
+    element: 'thunder',
+    type: 'dragon',
+    kaijuId: 'thunder-pkmn-rayquaza',
+    level: 12,
+    maxHp: 1950,
+    attack: 115,
+    defense: 54,
+    roar: 'キュロロロロッ！天をも裂く 我が雷刃をくらえ！',
+    specialMove: '天変地異・ガリョウテンセイ・ドラゴニック',
+    description: '宇宙と大気圏の狭間に君臨する 伝説の緑竜神！倒すと まれに 起き上がって 仲間になるぞ！',
+    rewardOrbs: 8,
+    rewardExp: 220,
+    isSecretBoss: true,
+  },
+  {
+    id: 'boss-omega-hercules',
+    name: '黄金皇帝ヘラクレス・オメガ',
+    titleBadge: '👑 全甲虫の頂点 黄金の絶対皇帝',
+    element: 'nature',
+    type: 'kabuto',
+    kaijuId: 'nature-omega-hercules',
+    level: 13,
+    maxHp: 2200,
+    attack: 125,
+    defense: 60,
+    roar: 'ガシィィィン！！我が黄金の角に 恐れおののけ！',
+    specialMove: '皇帝黄金覇道・オメガギガホーン',
+    description: 'まばゆい黄金の甲殻と 巨大な角をもつ 昆虫の帝王！倒すと まれに 起き上がって 仲間になるぞ！',
+    rewardOrbs: 10,
+    rewardExp: 250,
+    isSecretBoss: true,
   },
 ];
 

@@ -1055,3 +1055,147 @@ export function playAwakeningSound() {
     osc2.stop(start + dur + 0.02);
   });
 }
+
+
+/**
+ * 11. 金のたからばこオープン音＆重要アイテムゲット・ファンファーレ（ドラクエ風）
+ */
+export function playTreasureChestSound() {
+  fireSummonConfetti(['#facc15', '#fef08a', '#38bdf8', '#fbbf24', '#f43f5e']);
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // 1. 宝箱がカチャッと開く金属音
+  const latchFreqs = [880, 1760, 3520];
+  latchFreqs.forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+    gain.gain.setValueAtTime(0.18, now + idx * 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.12);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + idx * 0.04);
+    osc.stop(now + idx * 0.04 + 0.15);
+  });
+
+  // 2. 伝説のアイテム獲得ファンファーレ（テッテレ〜テッテッテッテー！）
+  const notes = [
+    { freq: 523.25, start: 0.18, dur: 0.12 }, // C5
+    { freq: 587.33, start: 0.32, dur: 0.12 }, // D5
+    { freq: 659.25, start: 0.46, dur: 0.12 }, // E5
+    { freq: 698.46, start: 0.60, dur: 0.12 }, // F5
+    { freq: 783.99, start: 0.74, dur: 0.22 }, // G5
+    { freq: 659.25, start: 0.98, dur: 0.14 }, // E5
+    { freq: 1046.5, start: 1.14, dur: 0.75 }, // C6
+    { freq: 1318.5, start: 1.14, dur: 0.75 }, // E6 ハーモニー
+  ];
+
+  notes.forEach(({ freq, start, dur }) => {
+    const noteStart = now + start;
+    const osc = ctx.createOscillator();
+    const sub = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sawtooth';
+    sub.type = 'sine';
+    osc.frequency.setValueAtTime(freq, noteStart);
+    sub.frequency.setValueAtTime(freq * 0.5, noteStart);
+
+    gain.gain.setValueAtTime(0.001, noteStart);
+    gain.gain.linearRampToValueAtTime(0.24, noteStart + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, noteStart + dur);
+
+    osc.connect(gain);
+    sub.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(noteStart);
+    sub.start(noteStart);
+    osc.stop(noteStart + dur + 0.02);
+    sub.stop(noteStart + dur + 0.02);
+  });
+}
+
+/**
+ * 12. 伝説の装備そうちゃく音（シャキィーーン！金属装着音）
+ */
+export function playEquipSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // 高周波の金属擦過音スライド
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sawtooth';
+  osc1.frequency.setValueAtTime(1400, now);
+  osc1.frequency.exponentialRampToValueAtTime(3600, now + 0.14);
+  gain1.gain.setValueAtTime(0.001, now);
+  gain1.gain.linearRampToValueAtTime(0.25, now + 0.02);
+  gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start(now);
+  osc1.stop(now + 0.3);
+
+  // 澄んだベル余韻
+  const ringFreqs = [2093.0, 3135.96, 4186.01];
+  ringFreqs.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now + 0.08 + i * 0.02);
+    gain.gain.setValueAtTime(0.18, now + 0.08 + i * 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + 0.08 + i * 0.02);
+    osc.stop(now + 0.48);
+  });
+}
+
+/**
+ * 13. 天下一トーナメント試合開始ゴング音（カーン！！＋盛り上がり和音）
+ */
+export function playTournamentGongSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  // ゴング金属打撃音
+  const gongHarmonics = [380, 570, 850, 1140, 1720];
+  gongHarmonics.forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0.28 / (idx + 1), now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.65);
+  });
+
+  // 0.25秒後に盛り上がるキック＆ブラス和音
+  const chordNotes = [261.63, 329.63, 392.0, 523.25]; // C4, E4, G4, C5
+  chordNotes.forEach((freq) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, now + 0.22);
+    gain.gain.setValueAtTime(0.001, now + 0.22);
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.28);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.95);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + 0.22);
+    osc.stop(now + 0.98);
+  });
+}
