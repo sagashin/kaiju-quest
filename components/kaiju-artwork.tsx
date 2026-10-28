@@ -2909,6 +2909,710 @@ function BulbasaurSvg({ primary, secondary, accent, eyeColor, outline, silhouett
 }
 
 /* ==========================================================================
+   ⭐ じょうくん大興奮！大人気ポケモン・スーパースター追加 4体 (No.45〜48)
+   ========================================================================== */
+
+/** No.45 コライドン (古代の熱血炎竜・巨大胸タイヤ・鮮やかな羽毛トサカ・強靭な四肢) */
+function KoraidonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const redBody = silhouette ? primary : '#dc2626';
+  const darkRed = silhouette ? secondary : '#991b1b';
+  const chestTire = silhouette ? secondary : '#1f2937';
+  const orangeTread = silhouette ? secondary : '#f97316';
+  const whiteFeather = silhouette ? secondary : '#f8fafc';
+  const cyanCrest = silhouette ? secondary : '#06b6d4';
+  const pinkCrest = silhouette ? secondary : '#ec4899';
+  const yellowSpike = silhouette ? secondary : '#facc15';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 豪快なしっぽ＆白羽毛プルーム */}
+      <path d="M80 180 Q35 195, 20 155 Q40 145, 85 160 Z" fill={redBody} />
+      <path d="M22 155 Q5 135, 12 110 Q28 130, 32 150 Z" fill={whiteFeather} />
+      <path d="M16 135 Q2 115, 15 95 Q25 115, 28 135 Z" fill={pinkCrest} />
+
+      {/* 強靭な後ろ足 */}
+      <path d="M60 165 Q45 190, 50 215 L72 215 Q68 185, 82 170 Z" fill={darkRed} />
+      <polygon points="46,215 42,225 50,223" fill="#ffffff" />
+      <polygon points="54,215 54,226 60,223" fill="#ffffff" />
+      <polygon points="64,215 68,225 72,221" fill="#ffffff" />
+
+      <path d="M178 165 Q195 190, 190 215 L168 215 Q172 185, 158 170 Z" fill={darkRed} />
+      <polygon points="188,215 192,225 184,223" fill="#ffffff" />
+      <polygon points="180,215 180,226 174,223" fill="#ffffff" />
+      <polygon points="170,215 166,225 162,221" fill="#ffffff" />
+
+      {/* 胴体 */}
+      <ellipse cx="130" cy="155" rx="38" ry="42" fill={redBody} />
+
+      {/* コライドンの象徴：胸の巨大タイヤ喉袋 */}
+      <circle cx="130" cy="156" r="30" fill={chestTire} />
+      <circle cx="130" cy="156" r="24" fill={darkRed} />
+      {/* タイヤのトレッドパターン（突起） */}
+      <rect x="126" y="126" width="8" height="6" rx="2" fill={orangeTread} />
+      <rect x="126" y="180" width="8" height="6" rx="2" fill={orangeTread} />
+      <rect x="100" y="152" width="6" height="8" rx="2" fill={orangeTread} />
+      <rect x="154" y="152" width="6" height="8" rx="2" fill={orangeTread} />
+      <rect x="108" y="134" width="7" height="7" rx="2" transform="rotate(45 111 137)" fill={orangeTread} />
+      <rect x="145" y="134" width="7" height="7" rx="2" transform="rotate(-45 148 137)" fill={orangeTread} />
+      <rect x="108" y="171" width="7" height="7" rx="2" transform="rotate(-45 111 174)" fill={orangeTread} />
+      <rect x="145" y="171" width="7" height="7" rx="2" transform="rotate(45 148 174)" fill={orangeTread} />
+      {/* ホイール中央ハブ */}
+      <circle cx="130" cy="156" r="14" fill={orangeTread} />
+      <circle cx="130" cy="156" r="7" fill={chestTire} />
+
+      {/* 肩の白い羽毛装飾 */}
+      <path d="M85 125 C70 120, 68 140, 80 148 C88 144, 92 132, 85 125 Z" fill={whiteFeather} />
+      <path d="M175 125 C190 120, 192 140, 180 148 C172 144, 168 132, 175 125 Z" fill={whiteFeather} />
+
+      {/* 前腕（力強い腕と白爪） */}
+      <path d="M92 138 L65 155 L75 170 L100 152 Z" fill={redBody} />
+      <polygon points="62,152 50,150 56,160" fill="#ffffff" />
+      <polygon points="66,162 55,165 64,172" fill="#ffffff" />
+
+      <path d="M168 138 L195 155 L185 170 L160 152 Z" fill={redBody} />
+      <polygon points="198,152 210,150 204,160" fill="#ffffff" />
+      <polygon points="194,162 205,165 196,172" fill="#ffffff" />
+
+      {/* ★ コライドンの頭部と巨大な羽毛トサカ ★ */}
+      {/* 後頭部へ広がる鮮やかなトサカ羽毛 */}
+      <path d="M105 75 Q45 40, 25 20 Q55 35, 95 62 Z" fill={cyanCrest} />
+      <path d="M110 70 Q60 25, 45 5 Q72 25, 102 55 Z" fill={pinkCrest} />
+      <path d="M115 65 Q80 15, 75 0 Q95 20, 112 50 Z" fill={yellowSpike} />
+
+      <path d="M155 75 Q215 40, 235 20 Q205 35, 165 62 Z" fill={cyanCrest} />
+      <path d="M150 70 Q200 25, 215 5 Q188 25, 158 55 Z" fill={pinkCrest} />
+      <path d="M145 65 Q180 15, 185 0 Q165 20, 148 50 Z" fill={yellowSpike} />
+
+      {/* 竜の頭部輪郭 */}
+      <path d="M102 85 Q130 60, 158 85 Q165 110, 130 118 Q95 110, 102 85 Z" fill={redBody} />
+      <path d="M112 88 L130 75 L148 88 L130 96 Z" fill={darkRed} />
+
+      {/* 眉間の触覚アンテナ */}
+      <line x1="120" y1="72" x2="110" y2="48" stroke={yellowSpike} strokeWidth="4" strokeLinecap="round" />
+      <line x1="140" y1="72" x2="150" y2="48" stroke={yellowSpike} strokeWidth="4" strokeLinecap="round" />
+      <circle cx="110" cy="48" r="4" fill={pinkCrest} />
+      <circle cx="150" cy="48" r="4" fill={pinkCrest} />
+
+      {/* 精悍な古代竜の眼 */}
+      <polygon points="112,85 125,82 122,94 110,92" fill="#facc15" stroke="#000000" strokeWidth="1.5" />
+      <circle cx="118" cy="88" r="3.5" fill="#dc2626" />
+      <circle cx="118" cy="88" r="1.8" fill="#000000" />
+      <circle cx="120" cy="86" r="1" fill="#ffffff" />
+
+      <polygon points="148,85 135,82 138,94 150,92" fill="#facc15" stroke="#000000" strokeWidth="1.5" />
+      <circle cx="142" cy="88" r="3.5" fill="#dc2626" />
+      <circle cx="142" cy="88" r="1.8" fill="#000000" />
+      <circle cx="144" cy="86" r="1" fill="#ffffff" />
+
+      {/* 鼻先の牙＆精悍な口元 */}
+      <polygon points="120,114 124,122 126,114" fill="#ffffff" />
+      <polygon points="140,114 136,122 134,114" fill="#ffffff" />
+    </g>
+  );
+}
+
+/** No.46 ギャラドス (怒りの海竜・巨大な咆哮口・3叉の冠王冠・蛇行する長大な蛇胴・長いヒゲ) */
+function GyaradosSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const blueBody = silhouette ? primary : '#0284c7';
+  const darkBlue = silhouette ? secondary : '#0369a1';
+  const bellyYellow = silhouette ? secondary : '#fef08a';
+  const mouthRed = silhouette ? secondary : '#991b1b';
+  const finWhite = silhouette ? secondary : '#f8fafc';
+  const crestColor = silhouette ? secondary : '#0c4a6e';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 大波を切り裂く蛇行胴体 ★ */}
+      {/* 尾ヒレ (3裂の大きな白ヒレ) */}
+      <polygon points="35,215 10,230 25,205 8,185 32,198 38,180 48,205" fill={finWhite} />
+
+      {/* 蛇行する胴体セグメント */}
+      <path d="M40 205 Q65 220, 95 195 Q105 175, 85 160 Q60 170, 40 205 Z" fill={blueBody} />
+      <path d="M85 165 Q120 145, 135 175 Q150 205, 180 185 Q190 160, 165 140 Q130 135, 85 165 Z" fill={blueBody} />
+      <path d="M155 145 Q175 110, 155 85 Q130 75, 120 100 Q130 125, 155 145 Z" fill={blueBody} />
+
+      {/* クリーム色の腹部蛇腹プレート */}
+      <path d="M52 208 Q70 216, 88 198" fill="none" stroke={bellyYellow} strokeWidth="7" strokeLinecap="round" />
+      <path d="M98 175 Q125 165, 142 188" fill="none" stroke={bellyYellow} strokeWidth="8" strokeLinecap="round" />
+      <path d="M150 190 Q170 185, 175 170" fill="none" stroke={bellyYellow} strokeWidth="7" strokeLinecap="round" />
+
+      {/* 背中の白いトゲトゲ背ビレ */}
+      <polygon points="50,185 58,160 68,180" fill={finWhite} />
+      <polygon points="80,150 90,125 102,148" fill={finWhite} />
+      <polygon points="120,128 135,105 144,130" fill={finWhite} />
+      <polygon points="152,110 175,95 168,122" fill={finWhite} />
+
+      {/* ★ ギャラドスの巨大な咆哮頭部 ★ */}
+      <path d="M105 80 Q140 45, 175 75 Q195 110, 165 130 Q120 135, 105 80 Z" fill={blueBody} />
+
+      {/* 3本角のダークブルー冠王冠 (Trident Crest) */}
+      <polygon points="125,58 108,18 130,38 145,10 160,38 182,18 165,58" fill={crestColor} />
+      <polygon points="135,55 145,22 155,55" fill={darkBlue} />
+
+      {/* 威嚇する大口 (真っ赤な口内と鋭い歯) */}
+      <ellipse cx="140" cy="105" rx="26" ry="18" fill={mouthRed} />
+      <path d="M115 105 Q140 125, 165 105" fill="none" stroke={blueBody} strokeWidth="6" strokeLinecap="round" />
+      {/* 鋭い牙（上下） */}
+      <polygon points="122,96 126,104 130,96" fill="#ffffff" />
+      <polygon points="134,94 138,103 142,94" fill="#ffffff" />
+      <polygon points="146,94 150,103 154,94" fill="#ffffff" />
+      <polygon points="126,112 130,105 134,112" fill="#ffffff" />
+      <polygon points="138,114 142,106 146,114" fill="#ffffff" />
+      <polygon points="150,112 154,105 158,112" fill="#ffffff" />
+
+      {/* 左右の長大な白いヒゲ */}
+      <path d="M115 100 Q80 115, 65 145 Q80 135, 110 110" fill={finWhite} />
+      <path d="M165 100 Q200 115, 215 145 Q200 135, 170 110" fill={finWhite} />
+
+      {/* 怒りの三角白眼＆黒瞳 */}
+      <polygon points="120,74 136,70 134,84 118,82" fill="#ffffff" stroke="#000000" strokeWidth="2" />
+      <polygon points="126,75 132,73 131,81 125,80" fill="#000000" />
+      <circle cx="127" cy="76" r="1.5" fill="#ffffff" />
+
+      <polygon points="160,74 144,70 146,84 162,82" fill="#ffffff" stroke="#000000" strokeWidth="2" />
+      <polygon points="154,75 148,73 149,81 155,80" fill="#000000" />
+      <circle cx="153" cy="76" r="1.5" fill="#ffffff" />
+
+      {/* 激しい水しぶき */}
+      {!silhouette && (
+        <g fill="#38bdf8" opacity="0.8">
+          <circle cx="35" cy="175" r="4" />
+          <circle cx="48" cy="155" r="3" />
+          <circle cx="195" cy="180" r="4.5" />
+          <circle cx="215" cy="165" r="3.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.47 レックウザ (天空のオゾン緑竜・幾何学リング文様・黒赤フィン角・雷光オーラ) */
+function RayquazaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const greenBody = silhouette ? primary : '#16a34a';
+  const darkGreen = silhouette ? secondary : '#14532d';
+  const ringYellow = silhouette ? secondary : '#facc15';
+  const finRed = silhouette ? secondary : '#ef4444';
+  const finBlack = silhouette ? secondary : '#0f172a';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 大空を翔ける緑の竜胴ループ ★ */}
+      {/* 尾部のフィン */}
+      <polygon points="45,215 15,225 32,200 12,185 40,195" fill={darkGreen} />
+      <polygon points="18,220 28,205 20,195" fill={finRed} />
+
+      {/* 胴体のうねりループ */}
+      <path d="M42 200 Q80 230, 130 205 Q175 180, 195 135 Q180 115, 160 135 Q140 160, 105 175 Q60 185, 42 200 Z" fill={greenBody} />
+      <path d="M175 125 Q165 95, 140 85 Q115 95, 125 125 Q140 145, 175 125 Z" fill={greenBody} />
+
+      {/* 胴体の象徴的な黄色い円環リング文様 (Rune Rings) */}
+      <circle cx="65" cy="195" r="11" fill="none" stroke={ringYellow} strokeWidth="4.5" />
+      <circle cx="105" cy="192" r="12" fill="none" stroke={ringYellow} strokeWidth="4.5" />
+      <circle cx="150" cy="175" r="12" fill="none" stroke={ringYellow} strokeWidth="4.5" />
+      <circle cx="180" cy="142" r="11" fill="none" stroke={ringYellow} strokeWidth="4.5" />
+      <circle cx="145" cy="115" r="10" fill="none" stroke={ringYellow} strokeWidth="4" />
+
+      {/* 胴体側面の空気力学フィン (舵角) */}
+      <polygon points="90,170 70,145 98,155" fill={finBlack} />
+      <polygon points="78,152 70,145 88,152" fill={finRed} />
+      <polygon points="160,160 185,150 168,175" fill={finBlack} />
+      <polygon points="175,153 185,150 170,168" fill={finRed} />
+
+      {/* 前脚（鋭い2本の小腕） */}
+      <path d="M125 128 L100 138 L105 146 L130 135 Z" fill={greenBody} />
+      <polygon points="98,138 90,142 98,145" fill="#ffffff" />
+      <polygon points="102,146 95,150 104,152" fill="#ffffff" />
+
+      <path d="M152 128 L175 138 L170 146 L148 135 Z" fill={greenBody} />
+      <polygon points="176,138 184,142 176,145" fill="#ffffff" />
+      <polygon points="172,146 179,150 170,152" fill="#ffffff" />
+
+      {/* ★ レックウザの幾何学的ヘッド＆2対のロングホーン ★ */}
+      {/* 後頭部の大型上部ホーン（黒と赤のアクセント） */}
+      <polygon points="112,65 72,15 95,45 118,52" fill={finBlack} />
+      <polygon points="75,20 88,38 78,32" fill={finRed} />
+
+      <polygon points="148,65 188,15 165,45 142,52" fill={finBlack} />
+      <polygon points="185,20 172,38 182,32" fill={finRed} />
+
+      {/* 頬の下部ホーン */}
+      <polygon points="105,78 68,68 95,85" fill={finBlack} />
+      <polygon points="72,70 88,80 78,76" fill={finRed} />
+
+      <polygon points="155,78 192,68 165,85" fill={finBlack} />
+      <polygon points="188,70 172,80 182,76" fill={finRed} />
+
+      {/* 竜頭メイン */}
+      <polygon points="130,48 105,68 108,95 130,105 152,95 155,68" fill={greenBody} />
+      <polygon points="130,58 116,72 118,90 130,96 142,90 144,72" fill={darkGreen} />
+
+      {/* 黄色い眼＆黒の縁取り */}
+      <circle cx="118" cy="76" r="6" fill="#facc15" stroke="#000000" strokeWidth="2" />
+      <circle cx="118" cy="76" r="3" fill="#000000" />
+      <circle cx="120" cy="74" r="1.2" fill="#ffffff" />
+
+      <circle cx="142" cy="76" r="6" fill="#facc15" stroke="#000000" strokeWidth="2" />
+      <circle cx="142" cy="76" r="3" fill="#000000" />
+      <circle cx="144" cy="74" r="1.2" fill="#ffffff" />
+
+      {/* 鋭い牙 */}
+      <polygon points="120,95 124,103 127,95" fill="#ffffff" />
+      <polygon points="140,95 136,103 133,95" fill="#ffffff" />
+
+      {/* メガレックウザ風の黄金の光のリボンオーラ */}
+      {!silhouette && (
+        <g stroke="#fde047" strokeWidth="3" fill="none" opacity="0.85">
+          <path d="M85 55 Q50 90, 30 140 Q45 120, 65 110" />
+          <path d="M175 55 Q210 90, 230 140 Q215 120, 195 110" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.48 ニャオハ (甘えんぼう草ねこ・大きな瞳・葉っぱの首輪・愛らしいピンクの鼻と肉球) */
+function SprigatitoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const mintFur = silhouette ? primary : '#86efac';
+  const darkMint = silhouette ? secondary : '#4ade80';
+  const leafGreen = silhouette ? secondary : '#16a34a';
+  const innerEar = silhouette ? secondary : '#fbcfe8';
+  const eyePink = silhouette ? secondary : '#ec4899';
+  const nosePink = silhouette ? secondary : '#f43f5e';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ふわふわのしっぽ（立ち上がった葉っぱ状の尾） */}
+      <path d="M165 175 Q215 170, 218 125 Q195 135, 172 165 Z" fill={mintFur} />
+      <path d="M205 138 Q218 125, 210 115 Q198 128, 205 138 Z" fill={leafGreen} />
+
+      {/* まあるい後ろ足 */}
+      <ellipse cx="90" cy="185" rx="18" ry="16" fill={darkMint} />
+      <ellipse cx="170" cy="185" rx="18" ry="16" fill={darkMint} />
+
+      {/* 小さな前足 */}
+      <path d="M108 170 L104 212 Q115 218, 122 212 L120 170 Z" fill={mintFur} />
+      <path d="M138 170 L136 212 Q145 218, 154 212 L150 170 Z" fill={mintFur} />
+      {/* 肉球ステッチ */}
+      <circle cx="113" cy="210" r="2" fill={nosePink} stroke="none" />
+      <circle cx="145" cy="210" r="2" fill={nosePink} stroke="none" />
+
+      {/* まるっこい胴体 */}
+      <ellipse cx="130" cy="165" rx="34" ry="30" fill={mintFur} />
+
+      {/* ★ ニャオハの葉っぱの首輪 (Leaf Ruff Collar) ★ */}
+      <path
+        d="M130 135 L105 152 L116 134 L85 132 L112 120 L130 128 L148 120 L175 132 L144 134 L155 152 Z"
+        fill={leafGreen}
+      />
+
+      {/* ★ 愛らしいニャオハの大きな顔 ★ */}
+      {/* 大きな三角の猫耳 */}
+      <polygon points="85,85 62,32 105,58" fill={mintFur} />
+      <polygon points="82,78 68,42 98,60" fill={innerEar} />
+
+      <polygon points="175,85 198,32 155,58" fill={mintFur} />
+      <polygon points="178,78 192,42 162,60" fill={innerEar} />
+
+      {/* ほっぺのふっくらした輪郭 */}
+      <path d="M85 85 Q70 108, 92 128 Q130 138, 168 128 Q190 108, 175 85 Q130 68, 85 85 Z" fill={mintFur} />
+
+      {/* 額から目の周りを飾る葉っぱ模様 (Leaf Mask Marking) */}
+      <path
+        d="M130 82 Q120 95, 102 96 Q115 115, 130 112 Q145 115, 158 96 Q140 95, 130 82 Z"
+        fill={leafGreen}
+      />
+      <polygon points="130,72 124,84 136,84" fill={leafGreen} />
+
+      {/* ★ じょうくんを魅了する大きなキラキラピンクの瞳 ★ */}
+      {/* 左目 */}
+      <ellipse cx="108" cy="102" rx="13" ry="16" fill={eyePink} stroke="#000000" strokeWidth="2.5" />
+      <ellipse cx="108" cy="104" rx="9" ry="12" fill="#9d174d" stroke="none" />
+      <circle cx="105" cy="97" r="5" fill="#ffffff" stroke="none" />
+      <circle cx="112" cy="108" r="2.5" fill="#ffffff" stroke="none" />
+
+      {/* 右目 */}
+      <ellipse cx="152" cy="102" rx="13" ry="16" fill={eyePink} stroke="#000000" strokeWidth="2.5" />
+      <ellipse cx="152" cy="104" rx="9" ry="12" fill="#9d174d" stroke="none" />
+      <circle cx="149" cy="97" r="5" fill="#ffffff" stroke="none" />
+      <circle cx="156" cy="108" r="2.5" fill="#ffffff" stroke="none" />
+
+      {/* ピンクの小さな鼻＆ωの口元 */}
+      <polygon points="130,114 126,110 134,110" fill={nosePink} stroke="none" />
+      <path d="M124 116 Q127 121, 130 117 Q133 121, 136 116" fill="none" stroke="#14532d" strokeWidth="2" strokeLinecap="round" />
+
+      {/* ほっぺの愛らしいピンクチーク */}
+      {!silhouette && (
+        <g fill="#f472b6" opacity="0.6" stroke="none">
+          <ellipse cx="90" cy="115" rx="6" ry="4" />
+          <ellipse cx="170" cy="115" rx="6" ry="4" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/* ==========================================================================
+   🦸 アベンジャーズ・伝説のスーパーヒーロー怪獣 4体 (No.49〜52)
+   ========================================================================== */
+
+/** No.49 アイアンマン (真紅＆ゴールドのハイテクパワードスーツ・輝くアークリアクター・リパルサーキャノン) */
+function IronManSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const redArmor = silhouette ? primary : '#dc2626';
+  const darkRed = silhouette ? secondary : '#991b1b';
+  const goldPlate = silhouette ? secondary : '#facc15';
+  const darkGold = silhouette ? secondary : '#ca8a04';
+  const arcCyan = silhouette ? secondary : '#38bdf8';
+  const arcWhite = silhouette ? secondary : '#ffffff';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 頑強な脚部アーマー */}
+      <path d="M92 175 L85 220 L108 220 L115 175 Z" fill={redArmor} />
+      <rect x="88" y="195" width="22" height="10" rx="3" fill={goldPlate} />
+      <path d="M82 220 L110 220 L112 228 L80 228 Z" fill={darkRed} />
+
+      <path d="M168 175 L175 220 L152 220 L145 175 Z" fill={redArmor} />
+      <rect x="150" y="195" width="22" height="10" rx="3" fill={goldPlate} />
+      <path d="M148 220 L178 220 L180 228 L146 228 Z" fill={darkRed} />
+
+      {/* 腰部＆腹筋プレート */}
+      <path d="M102 155 L96 180 L164 180 L158 155 Z" fill={goldPlate} />
+      <line x1="130" y1="155" x2="130" y2="180" stroke={darkGold} strokeWidth="3" />
+
+      {/* 胴体胸部アーマー */}
+      <path d="M88 105 L172 105 L160 160 L100 160 Z" fill={redArmor} />
+
+      {/* ★ 胸中央のアークリアクター (Arc Reactor) ★ */}
+      <circle cx="130" cy="132" r="17" fill="#0f172a" />
+      <circle cx="130" cy="132" r="14" fill="#0284c7" />
+      <circle cx="130" cy="132" r="9" fill={arcCyan} />
+      <circle cx="130" cy="132" r="5" fill={arcWhite} />
+      {!silhouette && (
+        <g stroke={arcCyan} strokeWidth="2" opacity="0.9">
+          <line x1="130" y1="112" x2="130" y2="116" />
+          <line x1="130" y1="148" x2="130" y2="152" />
+          <line x1="110" y1="132" x2="114" y2="132" />
+          <line x1="146" y1="132" x2="150" y2="132" />
+        </g>
+      )}
+
+      {/* 左肩＆左腕（握り拳） */}
+      <ellipse cx="78" cy="115" rx="14" ry="12" fill={goldPlate} />
+      <path d="M74 125 L65 160 L82 165 L88 128 Z" fill={redArmor} />
+      <circle cx="72" cy="170" r="10" fill={goldPlate} />
+
+      {/* 右肩＆右腕（手のひらリパルサーキャノン発射ポーズ！） */}
+      <ellipse cx="182" cy="115" rx="14" ry="12" fill={goldPlate} />
+      <path d="M185 125 L205 140 L195 155 L178 135 Z" fill={redArmor} />
+      {/* 前方に向けた掌パーム */}
+      <circle cx="212" cy="148" r="16" fill={goldPlate} />
+      <circle cx="212" cy="148" r="9" fill={arcCyan} />
+      <circle cx="212" cy="148" r="4.5" fill={arcWhite} />
+      {!silhouette && (
+        <g stroke={arcCyan} strokeWidth="2.5" fill="none">
+          <circle cx="212" cy="148" r="22" strokeDasharray="6 6" />
+          <polygon points="230,135 245,148 230,161" fill={arcCyan} stroke="none" />
+        </g>
+      )}
+
+      {/* ★ アイアンマンの象徴的マスク (Helmet) ★ */}
+      <path d="M102 52 Q130 38, 158 52 Q168 85, 155 105 Q130 115, 105 105 Q92 85, 102 52 Z" fill={redArmor} />
+      {/* ゴールドフェイスプレート */}
+      <path
+        d="M112 55 L148 55 L154 82 L144 102 L116 102 L106 82 Z"
+        fill={goldPlate}
+      />
+      {/* 鋭い額のシャープライン */}
+      <polygon points="120,55 130,68 140,55" fill={redArmor} />
+
+      {/* 青白く光るアイコニックなスリットアイ */}
+      <polygon points="114,75 126,76 124,80 113,79" fill={arcWhite} stroke="#0284c7" strokeWidth="1.5" />
+      <polygon points="146,75 134,76 136,80 147,79" fill={arcWhite} stroke="#0284c7" strokeWidth="1.5" />
+
+      {/* 口元スリット */}
+      <line x1="122" y1="94" x2="138" y2="94" stroke={darkGold} strokeWidth="3" />
+    </g>
+  );
+}
+
+/** No.50 キャプテン・アメリカ (伝説の星条旗スーツ・星のヴィブラニウムシールド・白翼ヘルメット・不屈のリーダー) */
+function CaptainAmericaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const suitBlue = silhouette ? primary : '#1d4ed8';
+  const darkBlue = silhouette ? secondary : '#1e3a8a';
+  const shieldRed = silhouette ? secondary : '#dc2626';
+  const whiteStar = silhouette ? secondary : '#ffffff';
+  const leatherBrown = silhouette ? secondary : '#78350f';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 頑強な脚部 */}
+      <path d="M95 175 L90 220 L112 220 L115 175 Z" fill={suitBlue} />
+      <path d="M86 215 L114 215 L112 226 L84 226 Z" fill={shieldRed} />
+
+      <path d="M165 175 L170 220 L148 220 L145 175 Z" fill={suitBlue} />
+      <path d="M144 215 L172 215 L170 226 L142 226 Z" fill={shieldRed} />
+
+      {/* ブラウンのユーティリティベルト */}
+      <rect x="94" y="162" width="72" height="12" rx="2" fill={leatherBrown} />
+      <rect x="124" y="160" width="12" height="16" rx="2" fill="#e2e8f0" />
+
+      {/* 腹部の赤白ストライプ */}
+      <rect x="98" y="138" width="64" height="24" fill="#ffffff" />
+      <rect x="106" y="138" width="10" height="24" fill={shieldRed} />
+      <rect x="125" y="138" width="10" height="24" fill={shieldRed} />
+      <rect x="144" y="138" width="10" height="24" fill={shieldRed} />
+
+      {/* 胸部タクティカルスーツ＆ホワイトスター */}
+      <path d="M88 98 L172 98 L162 140 L98 140 Z" fill={suitBlue} />
+      <polygon
+        points="130,105 133,115 143,115 135,121 138,130 130,124 122,130 125,121 117,115 127,115"
+        fill={whiteStar}
+      />
+
+      {/* 右腕（勇ましい握り拳） */}
+      <ellipse cx="178" cy="108" rx="13" ry="12" fill={suitBlue} />
+      <path d="M178 116 L195 150 L180 156 L168 125 Z" fill={suitBlue} />
+      <circle cx="195" cy="158" r="11" fill={shieldRed} />
+
+      {/* ★ キャプテンの代名詞：ヴィブラニウム円形シールド (Vibranium Shield) ★ */}
+      <g transform="translate(68, 140)">
+        {/* 外枠赤リング */}
+        <circle cx="0" cy="0" r="38" fill={shieldRed} />
+        {/* 白リング */}
+        <circle cx="0" cy="0" r="30" fill="#ffffff" />
+        {/* 内枠赤リング */}
+        <circle cx="0" cy="0" r="22" fill={shieldRed} />
+        {/* 中央青ディスク */}
+        <circle cx="0" cy="0" r="14" fill={suitBlue} />
+        {/* 星条旗の中央ホワイトスター */}
+        <polygon
+          points="0,-12 3.5,-3 12,-3 5,2 8,11 0,6 -8,11 -5,2 -12,-3 -3.5,-3"
+          fill={whiteStar}
+        />
+        {/* 金属の光沢ハイライト */}
+        {!silhouette && (
+          <path d="M-28 -20 A 34 34 0 0 1 20 -28" fill="none" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" opacity="0.7" />
+        )}
+      </g>
+
+      {/* ★ キャプテンのヘルメット＆凛々しいマスク ★ */}
+      <path d="M104 50 Q130 38, 156 50 Q165 78, 152 98 Q130 108, 108 98 Q95 78, 104 50 Z" fill={suitBlue} />
+      {/* チンストラップ＆露出した顎 */}
+      <path d="M112 88 Q130 106, 148 88 Z" fill="#fed7aa" stroke={leatherBrown} strokeWidth="2.5" />
+
+      {/* 額のホワイト「A」マーク */}
+      <polygon points="130,48 122,66 128,66 130,60 132,66 138,66" fill={whiteStar} />
+      <polygon points="127,58 130,52 133,58" fill={suitBlue} />
+
+      {/* 側頭部の小さな白翼ウィング */}
+      <polygon points="102,62 88,54 98,70" fill={whiteStar} />
+      <polygon points="158,62 172,54 162,70" fill={whiteStar} />
+
+      {/* 強い意志を宿した英雄の瞳 */}
+      <circle cx="118" cy="74" r="4.5" fill="#ffffff" stroke="#000000" strokeWidth="1.5" />
+      <circle cx="119" cy="74" r="2.5" fill={darkBlue} />
+      <circle cx="120" cy="73" r="1" fill="#ffffff" />
+
+      <circle cx="142" cy="74" r="4.5" fill="#ffffff" stroke="#000000" strokeWidth="1.5" />
+      <circle cx="141" cy="74" r="2.5" fill={darkBlue} />
+      <circle cx="140" cy="73" r="1" fill="#ffffff" />
+    </g>
+  );
+}
+
+/** No.51 ソー (アスガルド雷神・真紅のマント・6枚の銀ディスク・ムジョルニアの轟雷・翼の兜) */
+function ThorSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const capeRed = silhouette ? primary : '#dc2626';
+  const darkCape = silhouette ? secondary : '#991b1b';
+  const cuirassBlack = silhouette ? secondary : '#1e293b';
+  const silverDisc = silhouette ? secondary : '#e2e8f0';
+  const goldHair = silhouette ? secondary : '#facc15';
+  const lightningBlue = silhouette ? secondary : '#38bdf8';
+  const hammerSteel = silhouette ? secondary : '#64748b';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* なびく真紅の大マント */}
+      <path d="M78 95 Q25 125, 20 220 Q55 210, 80 190 Z" fill={capeRed} />
+      <path d="M182 95 Q235 125, 240 220 Q205 210, 180 190 Z" fill={capeRed} />
+
+      {/* 脚部アーマー */}
+      <path d="M98 175 L92 222 L114 222 L116 175 Z" fill={cuirassBlack} />
+      <path d="M162 175 L168 222 L146 222 L144 175 Z" fill={cuirassBlack} />
+      <rect x="90" y="215" width="26" height="12" rx="3" fill="#475569" />
+      <rect x="144" y="215" width="26" height="12" rx="3" fill="#475569" />
+
+      {/* 胴体ブラックキュイラス */}
+      <path d="M92 105 L168 105 L158 175 L102 175 Z" fill={cuirassBlack} />
+
+      {/* ★ ソーの象徴：胴体の6枚のシルバーサークルディスク ★ */}
+      <circle cx="114" cy="120" r="11" fill={silverDisc} />
+      <circle cx="146" cy="120" r="11" fill={silverDisc} />
+      <circle cx="114" cy="142" r="11" fill={silverDisc} />
+      <circle cx="146" cy="142" r="11" fill={silverDisc} />
+      <circle cx="118" cy="162" r="9" fill={silverDisc} />
+      <circle cx="142" cy="162" r="9" fill={silverDisc} />
+
+      {/* 左腕（拳） */}
+      <ellipse cx="78" cy="112" rx="13" ry="12" fill={silverDisc} />
+      <path d="M76 120 L62 155 L78 160 L86 128 Z" fill={cuirassBlack} />
+      <circle cx="66" cy="165" r="10" fill="#475569" />
+
+      {/* 右腕＆掲げられた雷神の槌ムジョルニア (Mjolnir) */}
+      <ellipse cx="182" cy="112" rx="13" ry="12" fill={silverDisc} />
+      <path d="M182 118 L202 85 L215 92 L192 128 Z" fill={cuirassBlack} />
+      {/* ハンマーの柄 */}
+      <rect x="206" y="55" width="8" height="35" rx="2" fill="#78350f" transform="rotate(-15 210 72)" />
+      {/* 鋼鉄の四角いハンマーヘッド */}
+      <rect x="180" y="32" width="46" height="28" rx="4" fill={hammerSteel} stroke="#ffffff" strokeWidth="2.5" />
+      <circle cx="203" cy="46" r="6" fill="#475569" />
+      {/* ハンマーから迸る電撃スパーク */}
+      {!silhouette && (
+        <g stroke={lightningBlue} strokeWidth="3" fill="none">
+          <path d="M203 32 L215 12 L225 25 L245 8" />
+          <path d="M180 40 L165 25 L172 15 L158 5" />
+          <path d="M226 46 L242 42 L236 58 L252 55" />
+        </g>
+      )}
+
+      {/* 肩の赤いマント留め */}
+      <circle cx="92" cy="102" r="7" fill={silverDisc} />
+      <circle cx="168" cy="102" r="7" fill={silverDisc} />
+
+      {/* ★ ソーの波打つ金髪＆翼のシルバー兜 ★ */}
+      {/* なびく金髪 */}
+      <path d="M96 65 Q70 85, 75 125 Q92 120, 98 95 Z" fill={goldHair} />
+      <path d="M164 65 Q190 85, 185 125 Q168 120, 162 95 Z" fill={goldHair} />
+
+      {/* シルバーヘルメット */}
+      <path d="M106 50 Q130 38, 154 50 Q162 75, 150 92 Q130 100, 110 92 Q98 75, 106 50 Z" fill={silverDisc} />
+      {/* 兜の左右の大翼フェザーウィング */}
+      <polygon points="104,58 72,25 92,50 82,62 102,68" fill="#ffffff" stroke={silverDisc} strokeWidth="2" />
+      <polygon points="156,58 188,25 168,50 178,62 158,68" fill="#ffffff" stroke={silverDisc} strokeWidth="2" />
+
+      {/* 凛々しい金髭 */}
+      <path d="M116 82 Q130 96, 144 82 Q138 98, 130 100 Q122 98, 116 82 Z" fill={goldHair} />
+
+      {/* 蒼く輝く雷神の瞳 */}
+      <circle cx="120" cy="72" r="4.5" fill={lightningBlue} stroke="#000000" strokeWidth="1.5" />
+      <circle cx="120" cy="72" r="2" fill="#ffffff" />
+
+      <circle cx="140" cy="72" r="4.5" fill={lightningBlue} stroke="#000000" strokeWidth="1.5" />
+      <circle cx="140" cy="72" r="2" fill="#ffffff" />
+    </g>
+  );
+}
+
+/** No.52 スパイダーマン (親愛なる隣人・鮮やかな赤青スーツ・細密ウェブパターン・特大ホワイトアイ・糸噴射) */
+function SpiderManSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const suitRed = silhouette ? primary : '#ef4444';
+  const suitBlue = silhouette ? secondary : '#2563eb';
+  const darkBlue = silhouette ? secondary : '#1d4ed8';
+  const webBlack = silhouette ? secondary : '#0f172a';
+  const spiderGold = silhouette ? secondary : '#facc15';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 背中のアイアン・スパイダー金色アーム（4本のアクロバティック脚） */}
+      {!silhouette && (
+        <g stroke={spiderGold} strokeWidth="5" fill="none" strokeLinecap="round">
+          <path d="M110 115 Q60 65, 45 100 Q35 125, 20 120" />
+          <path d="M110 125 Q55 130, 38 165 Q25 190, 15 185" />
+          <path d="M150 115 Q200 65, 215 100 Q225 125, 240 120" />
+          <path d="M150 125 Q205 130, 222 165 Q235 190, 245 185" />
+        </g>
+      )}
+
+      {/* アクロバティックに屈んだ下半身（ブルーのタイツ） */}
+      <path d="M85 160 Q60 185, 68 218 L92 218 Q88 190, 105 168 Z" fill={suitBlue} />
+      <path d="M66 212 L94 212 L92 226 L64 226 Z" fill={suitRed} />
+
+      <path d="M175 160 Q200 185, 192 218 L168 218 Q172 190, 155 168 Z" fill={suitBlue} />
+      <path d="M166 212 L194 212 L196 226 L168 226 Z" fill={suitRed} />
+
+      {/* 胴体（中央レッド、両脇ブルー） */}
+      <path d="M92 108 L168 108 L158 165 L102 165 Z" fill={suitRed} />
+      <path d="M92 108 L112 112 L106 165 L102 165 Z" fill={suitBlue} />
+      <path d="M168 108 L148 112 L154 165 L158 165 Z" fill={suitBlue} />
+
+      {/* 胴体のウェブパターンモールド */}
+      <line x1="130" y1="108" x2="130" y2="165" stroke={webBlack} strokeWidth="1.8" />
+      <line x1="112" y1="120" x2="148" y2="120" stroke={webBlack} strokeWidth="1.8" />
+      <line x1="110" y1="138" x2="150" y2="138" stroke={webBlack} strokeWidth="1.8" />
+      <line x1="108" y1="154" x2="152" y2="154" stroke={webBlack} strokeWidth="1.8" />
+
+      {/* 胸の中央のブラックスパイダーエンブレム */}
+      <ellipse cx="130" cy="132" rx="4" ry="6" fill={webBlack} />
+      <g stroke={webBlack} strokeWidth="2" fill="none">
+        <path d="M130 128 Q120 120, 118 114" />
+        <path d="M130 130 Q118 130, 116 125" />
+        <path d="M130 134 Q118 136, 117 145" />
+        <path d="M130 136 Q120 144, 119 152" />
+        <path d="M130 128 Q140 120, 142 114" />
+        <path d="M130 130 Q142 130, 144 125" />
+        <path d="M130 134 Q142 136, 143 145" />
+        <path d="M130 136 Q140 144, 141 152" />
+      </g>
+
+      {/* 右腕（地面に手を突くポーズ） */}
+      <path d="M92 114 L65 142 L78 152 L100 125 Z" fill={suitBlue} />
+      <circle cx="62" cy="150" r="12" fill={suitRed} />
+
+      {/* 左腕（ウェブシューターを正面に発射するポーズ！🤟） */}
+      <path d="M168 114 L195 130 L188 144 L162 125 Z" fill={suitBlue} />
+      <circle cx="204" cy="136" r="13" fill={suitRed} />
+
+      {/* 手首から放たれるスパイダーウェブ（白いクモの糸とエフェクト） */}
+      {!silhouette && (
+        <g stroke="#ffffff" strokeWidth="2.5" fill="none">
+          <path d="M214 134 Q235 125, 252 115" />
+          <path d="M214 136 Q238 136, 256 135" />
+          <path d="M214 138 Q235 148, 252 155" />
+          <ellipse cx="245" cy="135" rx="8" ry="14" stroke="#38bdf8" strokeWidth="2" />
+          <line x1="245" y1="121" x2="245" y2="149" stroke="#38bdf8" strokeWidth="1.5" />
+          <line x1="237" y1="135" x2="253" y2="135" stroke="#38bdf8" strokeWidth="1.5" />
+        </g>
+      )}
+
+      {/* ★ スパイダーマンの象徴：マスク＆特大ホワイトアイ ★ */}
+      <ellipse cx="130" cy="72" rx="34" ry="38" fill={suitRed} />
+
+      {/* マスク上の放射状ウェブライン */}
+      <g stroke={webBlack} strokeWidth="1.8" fill="none">
+        <line x1="130" y1="72" x2="130" y2="34" />
+        <line x1="130" y1="72" x2="158" y2="45" />
+        <line x1="130" y1="72" x2="164" y2="72" />
+        <line x1="130" y1="72" x2="158" y2="98" />
+        <line x1="130" y1="72" x2="130" y2="110" />
+        <line x1="130" y1="72" x2="102" y2="98" />
+        <line x1="130" y1="72" x2="96" y2="72" />
+        <line x1="130" y1="72" x2="102" y2="45" />
+        <ellipse cx="130" cy="72" rx="16" ry="18" />
+        <ellipse cx="130" cy="72" rx="28" ry="32" />
+      </g>
+
+      {/* 特大ホワイトアイレンズ（太い黒枠フレーム＆鋭い目つき） */}
+      {/* 左目 */}
+      <path
+        d="M100 60 Q124 58, 126 80 Q112 85, 96 74 Z"
+        fill="#ffffff"
+        stroke="#000000"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      {/* 右目 */}
+      <path
+        d="M160 60 Q136 58, 134 80 Q148 85, 164 74 Z"
+        fill="#ffffff"
+        stroke="#000000"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+    </g>
+  );
+}
+
+/* ==========================================================================
    😈 ドラクエ風・伝説の4大魔王 (No.45〜48: りゅうおう・ハーゴン＆シドー・ダークドレアム・デスピサロ)
    ========================================================================== */
 
@@ -3944,6 +4648,26 @@ function KaijuSpecificSvgDispatcher({
       return <EeveeSvg {...partProps} />;
     case 'nature-pkmn-bulbasaur':
       return <BulbasaurSvg {...partProps} />;
+
+    // ⭐ 追加ポケモン・スーパースター 4体
+    case 'fire-pkmn-koraidon':
+      return <KoraidonSvg {...partProps} />;
+    case 'water-pkmn-gyarados':
+      return <GyaradosSvg {...partProps} />;
+    case 'thunder-pkmn-rayquaza':
+      return <RayquazaSvg {...partProps} />;
+    case 'nature-pkmn-sprigatito':
+      return <SprigatitoSvg {...partProps} />;
+
+    // 🦸 アベンジャーズ・伝説のスーパーヒーロー怪獣 4体
+    case 'fire-avengers-ironman':
+      return <IronManSvg {...partProps} />;
+    case 'water-avengers-captain':
+      return <CaptainAmericaSvg {...partProps} />;
+    case 'thunder-avengers-thor':
+      return <ThorSvg {...partProps} />;
+    case 'nature-avengers-spiderman':
+      return <SpiderManSvg {...partProps} />;
 
     // 😈 ドラクエ風・伝説の4大魔王
     case 'fire-dq-ryuo':
