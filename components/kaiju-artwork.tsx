@@ -3619,196 +3619,302 @@ function SpiderManSvg({ primary, secondary, accent, eyeColor, outline, silhouett
 
 /** No.53 ゴジラ (怪獣王・黒鉄の重厚巨躯・ギザギザ多段背びれ・バーニング熱線) */
 function GodzillaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const bodyDark = silhouette ? primary : '#334155';
-  const bodyShadow = silhouette ? secondary : '#1e293b';
-  const spineGlow = silhouette ? secondary : '#38bdf8';
-  const fireGlow = silhouette ? secondary : '#f97316';
-  const eye = silhouette ? primary : '#facc15';
+  const bodyDark = silhouette ? primary : '#1e293b';
+  const bodyMid = silhouette ? primary : '#334155';
+  const bodyLight = silhouette ? secondary : '#475569';
+  const bellyShade = silhouette ? secondary : '#0f172a';
+  const spineCyan = silhouette ? secondary : '#38bdf8';
+  const spineCore = silhouette ? primary : '#e0f2fe';
+  const beamCore = silhouette ? secondary : '#0284c7';
+  const eyeYellow = silhouette ? primary : '#facc15';
 
   return (
     <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
-      {/* 太い尻尾とうねり */}
-      <path d="M140 180 Q210 200, 235 150 Q225 130, 180 155 Q150 170, 130 175 Z" fill={bodyShadow} />
-      {/* 尻尾の背びれ棘 */}
+      {/* 遠景の太い尾とうねり */}
+      <path d="M145 175 Q215 190, 245 145 Q250 120, 235 110 Q215 125, 175 145 Q150 160, 130 170 Z" fill={bodyDark} />
+      {/* 尻尾の背びれ棘列（青白く発光） */}
       {!silhouette && (
-        <g fill={spineGlow} stroke="none">
-          <polygon points="175,150 185,135 192,150" />
-          <polygon points="198,142 208,128 214,144" />
-          <polygon points="218,138 226,125 230,140" />
+        <g fill={spineCyan} stroke={outline} strokeWidth="2">
+          <polygon points="175,142 186,124 194,142" />
+          <polygon points="198,132 210,114 216,134" />
+          <polygon points="218,122 228,104 232,125" />
+          <polygon points="234,114 244,98 246,116" />
         </g>
       )}
 
-      {/* 巨大な太もも＆足 */}
-      <ellipse cx="140" cy="180" rx="36" ry="30" fill={bodyShadow} />
-      <path d="M125 185 L115 220 L160 220 L155 190 Z" fill={bodyDark} />
-      {/* 足の爪 */}
-      <polygon points="112,220 118,212 125,220" fill="#f8fafc" />
-      <polygon points="128,220 135,210 142,220" fill="#f8fafc" />
-      <polygon points="146,220 153,212 160,220" fill="#f8fafc" />
+      {/* 巨大な太もも＆足（奥足） */}
+      <ellipse cx="155" cy="178" rx="28" ry="32" fill={bellyShade} />
+      <path d="M142 190 L138 226 L172 226 L170 195 Z" fill={bellyShade} />
+      <polygon points="135,226 142,216 150,226" fill="#f8fafc" />
+      <polygon points="152,226 160,216 168,226" fill="#f8fafc" />
 
       {/* 重厚な背中とギザギザの巨大背びれ3列 */}
-      {!silhouette ? (
-        <g fill={spineGlow} stroke={outline} strokeWidth="2.5">
-          <polygon points="110,130 140,85 125,120" />
-          <polygon points="125,115 158,70 140,108" />
-          <polygon points="135,130 170,95 150,128" />
-          <polygon points="142,145 178,120 156,146" />
-          {/* 青光りインナー */}
-          <polygon points="126,112 150,78 138,106" fill="#e0f2fe" stroke="none" />
-          <polygon points="136,126 162,100 148,124" fill="#e0f2fe" stroke="none" />
-        </g>
-      ) : (
-        <g fill={secondary}>
-          <polygon points="110,130 140,85 125,120" />
-          <polygon points="125,115 158,70 140,108" />
-          <polygon points="135,130 170,95 150,128" />
-        </g>
-      )}
-
-      {/* たくましい胴体・胸部（バーニング赤熱テクスチャ） */}
-      <path d="M85 125 Q70 160, 80 195 Q115 205, 145 190 Q150 145, 120 115 Z" fill={bodyDark} />
+      <g fill={spineCyan} stroke={outline} strokeWidth="3">
+        {/* 奥の背びれ列 */}
+        <polygon points="120,118 135,76 142,112" opacity="0.8" />
+        <polygon points="138,110 156,66 160,105" opacity="0.8" />
+        {/* メイン中央の超巨大背びれ（もみじ型・白熱コア） */}
+        <polygon points="105,128 128,70 120,105 138,82 134,116" fill={spineCyan} />
+        <polygon points="122,122 148,58 140,96 160,72 150,115" fill={spineCyan} />
+        <polygon points="138,130 168,78 158,112 176,95 162,128" fill={spineCyan} />
+        <polygon points="152,142 184,106 172,132 188,122 170,148" fill={spineCyan} />
+      </g>
+      {/* 背びれの発光ハイライト */}
       {!silhouette && (
-        <g stroke="none" opacity="0.85">
-          <path d="M88 145 Q82 170, 95 185 Q115 185, 125 165 Q110 145, 88 145 Z" fill={fireGlow} />
-          <path d="M94 152 Q90 168, 102 178 Q115 175, 118 160 Z" fill="#fef08a" />
+        <g fill={spineCore} stroke="none">
+          <polygon points="125,78 122,100 132,88" />
+          <polygon points="144,68 138,92 152,80" />
+          <polygon points="162,88 156,108 168,100" />
         </g>
       )}
 
-      {/* 左腕＆鋭い爪 */}
-      <path d="M95 138 Q65 145, 55 135 Q58 128, 75 128 Q88 126, 95 135 Z" fill={bodyShadow} />
-      <polygon points="52,133 46,130 52,126" fill="#f8fafc" />
-      <polygon points="54,138 48,137 53,132" fill="#f8fafc" />
-
-      {/* 獰猛な頭部＆顎 */}
-      <path d="M110 115 Q115 80, 85 75 Q55 78, 50 102 Q60 118, 90 118 Z" fill={bodyDark} />
-      {/* 開いた口＆牙＆放射熱線チャージ */}
-      <path d="M50 100 Q70 105, 85 100 L85 108 Q65 110, 52 104 Z" fill="#7f1d1d" />
-      <polygon points="56,100 60,105 64,100" fill="#f8fafc" />
-      <polygon points="68,100 72,105 76,100" fill="#f8fafc" />
-      <polygon points="58,108 62,103 66,108" fill="#f8fafc" />
-      {/* 口先の熱線スパーク */}
+      {/* たくましい胴体・胸部（黒鉄のゴツゴツした表皮） */}
+      <path d="M80 120 Q65 155, 75 195 Q110 210, 145 195 Q155 145, 120 115 Z" fill={bodyDark} />
+      {/* 腹部のゴツゴツ蛇腹プレート */}
+      <path d="M82 138 Q100 148, 124 135 Q128 175, 105 192 Q85 185, 82 138 Z" fill={bodyMid} />
       {!silhouette && (
-        <circle cx="48" cy="102" r="7" fill={spineGlow} opacity="0.8" stroke="none" />
+        <g stroke={outline} strokeWidth="2" fill="none" opacity="0.6">
+          <path d="M86 150 Q104 158, 120 148" />
+          <path d="M86 165 Q104 172, 118 162" />
+          <path d="M88 178 Q102 184, 114 176" />
+        </g>
       )}
 
-      {/* 鋭い眼光 */}
-      <polygon points="76,86 86,84 84,92 74,90" fill={eye} />
-      <circle cx="80" cy="87" r="1.8" fill="#0f172a" stroke="none" />
+      {/* 手前の巨大な太もも＆足 */}
+      <ellipse cx="120" cy="180" rx="30" ry="26" fill={bodyDark} />
+      <path d="M102 185 L95 228 L138 228 L135 190 Z" fill={bodyMid} />
+      {/* 3本の大爪 */}
+      <polygon points="90,228 98,214 106,228" fill="#f8fafc" />
+      <polygon points="108,228 116,214 124,228" fill="#f8fafc" />
+      <polygon points="126,228 134,214 142,228" fill="#f8fafc" />
+
+      {/* 奥の腕 */}
+      <path d="M68 126 Q55 110, 48 116 Q45 125, 60 136 Z" fill={bellyShade} />
+
+      {/* 獰猛な頭部＆首 */}
+      <path d="M110 115 Q115 78, 85 70 Q52 74, 48 98 Q58 120, 92 120 Z" fill={bodyDark} />
+      {/* 眉間の突起と隆起 */}
+      <path d="M82 72 Q65 74, 52 88 Q68 88, 82 82 Z" fill={bodyLight} />
+
+      {/* 開いた口＆牙＆口腔内の熱線グロー */}
+      <path d="M48 95 Q68 102, 85 96 L85 106 Q62 110, 48 102 Z" fill="#7f1d1d" />
+      <polygon points="52,95 56,101 60,95" fill="#f8fafc" />
+      <polygon points="64,95 68,101 72,95" fill="#f8fafc" />
+      <polygon points="76,95 80,101 84,95" fill="#f8fafc" />
+      <polygon points="54,103 58,98 62,103" fill="#f8fafc" />
+      <polygon points="66,104 70,98 74,104" fill="#f8fafc" />
+
+      {/* 手前の力強い腕＆鋭い鉤爪 */}
+      <path d="M92 135 Q65 140, 52 130 Q56 122, 74 122 Q86 122, 92 132 Z" fill={bodyMid} />
+      <polygon points="48,128 40,124 48,120" fill="#f8fafc" />
+      <polygon points="50,134 42,132 48,126" fill="#f8fafc" />
+      <polygon points="53,138 46,138 51,133" fill="#f8fafc" />
+
+      {/* 鋭い黄色の眼光 */}
+      <polygon points="72,82 82,80 80,88 70,86" fill={eyeYellow} />
+      <circle cx="76" cy="84" r="1.8" fill="#0f172a" stroke="none" />
+      <circle cx="75" cy="83" r="0.6" fill="#ffffff" stroke="none" />
+
+      {/* 口先から噴き出すスパイラル放射熱線 */}
+      {!silhouette && (
+        <g stroke="none">
+          {/* 口元のエネルギー凝縮球 */}
+          <circle cx="44" cy="98" r="9" fill={spineCyan} opacity="0.85" />
+          <circle cx="44" cy="98" r="4.5" fill={spineCore} />
+          {/* 前方に放たれる熱線ビーム */}
+          <path d="M44 98 L6 92 L10 104 Z" fill={spineCyan} opacity="0.75" />
+          <path d="M44 98 L10 95 L14 101 Z" fill={spineCore} />
+          {/* エネルギーリング */}
+          <ellipse cx="26" cy="97" rx="4" ry="9" fill="none" stroke={spineCore} strokeWidth="2" opacity="0.9" />
+          {/* スパーク粒子 */}
+          <circle cx="18" cy="85" r="2" fill={spineCyan} />
+          <circle cx="28" cy="110" r="1.5" fill={spineCyan} />
+          <circle cx="8" cy="100" r="2" fill={spineCore} />
+        </g>
+      )}
     </g>
   );
 }
 
 /** No.54 キングギドラ (黄金の三つ首宇宙竜・超巨大バットウィング・引力光線) */
 function KingGhidorahSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const gold = silhouette ? primary : '#eab308';
-  const darkGold = silhouette ? secondary : '#ca8a04';
-  const wingMembrane = silhouette ? secondary : '#fef08a';
-  const eye = silhouette ? primary : '#ef4444';
+  const goldBody = silhouette ? primary : '#eab308';
+  const goldDark = silhouette ? secondary : '#a16207';
+  const goldLight = silhouette ? primary : '#fef08a';
+  const wingBase = silhouette ? secondary : '#ca8a04';
+  const eyeRed = silhouette ? primary : '#dc2626';
+  const sparkYellow = silhouette ? secondary : '#fde047';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 2本の長い尾 */}
-      <path d="M110 195 Q80 230, 45 220 Q55 210, 105 185 Z" fill={darkGold} />
-      <path d="M130 195 Q160 230, 195 220 Q185 210, 135 185 Z" fill={darkGold} />
-      {/* 尾先のフサ棘 */}
-      <polygon points="42,220 30,225 38,212" fill={gold} />
-      <polygon points="198,220 210,225 202,212" fill={gold} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 巨大な黄金のバットウィング（大空を覆い尽くす2枚の大翼） ★ */}
+      {/* 左翼の骨格と皮膜 */}
+      <path d="M100 135 L12 55 L38 85 L18 105 L48 128 L28 152 L95 158 Z" fill={wingBase} />
+      <path d="M100 135 L12 55 Q55 72, 38 85 Q75 102, 18 105 Q70 128, 48 128 Q78 145, 95 158 Z" fill={goldBody} />
+      {/* 左翼の爪と骨格リブ */}
+      <polygon points="12,55 4,48 14,46" fill={goldLight} />
+      <path d="M100 135 L12 55" stroke={goldDark} strokeWidth="4" fill="none" />
+      <path d="M70 100 L38 85" stroke={goldDark} strokeWidth="3" fill="none" />
+      <path d="M78 122 L18 105" stroke={goldDark} strokeWidth="3" fill="none" />
+      <path d="M85 142 L48 128" stroke={goldDark} strokeWidth="3" fill="none" />
 
-      {/* 巨大な黄金の翼（左右） */}
-      <path d="M100 135 Q30 50, 10 75 Q15 125, 40 160 Q70 170, 95 155 Z" fill={gold} />
-      <path d="M90 135 Q35 70, 20 85 Q25 120, 48 150 Z" fill={wingMembrane} opacity="0.9" />
-      <path d="M140 135 Q210 50, 230 75 Q225 125, 200 160 Q170 170, 145 155 Z" fill={gold} />
-      <path d="M150 135 Q205 70, 220 85 Q215 120, 192 150 Z" fill={wingMembrane} opacity="0.9" />
+      {/* 右翼の骨格と皮膜 */}
+      <path d="M160 135 L248 55 L222 85 L242 105 L212 128 L232 152 L165 158 Z" fill={wingBase} />
+      <path d="M160 135 L248 55 Q205 72, 222 85 Q185 102, 242 105 Q190 128, 212 128 Q182 145, 165 158 Z" fill={goldBody} />
+      {/* 右翼の爪と骨格リブ */}
+      <polygon points="248,55 256,48 246,46" fill={goldLight} />
+      <path d="M160 135 L248 55" stroke={goldDark} strokeWidth="4" fill="none" />
+      <path d="M190 100 L222 85" stroke={goldDark} strokeWidth="3" fill="none" />
+      <path d="M182 122 L242 105" stroke={goldDark} strokeWidth="3" fill="none" />
+      <path d="M175 142 L212 128" stroke={goldDark} strokeWidth="3" fill="none" />
 
-      {/* 胴体と2本脚 */}
-      <ellipse cx="120" cy="165" rx="28" ry="32" fill={gold} />
-      <path d="M102 185 L95 220 L115 220 L112 192 Z" fill={darkGold} />
-      <path d="M138 185 L145 220 L125 220 L128 192 Z" fill={darkGold} />
-      {/* 脚のツメ */}
-      <polygon points="92,220 97,212 102,220" fill="#f8fafc" />
-      <polygon points="138,220 143,212 148,220" fill="#f8fafc" />
+      {/* 2本の長いムチ状の尾 */}
+      <path d="M115 190 Q85 235, 38 226 Q46 210, 105 182 Z" fill={goldDark} />
+      <polygon points="38,226 22,234 32,216" fill={goldLight} />
+      <path d="M145 190 Q175 235, 222 226 Q214 210, 155 182 Z" fill={goldDark} />
+      <polygon points="222,226 238,234 228,216" fill={goldLight} />
 
-      {/* 首1（左の首と頭） */}
-      <path d="M108 145 Q80 115, 65 75 Q75 68, 88 95 Q100 120, 115 140 Z" fill={gold} />
-      <path d="M62 75 Q55 60, 45 62 Q45 75, 65 80 Z" fill={darkGold} />
-      <polygon points="50,60 38,48 52,55" fill={gold} />
-      <circle cx="53" cy="67" r="2" fill={eye} stroke="none" />
+      {/* 胴体とたくましい2本鳥足 */}
+      <ellipse cx="130" cy="165" rx="30" ry="34" fill={goldBody} />
+      {/* 腹部のウロコ文様 */}
+      {!silhouette && (
+        <g stroke={goldDark} strokeWidth="2" fill="none">
+          <path d="M115 152 Q130 160, 145 152" />
+          <path d="M112 165 Q130 174, 148 165" />
+          <path d="M116 178 Q130 186, 144 178" />
+        </g>
+      )}
 
-      {/* 首2（右の首と頭） */}
-      <path d="M132 145 Q160 115, 175 75 Q165 68, 152 95 Q140 120, 125 140 Z" fill={gold} />
-      <path d="M178 75 Q185 60, 195 62 Q195 75, 175 80 Z" fill={darkGold} />
-      <polygon points="190,60 202,48 188,55" fill={gold} />
-      <circle cx="187" cy="67" r="2" fill={eye} stroke="none" />
+      {/* 左脚＆右脚（恐竜鳥爪） */}
+      <path d="M112 188 L104 228 L126 228 L124 195 Z" fill={goldDark} />
+      <polygon points="98,228 104,218 112,228" fill="#f8fafc" />
+      <polygon points="114,228 120,218 126,228" fill="#f8fafc" />
+      <path d="M148 188 L156 228 L134 228 L136 195 Z" fill={goldDark} />
+      <polygon points="134,228 140,218 146,228" fill="#f8fafc" />
+      <polygon points="148,228 154,218 162,228" fill="#f8fafc" />
 
-      {/* 首3（中央の堂々たるメイン頭部） */}
-      <path d="M114 140 Q112 85, 115 45 Q125 45, 126 85 Q125 125, 126 140 Z" fill={gold} />
-      <path d="M110 52 Q120 32, 130 52 Q128 65, 112 65 Z" fill={darkGold} />
-      {/* 中央頭部の2本の大角 */}
-      <polygon points="113,38 102,20 116,30" fill={gold} />
-      <polygon points="127,38 138,20 124,30" fill={gold} />
-      <circle cx="116" cy="48" r="2.5" fill={eye} stroke="none" />
-      <circle cx="124" cy="48" r="2.5" fill={eye} stroke="none" />
+      {/* ★ 三ツ首のドラゴン（左首・右首・中央主頭） ★ */}
+      {/* 1. 左の首と頭（威嚇咆哮） */}
+      <path d="M116 142 Q78 115, 62 70 Q76 62, 88 95 Q98 120, 122 135 Z" fill={goldBody} />
+      <path d="M60 70 Q48 52, 38 56 Q38 72, 60 76 Z" fill={goldDark} />
+      {/* 左頭部の大角2本 */}
+      <polygon points="46,54 30,36 44,46" fill={goldLight} />
+      <polygon points="54,58 42,42 54,50" fill={goldLight} />
+      {/* 左口と牙 */}
+      <path d="M38 58 L48 64 L48 68 L38 62 Z" fill="#7f1d1d" />
+      <circle cx="48" cy="58" r="2.5" fill={eyeRed} stroke="none" />
+
+      {/* 2. 右の首と頭（威嚇咆哮） */}
+      <path d="M144 142 Q182 115, 198 70 Q184 62, 172 95 Q162 120, 138 135 Z" fill={goldBody} />
+      <path d="M200 70 Q212 52, 222 56 Q222 72, 200 76 Z" fill={goldDark} />
+      {/* 右頭部の大角2本 */}
+      <polygon points="214,54 230,36 216,46" fill={goldLight} />
+      <polygon points="206,58 218,42 206,50" fill={goldLight} />
+      {/* 右口と牙 */}
+      <path d="M222 58 L212 64 L212 68 L222 62 Z" fill="#7f1d1d" />
+      <circle cx="212" cy="58" r="2.5" fill={eyeRed} stroke="none" />
+
+      {/* 3. 中央のメイン首と堂々たる大頭 */}
+      <path d="M122 138 Q118 78, 124 38 Q136 38, 138 78 Q136 120, 138 138 Z" fill={goldBody} />
+      <path d="M118 45 Q130 22, 142 45 Q140 58, 120 58 Z" fill={goldDark} />
+      {/* 中央頭部の王冠大角2本 */}
+      <polygon points="120,32 106,12 122,24" fill={goldLight} />
+      <polygon points="140,32 154,12 138,24" fill={goldLight} />
+      <polygon points="130,28 130,10 134,26" fill={goldLight} />
+      {/* 中央の目と牙口 */}
+      <circle cx="125" cy="42" r="3" fill={eyeRed} stroke="none" />
+      <circle cx="135" cy="42" r="3" fill={eyeRed} stroke="none" />
+      <polygon points="124,52 130,56 136,52" fill="#f8fafc" />
+
+      {/* 引力光線（稲妻スパークオーラ） */}
+      {!silhouette && (
+        <g stroke={sparkYellow} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M38 60 L20 70 L28 85 L12 95" />
+          <path d="M222 60 L240 70 L232 85 L248 95" />
+          <path d="M130 58 L130 75 L120 90 L132 105" />
+        </g>
+      )}
     </g>
   );
 }
 
 /** No.55 メカゴジラ (対怪獣兵器・超硬チタン機龍・ショルダーキャノン・アブソリュートゼロ) */
 function MechaGodzillaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const silver = silhouette ? primary : '#94a3b8';
-  const darkSteel = silhouette ? secondary : '#475569';
-  const lightArmor = silhouette ? primary : '#cbd5e1';
-  const beamBlue = silhouette ? secondary : '#38bdf8';
-  const glowEye = silhouette ? primary : '#0284c7';
+  const silverBase = silhouette ? primary : '#94a3b8';
+  const silverDark = silhouette ? secondary : '#475569';
+  const silverLight = silhouette ? primary : '#e2e8f0';
+  const cannonRed = silhouette ? secondary : '#ef4444';
+  const cryoCyan = silhouette ? secondary : '#38bdf8';
+  const eyeYellow = silhouette ? primary : '#facc15';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* メカニカルな尻尾 */}
-      <path d="M135 180 L200 195 L225 175 L180 160 L140 168 Z" fill={darkSteel} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* メカニカルテイル（関節ブロック＆ブースターノズル） */}
+      <path d="M142 175 L210 195 L245 170 L200 155 L150 165 Z" fill={silverDark} />
       {!silhouette && (
-        <g fill={beamBlue} stroke="none">
-          <polygon points="160,165 170,152 175,166" />
-          <polygon points="185,167 195,155 200,170" />
+        <g fill={cryoCyan} stroke="none">
+          <polygon points="180,162 192,148 198,162" />
+          <polygon points="210,165 222,152 228,168" />
         </g>
       )}
 
-      {/* 角ばった脚部・ジェットノズル足 */}
-      <path d="M120 170 L110 220 L155 220 L150 175 Z" fill={silver} />
-      <polygon points="110,220 115,208 125,220" fill={darkSteel} />
-      <polygon points="130,220 135,208 145,220" fill={darkSteel} />
-      <polygon points="148,220 152,210 158,220" fill={darkSteel} />
+      {/* 背部の鋭利な超硬チタンブレード背びれ */}
+      <g fill={silverLight} stroke={outline} strokeWidth="2.5">
+        <polygon points="122,120 148,68 135,115" />
+        <polygon points="135,112 165,58 148,106" />
+        <polygon points="146,125 180,78 162,122" />
+        <polygon points="156,138 190,102 172,136" />
+      </g>
 
-      {/* 背部の鋭利なチタンブレード背びれ */}
-      <polygon points="118,125 142,75 130,120" fill={lightArmor} />
-      <polygon points="130,115 156,65 142,110" fill={lightArmor} />
-      <polygon points="138,130 168,88 152,126" fill={lightArmor} />
+      {/* 2基の巨大ショルダーレールガン／ミサイルポッド（肩部兵装ユニット） */}
+      <rect x="58" y="95" width="28" height="20" rx="4" fill={silverDark} />
+      <polygon points="58,98 42,92 42,118 58,112" fill={silverBase} />
+      <circle cx="48" cy="100" r="3.5" fill={cannonRed} stroke="none" />
+      <circle cx="48" cy="110" r="3.5" fill={cannonRed} stroke="none" />
 
-      {/* 重装甲胴体＆アブソリュート・ゼロ（胸部六角キャノン） */}
-      <path d="M85 125 L80 185 L140 185 L135 120 Z" fill={silver} />
-      {/* 胸部ハッチ装甲 */}
-      <polygon points="95,135 125,135 130,165 90,165" fill={darkSteel} />
-      <polygon points="102,142 118,142 122,158 98,158" fill={beamBlue} />
+      {/* 重装甲チタンレッグ（関節シリンダー＆ジェット底面） */}
+      <path d="M142 175 L155 226 L125 226 L124 185 Z" fill={silverDark} />
+      <path d="M115 170 L102 226 L142 226 L138 182 Z" fill={silverBase} />
+      {/* 鋭いチタン爪 */}
+      <polygon points="98,226 105,214 112,226" fill={silverLight} />
+      <polygon points="116,226 123,214 130,226" fill={silverLight} />
+      <polygon points="134,226 141,214 148,226" fill={silverLight} />
 
-      {/* 両肩の巨大レールガン・ミサイルポッド */}
-      <rect x="75" y="105" width="22" height="18" rx="4" fill={darkSteel} />
-      <circle cx="80" cy="114" r="3" fill="#f87171" stroke="none" />
-      <circle cx="90" cy="114" r="3" fill="#f87171" stroke="none" />
+      {/* 重装甲胴体＆アブソリュート・ゼロ（胸部六角冷凍キャノン） */}
+      <path d="M85 120 L78 185 L145 185 L140 118 Z" fill={silverBase} />
+      {/* 胸部ハッチ装甲プレート */}
+      <polygon points="92,130 128,130 134,168 86,168" fill={silverDark} />
+      {/* 六角形アブソリュート・ゼロ射出口 */}
+      <polygon points="110,136 124,144 124,160 110,168 96,160 96,144" fill="#0f172a" />
+      <polygon points="110,140 120,146 120,158 110,164 100,158 100,146" fill={cryoCyan} />
+      {!silhouette && (
+        <circle cx="110" cy="152" r="4" fill="#ffffff" stroke="none" />
+      )}
 
-      {/* 右腕マニピュレーター＆ブレード */}
-      <path d="M90 135 L60 148 L52 140 L78 128 Z" fill={darkSteel} />
-      <polygon points="50,140 40,142 46,134" fill={lightArmor} />
-      <polygon points="52,145 42,149 48,142" fill={lightArmor} />
+      {/* 右腕マニピュレーター＆レールスピア（プラズマブレード） */}
+      <path d="M88 135 L56 148 L46 138 L76 126 Z" fill={silverDark} />
+      {/* レールブレード刃先 */}
+      <polygon points="46,138 28,140 42,130" fill={silverLight} />
+      <polygon points="48,144 32,148 44,138" fill={silverLight} />
+      {!silhouette && (
+        <line x1="28" y1="140" x2="48" y2="132" stroke={cryoCyan} strokeWidth="2.5" />
+      )}
 
-      {/* メカゴジラ頭部（シャープなサイバーバイザー） */}
-      <path d="M110 115 L112 80 L88 75 L62 90 L62 105 L92 118 Z" fill={silver} />
+      {/* 機龍の鋭角ヘッド（チタンアンテナ＆バイザー） */}
+      <path d="M112 112 L116 75 L92 70 L64 88 L64 106 L95 116 Z" fill={silverBase} />
       {/* アンテナ角 */}
-      <polygon points="95,78 102,55 106,78" fill={lightArmor} />
-      <polygon points="85,76 80,60 88,75" fill={lightArmor} />
+      <polygon points="98,72 108,46 112,72" fill={silverLight} />
+      <polygon points="86,72 78,52 90,70" fill={silverLight} />
 
-      {/* バイザーアイ（赤または青） */}
-      <polygon points="68,90 85,85 88,94 70,98" fill={glowEye} />
-      <polygon points="70,92 83,88 85,92 72,95" fill="#e0f2fe" stroke="none" />
-      {/* 牙スリット口 */}
-      <path d="M62 102 L78 105 L78 108 L62 106 Z" fill={darkSteel} />
+      {/* 黄色に光る鋭いアイバイザー＆赤い照準マーク */}
+      <polygon points="68,88 88,82 92,92 72,96" fill={eyeYellow} />
+      <circle cx="78" cy="88" r="2" fill="#ef4444" stroke="none" />
+      {/* 頬の青い涙ライン */}
+      <path d="M78 94 L80 106" stroke={cryoCyan} strokeWidth="3" fill="none" />
+
+      {/* メカニカルな牙＆アゴ */}
+      <path d="M64 102 L80 105 L80 110 L64 108 Z" fill={silverDark} />
+      <polygon points="66,102 70,106 74,102" fill={silverLight} />
     </g>
   );
 }
@@ -3818,58 +3924,91 @@ function MothraSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
   const wingOrange = silhouette ? primary : '#f97316';
   const wingYellow = silhouette ? secondary : '#facc15';
   const wingBlack = silhouette ? secondary : '#0f172a';
+  const wingRed = silhouette ? secondary : '#ef4444';
   const furWhite = silhouette ? primary : '#f8fafc';
+  const furShadow = silhouette ? secondary : '#e2e8f0';
   const eyeCyan = silhouette ? primary : '#06b6d4';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 左の大翼（上翅＆下翅） */}
-      <path d="M110 120 Q50 35, 10 50 Q5 95, 45 130 Q85 140, 110 135 Z" fill={wingOrange} />
-      <path d="M110 135 Q45 140, 30 175 Q60 205, 95 185 Q110 160, 110 135 Z" fill={wingYellow} />
-      {/* 左翼のアイコニック目玉紋様 */}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 絢爛豪華な巨大翅（上翅＆下翅） ★ */}
+      {/* 1. 左上翅 */}
+      <path d="M112 118 Q40 28, 8 45 Q-2 95, 42 132 Q82 142, 112 135 Z" fill={wingOrange} />
+      {/* 2. 左下翅 */}
+      <path d="M110 135 Q35 142, 22 178 Q52 214, 92 190 Q110 162, 110 135 Z" fill={wingYellow} />
+      {/* 左翅のアイコニック紋様（赤・黄・黒の巨大な目玉模様） */}
       {!silhouette && (
         <g stroke="none">
-          <ellipse cx="48" cy="85" rx="18" ry="14" fill={wingBlack} />
-          <ellipse cx="48" cy="85" rx="12" ry="8" fill={wingYellow} />
-          <circle cx="48" cy="85" r="5" fill="#ef4444" />
-          <path d="M22 65 Q40 68, 65 60 Q50 78, 22 65 Z" fill={wingBlack} />
+          <ellipse cx="44" cy="82" rx="20" ry="16" fill={wingBlack} />
+          <ellipse cx="44" cy="82" rx="14" ry="10" fill={wingYellow} />
+          <circle cx="44" cy="82" r="6" fill={wingRed} />
+          <circle cx="46" cy="80" r="2" fill="#ffffff" />
+          <path d="M16 60 Q38 64, 62 55 Q46 76, 16 60 Z" fill={wingBlack} />
+          <path d="M38 165 Q55 178, 75 168 Q58 155, 38 165 Z" fill={wingBlack} />
         </g>
       )}
 
-      {/* 右の大翼（上翅＆下翅） */}
-      <path d="M130 120 Q190 35, 230 50 Q235 95, 195 130 Q155 140, 130 135 Z" fill={wingOrange} />
-      <path d="M130 135 Q195 140, 210 175 Q180 205, 145 185 Q130 160, 130 135 Z" fill={wingYellow} />
-      {/* 右翼のアイコニック目玉紋様 */}
+      {/* 3. 右上翅 */}
+      <path d="M138 118 Q210 28, 242 45 Q252 95, 208 132 Q168 142, 138 135 Z" fill={wingOrange} />
+      {/* 4. 右下翅 */}
+      <path d="M140 135 Q215 142, 228 178 Q198 214, 158 190 Q140 162, 140 135 Z" fill={wingYellow} />
+      {/* 右翅のアイコニック紋様 */}
       {!silhouette && (
         <g stroke="none">
-          <ellipse cx="192" cy="85" rx="18" ry="14" fill={wingBlack} />
-          <ellipse cx="192" cy="85" rx="12" ry="8" fill={wingYellow} />
-          <circle cx="192" cy="85" r="5" fill="#ef4444" />
-          <path d="M218 65 Q200 68, 175 60 Q190 78, 218 65 Z" fill={wingBlack} />
+          <ellipse cx="206" cy="82" rx="20" ry="16" fill={wingBlack} />
+          <ellipse cx="206" cy="82" rx="14" ry="10" fill={wingYellow} />
+          <circle cx="206" cy="82" rx="6" ry="6" fill={wingRed} />
+          <circle cx="204" cy="80" r="2" fill="#ffffff" />
+          <path d="M234 60 Q212 64, 188 55 Q204 76, 234 60 Z" fill={wingBlack} />
+          <path d="M212 165 Q195 178, 175 168 Q192 155, 212 165 Z" fill={wingBlack} />
         </g>
       )}
 
-      {/* ふわふわの白い胴体・腹部 */}
-      <ellipse cx="120" cy="155" rx="16" ry="25" fill="#fef08a" />
-      <path d="M110 145 Q120 150, 130 145" stroke="#ca8a04" strokeWidth="2.5" fill="none" />
-      <path d="M110 158 Q120 163, 130 158" stroke="#ca8a04" strokeWidth="2.5" fill="none" />
-      <path d="M112 170 Q120 174, 128 170" stroke="#ca8a04" strokeWidth="2.5" fill="none" />
+      {/* 翅の縁取り黒帯 */}
+      <path d="M8 45 Q-2 95, 42 132" stroke={wingBlack} strokeWidth="5" fill="none" />
+      <path d="M242 45 Q252 95, 208 132" stroke={wingBlack} strokeWidth="5" fill="none" />
 
-      {/* 胸部＆頭部のもふもふ毛並み */}
-      <ellipse cx="120" cy="120" rx="18" ry="16" fill={furWhite} />
-      <circle cx="120" cy="98" r="16" fill={furWhite} />
+      {/* もふもふ白銀の腹部（金茶の環状ストライプ） */}
+      <ellipse cx="125" cy="165" rx="18" ry="28" fill="#fef08a" />
+      <path d="M112 150 Q125 156, 138 150" stroke="#a16207" strokeWidth="3" fill="none" />
+      <path d="M110 165 Q125 172, 140 165" stroke="#a16207" strokeWidth="3" fill="none" />
+      <path d="M114 180 Q125 186, 136 180" stroke="#a16207" strokeWidth="3" fill="none" />
 
-      {/* 青く光る大きなつぶらな複眼 */}
-      <ellipse cx="111" cy="98" rx="6" ry="8" fill={eyeCyan} />
-      <ellipse cx="129" cy="98" rx="6" ry="8" fill={eyeCyan} />
-      <circle cx="109" cy="95" r="2" fill="#ffffff" stroke="none" />
-      <circle cx="127" cy="95" r="2" fill="#ffffff" stroke="none" />
+      {/* 胸部＆頭部のもふもふ純白シルク毛並み */}
+      <ellipse cx="125" cy="125" rx="22" ry="18" fill={furWhite} />
+      <circle cx="125" cy="100" r="18" fill={furWhite} />
+      <circle cx="125" cy="100" r="15" fill={furShadow} opacity="0.4" />
 
-      {/* 羽毛状の優雅な2本触角 */}
-      <path d="M115 85 Q100 60, 85 55" stroke={wingBlack} strokeWidth="3" fill="none" />
-      <polygon points="85,55 80,48 90,52" fill={wingYellow} />
-      <path d="M125 85 Q140 60, 155 55" stroke={wingBlack} strokeWidth="3" fill="none" />
-      <polygon points="155,55 160,48 150,52" fill={wingYellow} />
+      {/* 宝石のように輝く大きなエメラルド／シアン複眼 */}
+      <ellipse cx="114" cy="98" rx="8" ry="10" fill={eyeCyan} />
+      <ellipse cx="136" cy="98" rx="8" ry="10" fill={eyeCyan} />
+      {/* 複眼のキラキラハイライト */}
+      <circle cx="112" cy="94" r="2.8" fill="#ffffff" stroke="none" />
+      <circle cx="116" cy="101" r="1.5" fill="#ffffff" stroke="none" />
+      <circle cx="134" cy="94" r="2.8" fill="#ffffff" stroke="none" />
+      <circle cx="138" cy="101" r="1.5" fill="#ffffff" stroke="none" />
+
+      {/* 優美に広がる羽毛状の2本大触角 */}
+      <path d="M118 84 Q98 52, 78 48" stroke={wingBlack} strokeWidth="3.5" fill="none" />
+      <polygon points="78,48 70,38 84,44" fill={wingYellow} />
+      <polygon points="86,52 80,44 92,48" fill={wingYellow} />
+      <polygon points="96,58 92,50 102,54" fill={wingYellow} />
+
+      <path d="M132 84 Q152 52, 172 48" stroke={wingBlack} strokeWidth="3.5" fill="none" />
+      <polygon points="172,48 180,38 166,44" fill={wingYellow} />
+      <polygon points="164,52 170,44 158,48" fill={wingYellow} />
+      <polygon points="154,58 158,50 148,54" fill={wingYellow} />
+
+      {/* 舞い散る黄金の鱗粉スパークル */}
+      {!silhouette && (
+        <g fill={wingYellow} stroke="none">
+          <circle cx="58" cy="40" r="3" />
+          <circle cx="192" cy="40" r="3" />
+          <circle cx="30" cy="120" r="2.5" />
+          <circle cx="220" cy="120" r="2.5" />
+          <circle cx="125" cy="205" r="2.5" />
+        </g>
+      )}
     </g>
   );
 }
@@ -3877,123 +4016,170 @@ function MothraSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
 /** No.57 ガメラ (回転ジェット守護神・強固な緑甲羅・天突き牙・プラズマ噴射) */
 function GameraSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const shellDark = silhouette ? secondary : '#064e3b';
-  const skinGreen = silhouette ? primary : '#047857';
+  const shellPlate = silhouette ? primary : '#047857';
+  const skinGreen = silhouette ? primary : '#059669';
+  const jetOrange = silhouette ? secondary : '#ea580c';
   const jetBlue = silhouette ? secondary : '#38bdf8';
-  const jetOrange = silhouette ? secondary : '#f97316';
   const fangWhite = silhouette ? primary : '#f8fafc';
+  const eyeAmber = silhouette ? primary : '#f59e0b';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 甲羅の穴から噴き出す回転ジェット噴射 */}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 甲羅の穴から猛烈に噴き出す回転ジェット火柱 */}
       {!silhouette && (
         <g stroke="none">
-          <polygon points="50,175 15,190 35,170 10,180 40,162" fill={jetOrange} />
-          <polygon points="45,173 25,182 38,170" fill={jetBlue} />
-          <polygon points="190,175 225,190 205,170 230,180 200,162" fill={jetOrange} />
-          <polygon points="195,173 215,182 202,170" fill={jetBlue} />
+          <polygon points="55,182 8,205 32,176 2,190 38,168" fill={jetOrange} />
+          <polygon points="48,180 20,195 38,174" fill={jetBlue} />
+          <polygon points="195,182 242,205 218,176 248,190 212,168" fill={jetOrange} />
+          <polygon points="202,180 230,195 212,174" fill={jetBlue} />
         </g>
       )}
 
-      {/* 太い二足＆爪 */}
-      <path d="M95 175 L85 215 L118 215 L115 185 Z" fill={skinGreen} />
-      <path d="M145 175 L155 215 L122 215 L125 185 Z" fill={skinGreen} />
-      <polygon points="82,215 88,206 94,215" fill={fangWhite} />
-      <polygon points="98,215 104,206 110,215" fill={fangWhite} />
-      <polygon points="130,215 136,206 142,215" fill={fangWhite} />
-      <polygon points="146,215 152,206 158,215" fill={fangWhite} />
+      {/* 重厚な2本脚＆頑丈な大爪 */}
+      <path d="M98 178 L85 228 L122 228 L120 188 Z" fill={skinGreen} />
+      <polygon points="80,228 88,216 96,228" fill={fangWhite} />
+      <polygon points="98,228 106,216 114,228" fill={fangWhite} />
+      <polygon points="116,228 122,216 128,228" fill={fangWhite} />
 
-      {/* 巨大な亀の甲羅（重厚な六角パターン） */}
-      <ellipse cx="120" cy="150" rx="55" ry="48" fill={shellDark} />
-      <polygon points="120,120 145,135 145,165 120,180 95,165 95,135" fill="#065f46" stroke={outline} strokeWidth="2" />
-      <polygon points="120,120 120,105 145,135" fill="#047857" opacity="0.6" stroke="none" />
-      <polygon points="95,135 70,145 95,165" fill="#047857" opacity="0.6" stroke="none" />
-      <polygon points="145,135 170,145 145,165" fill="#047857" opacity="0.6" stroke="none" />
+      <path d="M152 178 L165 228 L128 228 L130 188 Z" fill={skinGreen} />
+      <polygon points="132,228 138,216 144,228" fill={fangWhite} />
+      <polygon points="146,228 154,216 162,228" fill={fangWhite} />
+      <polygon points="164,228 172,216 180,228" fill={fangWhite} />
 
-      {/* たくましい前足腕 */}
-      <path d="M75 140 Q50 145, 45 130 Q58 120, 75 128 Z" fill={skinGreen} />
-      <polygon points="42,130 35,128 42,122" fill={fangWhite} />
-      <path d="M165 140 Q190 145, 195 130 Q182 120, 165 128 Z" fill={skinGreen} />
-      <polygon points="198,130 205,128 198,122" fill={fangWhite} />
+      {/* 巨大な亀の甲羅（重厚な六角パターン・ギザギザの外縁） */}
+      <ellipse cx="125" cy="152" rx="60" ry="50" fill={shellDark} />
+      {/* 甲羅の中央六角プレート群 */}
+      <polygon points="125,118 150,132 150,165 125,180 100,165 100,132" fill={shellPlate} />
+      <polygon points="125,118 125,102 150,132" fill={skinGreen} opacity="0.6" stroke="none" />
+      <polygon points="100,132 72,145 100,165" fill={skinGreen} opacity="0.6" stroke="none" />
+      <polygon points="150,132 178,145 150,165" fill={skinGreen} opacity="0.6" stroke="none" />
+      <polygon points="100,165 78,180 125,180" fill={skinGreen} opacity="0.4" stroke="none" />
+      <polygon points="150,165 172,180 125,180" fill={skinGreen} opacity="0.4" stroke="none" />
 
-      {/* ガメラの頭部（古代竜亀） */}
-      <path d="M100 115 Q95 72, 120 72 Q145 72, 140 115 Z" fill={skinGreen} />
-      {/* 頑丈な口元と下アゴから突き出る大牙 */}
-      <path d="M102 98 Q120 108, 138 98 Q135 110, 120 112 Q105 110, 102 98 Z" fill="#022c22" />
-      {/* 象徴的な2本の大キバ（下から上へ突き出る） */}
-      <polygon points="105,102 101,84 111,98" fill={fangWhite} />
-      <polygon points="135,102 139,84 129,98" fill={fangWhite} />
+      {/* たくましい前足腕＆鋭いエルボーブレード */}
+      <path d="M78 142 Q46 148, 40 130 Q56 120, 76 128 Z" fill={skinGreen} />
+      <polygon points="38,130 28,126 36,120" fill={fangWhite} />
+      <polygon points="44,142 32,142 40,134" fill={fangWhite} />
+      {/* 肘のトゲ */}
+      <polygon points="76,142 66,152 74,152" fill={fangWhite} />
 
-      {/* 強い意志の眼光 */}
-      <circle cx="110" cy="85" r="4.5" fill="#facc15" />
-      <circle cx="111" cy="85" r="2" fill="#0f172a" stroke="none" />
-      <circle cx="130" cy="85" r="4.5" fill="#facc15" />
-      <circle cx="129" cy="85" r="2" fill="#0f172a" stroke="none" />
+      <path d="M172 142 Q204 148, 210 130 Q194 120, 174 128 Z" fill={skinGreen} />
+      <polygon points="212,130 222,126 214,120" fill={fangWhite} />
+      <polygon points="206,142 218,142 210,134" fill={fangWhite} />
+      <polygon points="174,142 184,152 176,152" fill={fangWhite} />
+
+      {/* ガメラの頭部（古代竜亀ヘッド） */}
+      <path d="M100 115 Q95 68, 125 68 Q155 68, 150 115 Z" fill={skinGreen} />
+      {/* 頭頂部の尖ったクレスト */}
+      <polygon points="120,68 125,48 130,68" fill={shellDark} />
+
+      {/* 頑丈な口元と象徴的な下アゴから天を突く2本の大牙 */}
+      <path d="M102 96 Q125 106, 148 96 Q144 115, 125 116 Q106 115, 102 96 Z" fill="#022c22" />
+      {/* ★ ガメラのトレードマーク：下顎から上へと突き出る大牙 ★ */}
+      <polygon points="106,104 100,76 114,96" fill={fangWhite} />
+      <polygon points="144,104 150,76 136,96" fill={fangWhite} />
+      {/* 上アゴの小牙 */}
+      <polygon points="118,96 122,102 126,96" fill={fangWhite} />
+
+      {/* 燃えるような意志の琥珀の瞳 */}
+      <circle cx="112" cy="82" r="5" fill={eyeAmber} />
+      <circle cx="113" cy="82" r="2.2" fill="#0f172a" stroke="none" />
+      <circle cx="111" cy="80" r="1" fill="#ffffff" stroke="none" />
+      <circle cx="138" cy="82" r="5" fill={eyeAmber} />
+      <circle cx="137" cy="82" r="2.2" fill="#0f172a" stroke="none" />
+      <circle cx="139" cy="80" r="1" fill="#ffffff" stroke="none" />
     </g>
   );
 }
 
 /** No.58 ゼットン (無敵の宇宙恐竜・漆黒昆虫巨躯・2本V字角・胸部発光器官) */
 function ZettonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const blackBody = silhouette ? primary : '#0f172a';
-  const plateDark = silhouette ? secondary : '#1e293b';
-  const hornWhite = silhouette ? primary : '#e2e8f0';
-  const glowOrange = silhouette ? secondary : '#ea580c';
-  const glowYellow = silhouette ? secondary : '#facc15';
+  const blackBody = silhouette ? primary : '#090d16';
+  const blackMid = silhouette ? secondary : '#1e293b';
+  const hornWhite = silhouette ? primary : '#f1f5f9';
+  const glowOrange = silhouette ? secondary : '#f97316';
+  const glowYellow = silhouette ? secondary : '#fde047';
+  const fireBall = silhouette ? secondary : '#ef4444';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
       {/* 昆虫のような背甲羽根 */}
-      <path d="M120 120 Q60 140, 50 195 Q90 190, 120 175 Z" fill={plateDark} />
-      <path d="M120 120 Q180 140, 190 195 Q150 190, 120 175 Z" fill={plateDark} />
+      <path d="M125 120 Q55 140, 42 205 Q90 195, 125 178 Z" fill={blackMid} />
+      <path d="M125 120 Q195 140, 208 205 Q160 195, 125 178 Z" fill={blackMid} />
+      {/* 羽根の白いフチ取り */}
+      <path d="M42 205 Q90 195, 125 178" stroke={hornWhite} strokeWidth="3" fill="none" />
+      <path d="M208 205 Q160 195, 125 178" stroke={hornWhite} strokeWidth="3" fill="none" />
 
-      {/* 黒い下半身と蛇腹レッグ */}
-      <path d="M100 170 L95 220 L115 220 L112 185 Z" fill={blackBody} />
-      <path d="M140 170 L145 220 L125 220 L128 185 Z" fill={blackBody} />
-      {/* 脚の白蛇腹リング */}
+      {/* 漆黒の下半身＆白い蛇腹リングレッグ */}
+      <path d="M102 170 L95 228 L118 228 L116 188 Z" fill={blackBody} />
+      <path d="M148 170 L155 228 L132 228 L134 188 Z" fill={blackBody} />
+      {/* 脚の蛇腹リング */}
       {!silhouette && (
-        <g stroke="#94a3b8" strokeWidth="2" fill="none">
-          <line x1="97" y1="195" x2="112" y2="195" />
-          <line x1="96" y1="205" x2="113" y2="205" />
-          <line x1="127" y1="195" x2="142" y2="195" />
-          <line x1="126" y1="205" x2="143" y2="205" />
+        <g stroke={hornWhite} strokeWidth="2.5" fill="none">
+          <line x1="98" y1="198" x2="116" y2="198" />
+          <line x1="96" y1="210" x2="117" y2="210" />
+          <line x1="133" y1="198" x2="152" y2="198" />
+          <line x1="132" y1="210" x2="154" y2="210" />
         </g>
       )}
 
       {/* 漆黒のスマート胴体 */}
-      <path d="M92 120 L86 175 L154 175 L148 120 Z" fill={blackBody} />
-      {/* 胸部の象徴的な2つの楕円オレンジ発光器官 */}
+      <path d="M92 120 L84 178 L166 178 L158 120 Z" fill={blackBody} />
+
+      {/* 胸部の象徴的な2つの楕円オレンジ発光器官（ポポポポポ…と点滅） */}
       {!silhouette ? (
         <g stroke="none">
-          <ellipse cx="106" cy="145" rx="8" ry="15" fill={glowOrange} />
-          <ellipse cx="106" cy="145" rx="5" ry="10" fill={glowYellow} />
-          <ellipse cx="134" cy="145" rx="8" ry="15" fill={glowOrange} />
-          <ellipse cx="134" cy="145" rx="5" ry="10" fill={glowYellow} />
+          <ellipse cx="108" cy="145" rx="10" ry="18" fill={glowOrange} />
+          <ellipse cx="108" cy="145" rx="6" ry="12" fill={glowYellow} />
+          <ellipse cx="108" cy="145" rx="2" ry="6" fill="#ffffff" />
+          <ellipse cx="142" cy="145" rx="10" ry="18" fill={glowOrange} />
+          <ellipse cx="142" cy="145" rx="6" ry="12" fill={glowYellow} />
+          <ellipse cx="142" cy="145" rx="2" ry="6" fill="#ffffff" />
         </g>
       ) : (
         <g fill={secondary}>
-          <ellipse cx="106" cy="145" rx="8" ry="15" />
-          <ellipse cx="134" cy="145" rx="8" ry="15" />
+          <ellipse cx="108" cy="145" rx="10" ry="18" />
+          <ellipse cx="142" cy="145" rx="10" ry="18" />
         </g>
       )}
 
       {/* 両腕（蛇腹の腕と先端の白い突起） */}
-      <path d="M86 130 L55 145 L48 138 L78 122 Z" fill={blackBody} />
-      <polygon points="46,138 38,135 44,130" fill={hornWhite} />
-      <path d="M154 130 L185 145 L192 138 L162 122 Z" fill={blackBody} />
-      <polygon points="194,138 202,135 196,130" fill={hornWhite} />
-
-      {/* ゼットンの頭部（目・口のない不気味な造形） */}
-      <ellipse cx="120" cy="98" rx="18" ry="24" fill={blackBody} />
-      {/* 顔面中央の縦長スリット発光部 */}
-      {!silhouette ? (
-        <polygon points="117,80 123,80 122,115 118,115" fill={glowYellow} stroke="none" />
-      ) : (
-        <polygon points="117,80 123,80 122,115 118,115" fill={secondary} />
+      <path d="M86 130 L52 148 L44 140 L78 122 Z" fill={blackBody} />
+      <polygon points="42,140 30,136 40,128" fill={hornWhite} />
+      <path d="M164 130 L198 148 L206 140 L172 122 Z" fill={blackBody} />
+      <polygon points="208,140 220,136 210,128" fill={hornWhite} />
+      {/* 腕の蛇腹リング */}
+      {!silhouette && (
+        <g stroke={hornWhite} strokeWidth="2" fill="none">
+          <line x1="68" y1="126" x2="62" y2="138" />
+          <line x1="182" y1="126" x2="188" y2="138" />
+        </g>
       )}
 
-      {/* 頭部から左右V字に広がる白いフラット角 */}
-      <path d="M106 85 Q75 65, 52 45 Q70 42, 104 70 Z" fill={hornWhite} />
-      <path d="M134 85 Q165 65, 188 45 Q170 42, 136 70 Z" fill={hornWhite} />
+      {/* ゼットンの頭部（目・口のない不気味で完璧な宇宙造形） */}
+      <ellipse cx="125" cy="95" rx="20" ry="26" fill={blackBody} />
+      {/* 顔面中央の縦長スリット発光部 */}
+      {!silhouette ? (
+        <g stroke="none">
+          <polygon points="122,76 128,76 126,114 124,114" fill={glowYellow} />
+          <polygon points="123,82 127,82 126,108 124,108" fill="#ffffff" />
+        </g>
+      ) : (
+        <polygon points="122,76 128,76 126,114 124,114" fill={secondary} />
+      )}
+
+      {/* 頭部から左右V字に優雅かつ威圧的に広がる白い大フラット角 */}
+      <path d="M110 82 Q70 60, 44 38 Q66 34, 108 66 Z" fill={hornWhite} />
+      <path d="M140 82 Q180 60, 206 38 Q184 34, 142 66 Z" fill={hornWhite} />
+
+      {/* 1兆度の超高熱火球（両手から発生するエネルギーリング） */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="125" cy="148" r="8" fill={fireBall} opacity="0.85" />
+          <circle cx="125" cy="148" r="4" fill={glowYellow} />
+          <ellipse cx="125" cy="148" rx="14" ry="4" fill="none" stroke={glowYellow} strokeWidth="2" />
+        </g>
+      )}
     </g>
   );
 }
@@ -4001,114 +4187,139 @@ function ZettonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
 /** No.59 バルタン星人 (宇宙忍者・特大銀色ハサミ・セミ頭・巨大黄色複眼) */
 function BaltanSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const blueBody = silhouette ? primary : '#0284c7';
-  const darkSuit = silhouette ? secondary : '#0f172a';
-  const scissorSilver = silhouette ? primary : '#cbd5e1';
-  const scissorDark = silhouette ? secondary : '#64748b';
-  const eyeYellow = silhouette ? primary : '#eab308';
+  const suitDark = silhouette ? secondary : '#0f172a';
+  const scissorSilver = silhouette ? primary : '#e2e8f0';
+  const scissorShadow = silhouette ? secondary : '#64748b';
+  const eyeYellow = silhouette ? primary : '#facc15';
+  const cloneAura = silhouette ? secondary : '#38bdf8';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 忍者の細身の脚部 */}
-      <path d="M108 175 L102 220 L118 220 L116 185 Z" fill={darkSuit} />
-      <path d="M132 175 L138 220 L122 220 L124 185 Z" fill={darkSuit} />
-
-      {/* スマートな忍者スーツ胴体 */}
-      <path d="M102 130 L95 180 L145 180 L138 130 Z" fill={blueBody} />
-      {/* 腹部の蛇腹モールド */}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 忍者の分身残像オーラ（左右にうっすらと浮かぶシルエット） */}
       {!silhouette && (
-        <g stroke="#38bdf8" strokeWidth="2" fill="none">
-          <line x1="102" y1="145" x2="138" y2="145" />
-          <line x1="99" y1="158" x2="141" y2="158" />
-          <line x1="97" y1="170" x2="143" y2="170" />
+        <g opacity="0.3" fill="none" stroke={cloneAura} strokeWidth="2">
+          <path d="M60 135 L20 100 Q15 65, 45 90" />
+          <path d="M190 135 L230 100 Q235 65, 205 90" />
         </g>
       )}
 
-      {/* 左の特大ハサミ（V字開閉） */}
-      <path d="M100 135 L65 145 L50 130" stroke={blueBody} strokeWidth="8" fill="none" />
-      {/* ハサミ上刃・下刃 */}
-      <path d="M50 130 Q15 105, 12 75 Q38 95, 52 120 Z" fill={scissorSilver} />
-      <path d="M50 130 Q15 155, 12 185 Q38 165, 52 140 Z" fill={scissorDark} />
+      {/* 忍者の細身の脚部 */}
+      <path d="M112 175 L104 228 L122 228 L120 188 Z" fill={suitDark} />
+      <path d="M138 175 L146 228 L128 228 L130 188 Z" fill={suitDark} />
 
-      {/* 右の特大ハサミ（V字開閉） */}
-      <path d="M140 135 L175 145 L190 130" stroke={blueBody} strokeWidth="8" fill="none" />
+      {/* スマートな忍者スーツ胴体 */}
+      <path d="M105 128 L96 182 L154 182 L145 128 Z" fill={blueBody} />
+      {/* 腹部の蛇腹モールド */}
+      {!silhouette && (
+        <g stroke="#38bdf8" strokeWidth="2.5" fill="none">
+          <line x1="104" y1="145" x2="146" y2="145" />
+          <line x1="100" y1="158" x2="150" y2="158" />
+          <line x1="98" y1="170" x2="152" y2="170" />
+        </g>
+      )}
+
+      {/* ★ 左の特大ハサミ（V字開閉・銀の刃物光沢） ★ */}
+      <path d="M102 135 L62 145 L48 128" stroke={blueBody} strokeWidth="10" strokeLinecap="round" fill="none" />
       {/* ハサミ上刃・下刃 */}
-      <path d="M190 130 Q225 105, 228 75 Q202 95, 188 120 Z" fill={scissorSilver} />
-      <path d="M190 130 Q225 155, 228 185 Q202 165, 188 140 Z" fill={scissorDark} />
+      <path d="M48 128 Q10 100, 6 68 Q36 90, 52 118 Z" fill={scissorSilver} />
+      <path d="M48 128 Q10 156, 6 188 Q36 166, 52 138 Z" fill={scissorShadow} />
+      {!silhouette && (
+        <line x1="10" y1="78" x2="48" y2="124" stroke="#ffffff" strokeWidth="2" />
+      )}
+
+      {/* ★ 右の特大ハサミ（V字開閉・銀の刃物光沢） ★ */}
+      <path d="M148 135 L188 145 L202 128" stroke={blueBody} strokeWidth="10" strokeLinecap="round" fill="none" />
+      {/* ハサミ上刃・下刃 */}
+      <path d="M202 128 Q240 100, 244 68 Q214 90, 198 118 Z" fill={scissorSilver} />
+      <path d="M202 128 Q240 156, 244 188 Q214 166, 198 138 Z" fill={scissorShadow} />
+      {!silhouette && (
+        <line x1="240" y1="78" x2="202" y2="124" stroke="#ffffff" strokeWidth="2" />
+      )}
 
       {/* セミのようなV字型の頭部 */}
-      <path d="M105 130 L90 75 Q120 60, 150 75 L135 130 Z" fill={darkSuit} />
+      <path d="M108 128 L92 70 Q125 52, 158 70 L142 128 Z" fill={suitDark} />
       {/* 頭頂部のV字王冠突起 */}
-      <polygon points="105,75 92,42 112,65" fill={blueBody} />
-      <polygon points="135,75 148,42 128,65" fill={blueBody} />
-      <polygon points="120,65 120,48 124,65" fill={scissorSilver} />
+      <polygon points="108,70 94,36 116,60" fill={blueBody} />
+      <polygon points="142,70 156,36 134,60" fill={blueBody} />
+      <polygon points="125,60 125,40 130,60" fill={scissorSilver} />
 
-      {/* 大きく突き出た楕円形の黄色複眼 */}
-      <ellipse cx="100" cy="85" rx="10" ry="14" fill={eyeYellow} />
-      <ellipse cx="140" cy="85" rx="10" ry="14" fill={eyeYellow} />
-      <circle cx="98" cy="82" r="3" fill="#ffffff" stroke="none" />
-      <circle cx="138" cy="82" r="3" fill="#ffffff" stroke="none" />
-      {/* 口先の細い突起 */}
-      <polygon points="118,102 122,102 120,122" fill={scissorSilver} />
+      {/* 大きく突き出た楕円形の黄色複眼（光彩グリッドモールド） */}
+      <ellipse cx="102" cy="82" rx="12" ry="16" fill={eyeYellow} />
+      <ellipse cx="148" cy="82" rx="12" ry="16" fill={eyeYellow} />
+      {/* 複眼のキラキラハイライト */}
+      <circle cx="100" cy="78" r="3.5" fill="#ffffff" stroke="none" />
+      <circle cx="146" cy="78" r="3.5" fill="#ffffff" stroke="none" />
+      {/* 口先の細い突起ノズル */}
+      <polygon points="122,100 128,100 125,124" fill={scissorSilver} />
     </g>
   );
 }
 
 /** No.60 エレキング (湖の宇宙放電竜・三日月回転アンテナ・白黒牛柄・放電テール) */
 function ElekingSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const creamBody = silhouette ? primary : '#fef08a';
-  const blackSpots = silhouette ? secondary : '#1e293b';
+  const creamBody = silhouette ? primary : '#fef9c3';
+  const creamShadow = silhouette ? secondary : '#fef08a';
+  const blackSpots = silhouette ? secondary : '#0f172a';
   const sparkCyan = silhouette ? secondary : '#38bdf8';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 長くうねる放電尾 */}
-      <path d="M130 180 Q195 210, 230 160 Q215 135, 175 160 Q145 170, 125 175 Z" fill={creamBody} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 長くうねる太い放電尾（前に向かって大きくカーブ） */}
+      <path d="M135 180 Q205 210, 240 155 Q225 130, 180 158 Q148 168, 128 175 Z" fill={creamBody} />
+      {/* 尻尾の斑点＆電撃スパーク */}
       {!silhouette && (
         <g stroke="none">
-          <ellipse cx="190" cy="165" rx="10" ry="6" fill={blackSpots} />
-          <ellipse cx="215" cy="155" rx="8" ry="5" fill={blackSpots} />
+          <ellipse cx="195" cy="162" rx="12" ry="7" fill={blackSpots} />
+          <ellipse cx="225" cy="150" rx="9" ry="6" fill={blackSpots} />
           {/* 尾先の電撃スパーク */}
-          <polygon points="230,155 240,140 232,150 242,148 228,162" fill={sparkCyan} />
+          <polygon points="240,150 252,132 242,144 254,142 238,158" fill={sparkCyan} />
+          <circle cx="248" cy="138" r="2" fill="#ffffff" />
         </g>
       )}
 
-      {/* 丸っこい下半身と2本脚 */}
-      <ellipse cx="120" cy="168" rx="34" ry="28" fill={creamBody} />
-      <path d="M102 185 L95 220 L115 220 L112 192 Z" fill={creamBody} />
-      <path d="M138 185 L145 220 L125 220 L128 192 Z" fill={creamBody} />
-      <polygon points="94,220 98,212 104,220" fill={blackSpots} />
-      <polygon points="136,220 140,212 146,220" fill={blackSpots} />
+      {/* 丸っこく愛嬌のある下半身と2本脚 */}
+      <ellipse cx="125" cy="170" rx="36" ry="30" fill={creamShadow} />
+      <path d="M105 188 L98 228 L120 228 L118 196 Z" fill={creamBody} />
+      <path d="M145 188 L152 228 L130 228 L132 196 Z" fill={creamBody} />
+      <polygon points="96,228 102,216 110,228" fill={blackSpots} />
+      <polygon points="140,228 146,216 154,228" fill={blackSpots} />
 
-      {/* 胴体の黒い独特の幾何学模様斑点 */}
+      {/* 胴体の黒い独特の幾何学牛柄模様（パズル状の黒斑点） */}
       {!silhouette && (
         <g stroke="none" fill={blackSpots}>
-          <path d="M98 150 Q105 140, 115 152 Q105 162, 98 150 Z" />
-          <path d="M125 160 Q138 150, 142 165 Q130 172, 125 160 Z" />
-          <path d="M110 172 Q120 168, 126 178 Q118 184, 110 172 Z" />
+          <path d="M102 150 Q110 138, 122 152 Q112 165, 102 150 Z" />
+          <path d="M130 162 Q145 152, 148 168 Q135 176, 130 162 Z" />
+          <path d="M112 174 Q124 168, 132 180 Q122 186, 112 174 Z" />
         </g>
       )}
 
-      {/* 可愛らしく突き出た小さな両腕 */}
-      <path d="M92 140 Q75 145, 68 135 Q78 126, 92 132 Z" fill={creamBody} />
-      <path d="M148 140 Q165 145, 172 135 Q162 126, 148 132 Z" fill={creamBody} />
+      {/* 小さく前に構えた可愛い両腕 */}
+      <path d="M96 142 Q76 148, 68 136 Q80 126, 96 134 Z" fill={creamBody} />
+      <path d="M154 142 Q174 148, 182 136 Q170 126, 154 134 Z" fill={creamBody} />
 
       {/* 特徴的なエレキングの頭部（目や鼻がなく、丸いおちょぼ口） */}
-      <ellipse cx="120" cy="105" rx="22" ry="25" fill={creamBody} />
+      <ellipse cx="125" cy="105" rx="24" ry="28" fill={creamBody} />
+      {/* 頭部の黒いモールド斑点 */}
       {!silhouette && (
-        <path d="M108 95 Q115 88, 122 96 Q114 104, 108 95 Z" fill={blackSpots} stroke="none" />
+        <path d="M112 94 Q120 86, 128 95 Q118 104, 112 94 Z" fill={blackSpots} stroke="none" />
       )}
-      {/* 丸いおちょぼ口 */}
-      <ellipse cx="120" cy="115" rx="6" ry="7" fill={blackSpots} />
-      <circle cx="120" cy="115" r="3" fill="#7f1d1d" stroke="none" />
+      {/* 丸いおちょぼ口（赤熱コア＆黒リップ） */}
+      <ellipse cx="125" cy="116" rx="7" ry="8" fill={blackSpots} />
+      <circle cx="125" cy="116" r="3.5" fill="#dc2626" stroke="none" />
 
-      {/* 頭部左右の回転する三日月型アンテナ（耳） */}
-      <path d="M100 95 Q82 65, 92 45 Q98 62, 106 82 Z" fill={blackSpots} />
-      <path d="M140 95 Q158 65, 148 45 Q142 62, 134 82 Z" fill={blackSpots} />
-      {/* アンテナの先端スパーク */}
+      {/* ★ 頭部左右の回転する三日月型アンテナ（耳） ★ */}
+      {/* 左の三日月アンテナ */}
+      <path d="M104 94 Q80 62, 92 40 Q98 58, 110 80 Z" fill={blackSpots} />
+      {/* 右の三日月アンテナ */}
+      <path d="M146 94 Q170 62, 158 40 Q152 58, 140 80 Z" fill={blackSpots} />
+
+      {/* アンテナの先端スパーク放電 */}
       {!silhouette && (
-        <g fill={sparkCyan} stroke="none">
-          <circle cx="92" cy="45" r="4" />
-          <circle cx="148" cy="45" r="4" />
+        <g stroke={sparkCyan} strokeWidth="2.5" fill="none">
+          <path d="M92 40 L82 32 L94 28" />
+          <path d="M158 40 L168 32 L156 28" />
+          <circle cx="92" cy="40" r="3" fill={sparkCyan} stroke="none" />
+          <circle cx="158" cy="40" r="3" fill={sparkCyan} stroke="none" />
         </g>
       )}
     </g>
@@ -4122,46 +4333,63 @@ function ElekingSvg({ primary, secondary, accent, eyeColor, outline, silhouette 
 /** No.61 ミュウツー (最強のサイコ戦士・白銀と紫・首後ろのサイコパイプ・念動球) */
 function MewtwoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const whiteBody = silhouette ? primary : '#f3e8ff';
+  const whiteLight = silhouette ? primary : '#ffffff';
   const purpleTail = silhouette ? secondary : '#7e22ce';
-  const psychoBall = silhouette ? secondary : '#38bdf8';
-  const eyePurple = silhouette ? primary : '#9333ea';
+  const purpleDark = silhouette ? secondary : '#581c87';
+  const psychoCyan = silhouette ? secondary : '#38bdf8';
+  const eyePurple = silhouette ? primary : '#a855f7';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 太くたくましい紫色の尻尾（前から下へと優美にうねる） */}
-      <path d="M130 165 Q180 200, 195 155 Q205 115, 175 125 Q165 145, 125 150 Z" fill={purpleTail} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 太く優美な紫色の巨大テール（後ろから前へダイナミックにうねる） ★ */}
+      <path d="M135 168 Q195 210, 215 155 Q225 110, 185 125 Q172 148, 130 152 Z" fill={purpleTail} />
+      <path d="M185 125 Q172 148, 130 152 Q155 185, 195 165 Z" fill={purpleDark} opacity="0.6" stroke="none" />
 
       {/* 引き締まった下半身＆逆関節レッグ */}
-      <path d="M105 165 L98 220 L115 220 L115 185 Z" fill={whiteBody} />
-      <path d="M135 165 L142 220 L125 220 L125 185 Z" fill={whiteBody} />
-      <ellipse cx="115" cy="168" rx="22" ry="18" fill={purpleTail} />
+      <ellipse cx="120" cy="170" rx="24" ry="20" fill={purpleTail} />
+      <path d="M108 168 L100 228 L118 228 L120 188 Z" fill={whiteBody} />
+      <path d="M138 168 L146 228 L128 228 L130 188 Z" fill={whiteBody} />
+      {/* 2本の丸い足指 */}
+      <circle cx="106" cy="226" r="4" fill={whiteLight} />
+      <circle cx="114" cy="226" r="4" fill={whiteLight} />
+      <circle cx="134" cy="226" r="4" fill={whiteLight} />
+      <circle cx="142" cy="226" r="4" fill={whiteLight} />
 
-      {/* スマートで強靭な胸部＆胴体 */}
-      <path d="M102 120 L96 165 L134 165 L128 120 Z" fill={whiteBody} />
+      {/* スマートで強靭な胸部＆胴体（白銀と胸部プレート） */}
+      <path d="M106 120 L98 168 L138 168 L132 120 Z" fill={whiteBody} />
       {/* 首の後ろから背中へとつながるサイコパイプ */}
-      <path d="M110 88 Q88 95, 105 125" stroke={purpleTail} strokeWidth="6" fill="none" />
+      <path d="M115 88 Q85 96, 108 128" stroke={purpleTail} strokeWidth="7" fill="none" />
 
-      {/* 左手（掌のサイコボール） */}
-      <path d="M98 125 L75 135 L62 125" stroke={whiteBody} strokeWidth="6" strokeLinecap="round" fill="none" />
+      {/* 左手（掌にサイコブレイク念動球を展開） */}
+      <path d="M102 126 L76 138 L60 126" stroke={whiteBody} strokeWidth="7" strokeLinecap="round" fill="none" />
+      {/* 3本指の吸盤 */}
+      <circle cx="56" cy="124" r="3.5" fill={whiteBody} />
+      <circle cx="62" cy="120" r="3.5" fill={whiteBody} />
+      {/* 渦巻く巨大サイコボール */}
       {!silhouette && (
         <g stroke="none">
-          <circle cx="58" cy="122" r="10" fill={psychoBall} opacity="0.85" />
-          <circle cx="58" cy="122" r="5" fill="#ffffff" />
+          <circle cx="50" cy="120" r="14" fill={psychoCyan} opacity="0.85" />
+          <circle cx="50" cy="120" r="8" fill="#c084fc" opacity="0.9" />
+          <circle cx="50" cy="120" r="4" fill="#ffffff" />
+          <ellipse cx="50" cy="120" rx="18" ry="5" fill="none" stroke="#ffffff" strokeWidth="1.5" />
         </g>
       )}
 
       {/* 右手 */}
-      <path d="M128 125 L150 135 L160 125" stroke={whiteBody} strokeWidth="6" strokeLinecap="round" fill="none" />
+      <path d="M132 126 L158 138 L170 126" stroke={whiteBody} strokeWidth="7" strokeLinecap="round" fill="none" />
+      <circle cx="174" cy="124" r="3.5" fill={whiteBody} />
 
       {/* ミュウツーの頭部＆短い角状の突起 */}
-      <path d="M110 110 L108 85 L120 72 L132 85 L130 110 Z" fill={whiteBody} />
+      <path d="M112 110 L110 84 L124 70 L138 84 L136 110 Z" fill={whiteBody} />
       {/* 左右の小さな角 */}
-      <polygon points="106,82 98,68 112,75" fill={whiteBody} />
-      <polygon points="134,82 142,68 128,75" fill={whiteBody} />
+      <polygon points="108,80 98,66 114,74" fill={whiteBody} />
+      <polygon points="140,80 150,66 134,74" fill={whiteBody} />
 
-      {/* 冷徹で力強い眼光 */}
-      <polygon points="110,88 118,85 116,92 108,91" fill={eyePurple} />
-      <polygon points="130,88 122,85 124,92 132,91" fill={eyePurple} />
+      {/* 冷徹で力強い眼光（紫の瞳＆キャッチライト） */}
+      <polygon points="112,88 122,84 120,92 110,91" fill={eyePurple} />
+      <circle cx="116" cy="87" r="1.5" fill="#ffffff" stroke="none" />
+      <polygon points="136,88 126,84 128,92 138,91" fill={eyePurple} />
+      <circle cx="132" cy="87" r="1.5" fill="#ffffff" stroke="none" />
     </g>
   );
 }
@@ -4172,42 +4400,58 @@ function GengarSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
   const shadowDark = silhouette ? secondary : '#3b0764';
   const eyeRed = silhouette ? primary : '#ef4444';
   const teethWhite = silhouette ? primary : '#f8fafc';
+  const auraPurple = silhouette ? secondary : '#a855f7';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 背中のゴーストトゲ棘 */}
-      <polygon points="90,95 72,82 92,105" fill={shadowDark} />
-      <polygon points="150,95 168,82 148,105" fill={shadowDark} />
-      <polygon points="120,75 120,55 128,75" fill={shadowDark} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 立ち上るゴーストオーラ煙 */}
+      {!silhouette && (
+        <g fill="none" stroke={auraPurple} strokeWidth="2.5" opacity="0.4">
+          <path d="M60 210 Q45 180, 55 150" />
+          <path d="M190 210 Q205 180, 195 150" />
+        </g>
+      )}
 
-      {/* 丸っこいずんぐりボディ */}
-      <ellipse cx="120" cy="148" rx="55" ry="50" fill={gengarPurple} />
+      {/* 背中のゴーストトゲ棘列 */}
+      <polygon points="90,92 68,78 92,104" fill={shadowDark} />
+      <polygon points="160,92 182,78 158,104" fill={shadowDark} />
+      <polygon points="125,72 125,50 134,72" fill={shadowDark} />
+
+      {/* 丸っこくずんぐりした愛嬌あるシャドー巨体 */}
+      <ellipse cx="125" cy="150" rx="58" ry="52" fill={gengarPurple} />
 
       {/* 短い手足 */}
-      <ellipse cx="68" cy="155" rx="14" ry="12" fill={gengarPurple} />
-      <ellipse cx="172" cy="155" rx="14" ry="12" fill={gengarPurple} />
-      <ellipse cx="95" cy="195" rx="15" ry="12" fill={shadowDark} />
-      <ellipse cx="145" cy="195" rx="15" ry="12" fill={shadowDark} />
+      <ellipse cx="70" cy="158" rx="16" ry="14" fill={gengarPurple} />
+      <polygon points="56,156 50,154 54,162" fill={shadowDark} />
+      <ellipse cx="180" cy="158" rx="16" ry="14" fill={gengarPurple} />
+      <polygon points="194,156 200,154 196,162" fill={shadowDark} />
+      <ellipse cx="98" cy="198" rx="18" ry="14" fill={shadowDark} />
+      <ellipse cx="152" cy="198" rx="18" ry="14" fill={shadowDark} />
 
-      {/* 頭部の2本の尖った耳 */}
-      <polygon points="85,110 72,70 102,95" fill={gengarPurple} />
-      <polygon points="155,110 168,70 138,95" fill={gengarPurple} />
+      {/* 頭部の2本の尖った悪魔耳 */}
+      <polygon points="86,108 70,64 105,92" fill={gengarPurple} />
+      <polygon points="164,108 180,64 145,92" fill={gengarPurple} />
 
-      {/* 真っ赤ないたずら釣り目 */}
-      <polygon points="92,125 110,120 105,134 88,132" fill={eyeRed} />
-      <circle cx="102" cy="126" r="2" fill="#0f172a" stroke="none" />
-      <circle cx="100" cy="125" r="0.8" fill="#ffffff" stroke="none" />
+      {/* 真っ赤ないたずら釣り目（邪悪で可愛いハイライト） */}
+      <polygon points="94,124 114,118 108,134 90,132" fill={eyeRed} />
+      <circle cx="104" cy="126" r="2.2" fill="#0f172a" stroke="none" />
+      <circle cx="102" cy="124" r="1" fill="#ffffff" stroke="none" />
 
-      <polygon points="148,125 130,120 135,134 152,132" fill={eyeRed} />
-      <circle cx="138" cy="126" r="2" fill="#0f172a" stroke="none" />
-      <circle cx="140" cy="125" r="0.8" fill="#ffffff" stroke="none" />
+      <polygon points="156,124 136,118 142,134 160,132" fill={eyeRed} />
+      <circle cx="146" cy="126" r="2.2" fill="#0f172a" stroke="none" />
+      <circle cx="148" cy="124" r="1" fill="#ffffff" stroke="none" />
 
-      {/* ニヤリと大きく笑う白い歯並びの裂けた口 */}
-      <path d="M85 148 Q120 180, 155 148 Q120 160, 85 148 Z" fill={shadowDark} />
-      {/* ギザギザの白い歯 */}
+      {/* ★ ニヤリと顔いっぱいに裂けた大口＆隙間なく並ぶ白い歯 ★ */}
+      <path d="M85 146 Q125 186, 165 146 Q125 160, 85 146 Z" fill={shadowDark} />
+      {/* 隙間なく並ぶ白いブロック歯 */}
       {!silhouette && (
         <g fill={teethWhite} stroke={outline} strokeWidth="1.5">
-          <path d="M88 150 L94 157 L100 151 L106 158 L112 152 L118 159 L124 152 L130 159 L136 152 L142 158 L152 149 Z" />
+          <polygon points="88,148 95,156 102,149" />
+          <polygon points="102,149 109,158 116,151" />
+          <polygon points="116,151 123,160 130,152" />
+          <polygon points="130,152 137,160 144,151" />
+          <polygon points="144,151 151,158 158,149" />
+          <polygon points="158,149 164,155 166,147" />
         </g>
       )}
     </g>
@@ -4216,48 +4460,64 @@ function GengarSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
 
 /** No.63 カイオーガ (大海原の王者・深海シャチ竜・紅い古代ルーン・大ヒレ) */
 function KyogreSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
-  const blue = silhouette ? primary : '#1d4ed8';
-  const darkBlue = silhouette ? secondary : '#1e3a8a';
+  const blueOcean = silhouette ? primary : '#1d4ed8';
+  const blueDark = silhouette ? secondary : '#1e3a8a';
   const runeRed = silhouette ? secondary : '#ef4444';
-  const bellyWhite = silhouette ? primary : '#f8fafc';
+  const whiteBelly = silhouette ? primary : '#f8fafc';
   const eyeYellow = silhouette ? primary : '#facc15';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 二股に分かれた巨大な尾ビレ */}
-      <path d="M120 180 L95 225 L115 210 L120 220 L125 210 L145 225 Z" fill={darkBlue} />
-
-      {/* 左右に大きく広がる巨大なシャチヒレ */}
-      <path d="M85 135 Q20 115, 8 135 Q15 160, 60 162 L80 155 Z" fill={blue} />
-      <polygon points="8,135 2,132 5,140" fill={bellyWhite} />
-      <polygon points="12,148 5,146 10,154" fill={bellyWhite} />
-      <polygon points="20,158 14,156 18,163" fill={bellyWhite} />
-
-      <path d="M155 135 Q220 115, 232 135 Q225 160, 180 162 L160 155 Z" fill={blue} />
-      <polygon points="232,135 238,132 235,140" fill={bellyWhite} />
-      <polygon points="228,148 235,146 230,154" fill={bellyWhite} />
-      <polygon points="220,158 226,156 222,163" fill={bellyWhite} />
-
-      {/* ヒレに走る紅い古代ルーン文字 */}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 渦巻く水流エフェクト */}
       {!silhouette && (
-        <g stroke={runeRed} strokeWidth="3.5" fill="none" strokeLinecap="round">
-          <path d="M35 135 L65 145 M45 130 L55 152" />
-          <path d="M205 135 L175 145 M195 130 L185 152" />
+        <g fill="none" stroke="#38bdf8" strokeWidth="2.5" opacity="0.5">
+          <path d="M20 200 Q70 230, 130 215 Q190 200, 240 220" />
+        </g>
+      )}
+
+      {/* 二股に分かれた巨大なシャチ尾ビレ */}
+      <path d="M125 182 L98 230 L118 214 L125 224 L132 214 L152 230 Z" fill={blueDark} />
+
+      {/* ★ 左右に雄大に広がる巨大なシャチ大ヒレ ★ */}
+      {/* 左ヒレ＆4本爪 */}
+      <path d="M85 135 Q18 112, 6 135 Q14 162, 60 164 L82 155 Z" fill={blueOcean} />
+      <polygon points="6,135 0,132 4,140" fill={whiteBelly} />
+      <polygon points="10,148 4,146 8,154" fill={whiteBelly} />
+      <polygon points="18,158 12,156 16,163" fill={whiteBelly} />
+      <polygon points="28,164 22,163 26,168" fill={whiteBelly} />
+
+      {/* 右ヒレ＆4本爪 */}
+      <path d="M165 135 Q232 112, 244 135 Q236 162, 190 164 L168 155 Z" fill={blueOcean} />
+      <polygon points="244,135 250,132 246,140" fill={whiteBelly} />
+      <polygon points="240,148 246,146 242,154" fill={whiteBelly} />
+      <polygon points="232,158 238,156 234,163" fill={whiteBelly} />
+      <polygon points="222,164 228,163 224,168" fill={whiteBelly} />
+
+      {/* ヒレに刻まれた紅い古代アルファルーン（神秘的な発光線） */}
+      {!silhouette && (
+        <g stroke={runeRed} strokeWidth="4" fill="none" strokeLinecap="round">
+          <path d="M32 135 L65 146 M42 128 L54 154" />
+          <path d="M218 135 L185 146 M208 128 L196 154" />
         </g>
       )}
 
       {/* 重厚で優美な深海シャチボディ */}
-      <ellipse cx="120" cy="140" rx="42" ry="48" fill={blue} />
-      <path d="M102 120 Q120 135, 138 120 Q135 170, 120 185 Q105 170, 102 120 Z" fill={bellyWhite} />
+      <ellipse cx="125" cy="142" rx="46" ry="52" fill={blueOcean} />
+      {/* 純白の腹部プレート */}
+      <path d="M104 122 Q125 138, 146 122 Q142 174, 125 188 Q108 174, 104 122 Z" fill={whiteBelly} />
 
-      {/* 額の白い円形マーク＆黄金の眼 */}
-      <circle cx="102" cy="108" r="4" fill={bellyWhite} stroke="none" />
-      <circle cx="138" cy="108" r="4" fill={bellyWhite} stroke="none" />
-      <circle cx="96" cy="116" r="3" fill={eyeYellow} />
-      <circle cx="144" cy="116" r="3" fill={eyeYellow} />
+      {/* 額の白いオーバルマーク＆黄金の眼球 */}
+      <ellipse cx="104" cy="106" rx="5" ry="4" fill={whiteBelly} stroke="none" />
+      <ellipse cx="146" cy="106" rx="5" ry="4" fill={whiteBelly} stroke="none" />
+      <circle cx="98" cy="116" r="3.5" fill={eyeYellow} />
+      <circle cx="98" cy="116" r="1.5" fill="#0f172a" stroke="none" />
+      <circle cx="152" cy="116" r="3.5" fill={eyeYellow} />
+      <circle cx="152" cy="116" r="1.5" fill="#0f172a" stroke="none" />
 
-      {/* 頭部リップと牙モールド */}
-      <path d="M98 125 Q120 132, 142 125" stroke={darkBlue} strokeWidth="3" fill="none" />
+      {/* アゴの紅いルーンライン */}
+      {!silhouette && (
+        <path d="M112 128 Q125 134, 138 128" stroke={runeRed} strokeWidth="3" fill="none" strokeLinecap="round" />
+      )}
     </g>
   );
 }
@@ -4265,60 +4525,72 @@ function KyogreSvg({ primary, secondary, accent, eyeColor, outline, silhouette }
 /** No.64 グラードン (大陸の覇者・深紅の溶岩装甲・黒い溝ライン・大顎＆ブレード棘) */
 function GroudonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const magmaRed = silhouette ? primary : '#dc2626';
-  const armorDark = silhouette ? secondary : '#7f1d1d';
-  const lineBlack = silhouette ? secondary : '#0f172a';
+  const magmaDark = silhouette ? secondary : '#991b1b';
+  const armorBlack = silhouette ? secondary : '#0f172a';
   const bladeWhite = silhouette ? primary : '#f8fafc';
   const eyeYellow = silhouette ? primary : '#fbbf24';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 太いブレード状の尾 */}
-      <path d="M135 180 L205 200 L230 185 L180 162 Z" fill={armorDark} />
-      <polygon points="195,195 210,182 225,190" fill={bladeWhite} />
-      <polygon points="175,178 185,168 195,178" fill={bladeWhite} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 地割れマグマの破片 */}
+      {!silhouette && (
+        <g stroke="none" fill="#ea580c" opacity="0.6">
+          <polygon points="30,225 45,215 50,228" />
+          <polygon points="210,225 225,215 220,228" />
+        </g>
+      )}
+
+      {/* 太いブレード状の巨大尾 */}
+      <path d="M140 180 L212 202 L238 185 L186 160 Z" fill={magmaDark} />
+      <polygon points="202,198 218,184 234,192" fill={bladeWhite} />
+      <polygon points="180,178 192,166 204,178" fill={bladeWhite} />
 
       {/* 重装甲の2本脚＆白いツメ */}
-      <path d="M95 175 L85 220 L118 220 L115 185 Z" fill={magmaRed} />
-      <path d="M145 175 L155 220 L122 220 L125 185 Z" fill={magmaRed} />
-      <polygon points="82,220 88,208 94,220" fill={bladeWhite} />
-      <polygon points="98,220 104,208 110,220" fill={bladeWhite} />
-      <polygon points="130,220 136,208 142,220" fill={bladeWhite} />
-      <polygon points="146,220 152,208 158,220" fill={bladeWhite} />
+      <path d="M98 175 L86 226 L120 226 L118 185 Z" fill={magmaRed} />
+      <polygon points="82,226 88,214 96,226" fill={bladeWhite} />
+      <polygon points="98,226 104,214 112,226" fill={bladeWhite} />
+      <polygon points="114,226 120,214 126,226" fill={bladeWhite} />
+
+      <path d="M152 175 L164 226 L130 226 L132 185 Z" fill={magmaRed} />
+      <polygon points="134,226 140,214 148,226" fill={bladeWhite} />
+      <polygon points="150,226 156,214 164,226" fill={bladeWhite} />
+      <polygon points="166,226 172,214 180,226" fill={bladeWhite} />
 
       {/* 大陸装甲の重厚な胴体 */}
-      <path d="M85 125 L78 185 L145 185 L138 120 Z" fill={magmaRed} />
+      <path d="M88 122 L78 185 L152 185 L144 118 Z" fill={magmaRed} />
       {/* 体側に並ぶ白いブレードトゲ */}
-      <polygon points="78,135 62,138 78,145" fill={bladeWhite} />
-      <polygon points="76,150 60,154 76,160" fill={bladeWhite} />
-      <polygon points="76,165 62,168 76,174" fill={bladeWhite} />
+      <polygon points="78,132 60,136 78,144" fill={bladeWhite} />
+      <polygon points="76,148 58,152 76,160" fill={bladeWhite} />
+      <polygon points="76,164 60,168 76,176" fill={bladeWhite} />
 
-      {/* 溶岩溝ライン（黒い古代溝） */}
+      {/* ★ 溶岩溝ライン（黒い古代溝＆内部のオメガルーン） ★ */}
       {!silhouette && (
-        <g stroke={lineBlack} strokeWidth="3.5" fill="none" strokeLinecap="round">
-          <path d="M95 135 L125 135 L120 165 L98 165" />
-          <path d="M110 135 L110 165" />
+        <g stroke={armorBlack} strokeWidth="4" fill="none" strokeLinecap="round">
+          <path d="M96 135 L132 135 L126 168 L100 168" />
+          <path d="M114 135 L114 168" />
         </g>
       )}
 
       {/* 剛腕＆白い鉤爪 */}
-      <path d="M85 135 L55 145 L48 136 L75 125 Z" fill={magmaRed} />
-      <polygon points="46,136 36,134 42,126" fill={bladeWhite} />
-      <polygon points="48,142 38,144 44,136" fill={bladeWhite} />
+      <path d="M88 135 L56 148 L46 138 L76 124 Z" fill={magmaRed} />
+      <polygon points="46,138 34,136 42,126" fill={bladeWhite} />
+      <polygon points="48,144 36,146 44,136" fill={bladeWhite} />
 
-      {/* グラードンの頭部（マグマヘルメット装甲） */}
-      <path d="M115 118 L110 75 L85 75 L62 95 L65 110 L95 118 Z" fill={magmaRed} />
+      {/* グラードンの頭部（マグマヘルメット重装甲） */}
+      <path d="M118 118 L114 74 L86 74 L60 95 L64 110 L96 118 Z" fill={magmaRed} />
       {/* 頭部横の白い耳ブレード */}
-      <polygon points="95,78 115,62 106,85" fill={bladeWhite} />
-      <polygon points="85,78 72,65 82,85" fill={bladeWhite} />
+      <polygon points="96,76 118,58 108,84" fill={bladeWhite} />
+      <polygon points="84,76 70,62 80,84" fill={bladeWhite} />
 
       {/* 鋭い牙並び口 */}
-      <path d="M65 105 L88 108 L88 114 L65 110 Z" fill={lineBlack} />
-      <polygon points="68,105 72,110 76,105" fill={bladeWhite} />
-      <polygon points="78,105 82,110 86,105" fill={bladeWhite} />
+      <path d="M64 104 L88 108 L88 114 L64 110 Z" fill={armorBlack} />
+      <polygon points="66,104 70,110 74,104" fill={bladeWhite} />
+      <polygon points="76,104 80,110 84,104" fill={bladeWhite} />
 
       {/* 黄金の睨み目 */}
-      <circle cx="82" cy="88" r="4.5" fill={eyeYellow} />
-      <circle cx="82" cy="88" r="2" fill="#0f172a" stroke="none" />
+      <circle cx="82" cy="88" r="5" fill={eyeYellow} />
+      <circle cx="82" cy="88" r="2.2" fill="#0f172a" stroke="none" />
+      <circle cx="80" cy="86" r="1" fill="#ffffff" stroke="none" />
     </g>
   );
 }
@@ -4327,35 +4599,43 @@ function GroudonSvg({ primary, secondary, accent, eyeColor, outline, silhouette 
 function LugiaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const whiteBody = silhouette ? primary : '#f1f5f9';
   const darkNavy = silhouette ? secondary : '#1e3a8a';
-  const bellyBlue = silhouette ? secondary : '#93c5fd';
+  const bellyBlue = silhouette ? secondary : '#bae6fd';
+  const aeroCyan = silhouette ? secondary : '#38bdf8';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* エアロブラストの渦巻く気流リング */}
+      {!silhouette && (
+        <g fill="none" stroke={aeroCyan} strokeWidth="2.5" opacity="0.6">
+          <ellipse cx="125" cy="140" rx="90" ry="24" transform="rotate(-15 125 140)" />
+        </g>
+      )}
+
       {/* 菱形尾びれ */}
-      <path d="M120 180 L110 225 L120 215 L130 225 Z" fill={darkNavy} />
+      <path d="M125 182 L112 230 L125 218 L138 230 Z" fill={darkNavy} />
 
-      {/* 左の手のひら翼（指が5本に分かれた大翼） */}
-      <path d="M100 135 Q40 85, 10 100 Q15 115, 30 115 Q25 128, 42 128 Q38 140, 56 140 Q52 152, 70 150 L95 150 Z" fill={whiteBody} />
+      {/* ★ 左の手のひら翼（指が5本に分かれた大翼） ★ */}
+      <path d="M102 135 Q40 82, 8 98 Q14 114, 28 114 Q24 128, 40 128 Q36 142, 54 142 Q50 155, 68 152 L98 152 Z" fill={whiteBody} />
 
-      {/* 右の手のひら翼（指が5本に分かれた大翼） */}
-      <path d="M140 135 Q200 85, 230 100 Q225 115, 210 115 Q215 128, 198 128 Q202 140, 184 140 Q188 152, 170 150 L145 150 Z" fill={whiteBody} />
+      {/* ★ 右の手のひら翼（指が5本に分かれた大翼） ★ */}
+      <path d="M148 135 Q210 82, 242 98 Q236 114, 222 114 Q226 128, 210 128 Q214 142, 196 142 Q200 155, 182 152 L152 152 Z" fill={whiteBody} />
 
-      {/* 背中の紺色のひし形突起（大2本） */}
-      <polygon points="110,115 95,95 112,108" fill={darkNavy} />
-      <polygon points="130,115 145,95 128,108" fill={darkNavy} />
+      {/* 背中の紺色のひし形突起（大2列） */}
+      <polygon points="112,112 95,90 115,104" fill={darkNavy} />
+      <polygon points="138,112 155,90 135,104" fill={darkNavy} />
 
-      {/* 優美な流線型ボディ＆水色腹部 */}
-      <ellipse cx="120" cy="148" rx="28" ry="38" fill={whiteBody} />
-      <ellipse cx="120" cy="155" rx="16" ry="24" fill={bellyBlue} opacity="0.6" />
+      {/* 優美な流線型ボディ＆淡い水色腹部 */}
+      <ellipse cx="125" cy="148" rx="32" ry="42" fill={whiteBody} />
+      <ellipse cx="125" cy="156" rx="18" ry="26" fill={bellyBlue} opacity="0.7" />
 
       {/* スマートで長い首と頭部 */}
-      <path d="M112 125 L110 80 L120 62 L130 80 L128 125 Z" fill={whiteBody} />
+      <path d="M116 125 L114 78 L125 60 L136 78 L134 125 Z" fill={whiteBody} />
 
       {/* 目を覆う鋭い紺碧アイマスク */}
-      <polygon points="110,75 95,68 112,82" fill={darkNavy} />
-      <circle cx="106" cy="76" r="2" fill="#ffffff" stroke="none" />
-      <polygon points="130,75 145,68 128,82" fill={darkNavy} />
-      <circle cx="134" cy="76" r="2" fill="#ffffff" stroke="none" />
+      <polygon points="114,74 96,66 116,82" fill={darkNavy} />
+      <circle cx="108" cy="74" r="2.2" fill="#ffffff" stroke="none" />
+      <polygon points="136,74 154,66 134,82" fill={darkNavy} />
+      <circle cx="142" cy="74" r="2.2" fill="#ffffff" stroke="none" />
     </g>
   );
 }
@@ -4364,39 +4644,50 @@ function LugiaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }:
 function HoOhSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const redWing = silhouette ? primary : '#ef4444';
   const greenTip = silhouette ? secondary : '#15803d';
-  const gold = silhouette ? secondary : '#facc15';
+  const goldBody = silhouette ? secondary : '#facc15';
   const beakBlack = silhouette ? secondary : '#0f172a';
+  const rainbowAura = silhouette ? secondary : '#ec4899';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 黄金の三ツ又尾羽 */}
-      <path d="M115 175 L80 230 L105 210 L120 235 L135 210 L160 230 L125 175 Z" fill={gold} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 虹の聖なる光輪オーラ */}
+      {!silhouette && (
+        <g fill="none" strokeWidth="2.5" opacity="0.5">
+          <ellipse cx="125" cy="130" rx="95" ry="50" stroke={rainbowAura} />
+          <ellipse cx="125" cy="130" rx="85" ry="42" stroke={goldBody} />
+        </g>
+      )}
 
-      {/* 絢爛豪華な左翼（赤基調・翼端グリーン） */}
-      <path d="M100 130 Q40 50, 10 70 Q15 120, 60 145 L95 145 Z" fill={redWing} />
-      <polygon points="10,70 2,85 18,92 8,105 28,110 18,122 38,125" fill={greenTip} />
+      {/* 黄金の三ツ又尾羽（流麗に垂れ下がる） */}
+      <path d="M118 178 L78 234 L106 212 L125 238 L144 212 L172 234 L132 178 Z" fill={goldBody} />
 
-      {/* 絢爛豪華な右翼（赤基調・翼端グリーン） */}
-      <path d="M140 130 Q200 50, 230 70 Q225 120, 180 145 L145 145 Z" fill={redWing} />
-      <polygon points="230,70 238,85 222,92 232,105 212,110 222,122 202,125" fill={greenTip} />
+      {/* ★ 絢爛豪華な左翼（赤基調・翼端グリーン） ★ */}
+      <path d="M102 128 Q38 45, 6 68 Q12 120, 62 146 L98 146 Z" fill={redWing} />
+      <polygon points="6,68 0,84 16,92 6,105 26,110 16,122 36,126" fill={greenTip} />
 
-      {/* 聖なる鳥の胴体 */}
-      <ellipse cx="120" cy="142" rx="24" ry="32" fill={redWing} />
-      <ellipse cx="120" cy="148" rx="14" ry="20" fill="#fef08a" />
+      {/* ★ 絢爛豪華な右翼（赤基調・翼端グリーン） ★ */}
+      <path d="M148 128 Q212 45, 244 68 Q238 120, 188 146 L152 146 Z" fill={redWing} />
+      <polygon points="244,68 250,84 234,92 244,105 224,110 234,122 214,126" fill={greenTip} />
+
+      {/* 聖なる不死鳥の胴体 */}
+      <ellipse cx="125" cy="144" rx="26" ry="34" fill={redWing} />
+      <ellipse cx="125" cy="150" rx="16" ry="22" fill="#fef08a" />
 
       {/* 首と白い顔面 */}
-      <path d="M112 120 L112 85 L128 85 L128 120 Z" fill={greenTip} />
-      <circle cx="120" cy="80" r="14" fill="#f8fafc" />
+      <path d="M116 120 L116 82 L134 82 L134 120 Z" fill={greenTip} />
+      <circle cx="125" cy="78" r="16" fill="#f8fafc" />
 
-      {/* 頭頂の黄金の王冠トサカ */}
-      <polygon points="112,68 100,45 116,62" fill={gold} />
-      <polygon points="120,68 120,40 125,62" fill={gold} />
-      <polygon points="128,68 140,45 124,62" fill={gold} />
+      {/* 頭頂の黄金の王冠トサカ（3本の王冠羽根） */}
+      <polygon points="116,65 102,40 120,58" fill={goldBody} />
+      <polygon points="125,65 125,34 130,58" fill={goldBody} />
+      <polygon points="134,65 148,40 130,58" fill={goldBody} />
 
       {/* 黒い嘴と赤いアイライン */}
-      <polygon points="115,82 125,82 120,95" fill={beakBlack} />
-      <circle cx="112" cy="76" r="2.5" fill="#ef4444" />
-      <circle cx="128" cy="76" r="2.5" fill="#ef4444" />
+      <polygon points="120,80 130,80 125,95" fill={beakBlack} />
+      <circle cx="116" cy="74" r="3" fill="#ef4444" />
+      <circle cx="116" cy="74" r="1" fill="#ffffff" stroke="none" />
+      <circle cx="134" cy="74" r="3" fill="#ef4444" />
+      <circle cx="134" cy="74" r="1" fill="#ffffff" stroke="none" />
     </g>
   );
 }
@@ -4409,45 +4700,46 @@ function GarchompSvg({ primary, secondary, accent, eyeColor, outline, silhouette
   const finSilver = silhouette ? primary : '#cbd5e1';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* サメのような背びれ＆尾 */}
-      <polygon points="120,115 155,75 138,118" fill={finSilver} />
-      <path d="M125 175 L180 205 L215 190 L165 168 Z" fill={navy} />
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* サメのような背びれ（切れ込み付き）＆尾 */}
+      <polygon points="125,115 162,72 144,118" fill={finSilver} />
+      <polygon points="152,88 158,82 148,92" fill={navy} />
+      <path d="M130 175 L188 206 L224 190 L172 168 Z" fill={navy} />
 
       {/* 力強い脚部 */}
-      <path d="M102 170 L95 218 L115 218 L112 185 Z" fill={navy} />
-      <path d="M138 170 L145 218 L125 218 L128 185 Z" fill={navy} />
-      <polygon points="92,218 97,210 102,218" fill={finSilver} />
-      <polygon points="138,218 143,210 148,218" fill={finSilver} />
+      <path d="M104 170 L96 222 L118 222 L116 186 Z" fill={navy} />
+      <polygon points="92,222 98,212 104,222" fill={finSilver} />
+      <path d="M144 170 L152 222 L130 222 L134 186 Z" fill={navy} />
+      <polygon points="144,222 150,212 156,222" fill={finSilver} />
 
-      {/* マッハボディ＆赤い胸部 */}
-      <path d="M96 125 L90 180 L150 180 L144 125 Z" fill={navy} />
-      <path d="M102 130 Q120 140, 138 130 Q135 175, 120 180 Q105 175, 102 130 Z" fill={bellyRed} />
+      {/* マッハボディ＆赤い胸部プレート */}
+      <path d="M98 125 L92 182 L158 182 L150 125 Z" fill={navy} />
+      <path d="M104 130 Q125 142, 146 130 Q142 178, 125 182 Q108 178, 104 130 Z" fill={bellyRed} />
 
-      {/* 両腕の鋭利なカマブレード */}
-      <path d="M96 130 L60 142 L42 125 L75 120 Z" fill={navy} />
-      <polygon points="42,125 20,130 50,145" fill={finSilver} />
-      <path d="M144 130 L180 142 L198 125 L165 120 Z" fill={navy} />
-      <polygon points="198,125 220,130 190,145" fill={finSilver} />
+      {/* ★ 両腕の鋭利な大型カマブレード（音速斬り） ★ */}
+      <path d="M98 130 L60 144 L40 126 L76 120 Z" fill={navy} />
+      <polygon points="40,126 14,132 48,148" fill={finSilver} />
+      <path d="M150 130 L188 144 L208 126 L174 120 Z" fill={navy} />
+      <polygon points="208,126 234,132 200,148" fill={finSilver} />
 
       {/* サメ頭部とジェットエンジンノズル状の左右突起 */}
-      <path d="M108 115 L106 82 L120 68 L134 82 L132 115 Z" fill={navy} />
+      <path d="M112 115 L110 80 L125 65 L140 80 L138 115 Z" fill={navy} />
       {/* 左右のジェット突起 */}
-      <rect x="78" y="78" width="28" height="12" rx="3" fill={navy} />
-      <ellipse cx="78" cy="84" rx="4" ry="6" fill="#3b82f6" />
-      <rect x="134" y="78" width="28" height="12" rx="3" fill={navy} />
-      <ellipse cx="162" cy="84" rx="4" ry="6" fill="#3b82f6" />
+      <rect x="80" y="76" width="30" height="14" rx="4" fill={navy} />
+      <ellipse cx="80" cy="83" rx="5" ry="7" fill="#3b82f6" />
+      <rect x="140" y="76" width="30" height="14" rx="4" fill={navy} />
+      <ellipse cx="170" cy="83" rx="5" ry="7" fill="#3b82f6" />
 
       {/* 額の黄色い星マーク */}
       {!silhouette && (
-        <polygon points="120,74 122,78 126,79 123,82 124,86 120,83 116,86 117,82 114,79 118,78" fill={starGold} stroke="none" />
+        <polygon points="125,72 127,77 132,78 128,82 130,87 125,84 120,87 122,82 118,78 123,77" fill={starGold} stroke="none" />
       )}
 
-      {/* 鋭い牙並びと目 */}
-      <circle cx="112" cy="92" r="3" fill="#facc15" />
-      <circle cx="112" cy="92" r="1.5" fill="#0f172a" stroke="none" />
-      <circle cx="128" cy="92" r="3" fill="#facc15" />
-      <circle cx="128" cy="92" r="1.5" fill="#0f172a" stroke="none" />
+      {/* 鋭い牙並びと黄色の猛禽アイ */}
+      <circle cx="116" cy="92" r="3.5" fill="#facc15" />
+      <circle cx="116" cy="92" r="1.8" fill="#0f172a" stroke="none" />
+      <circle cx="134" cy="92" r="3.5" fill="#facc15" />
+      <circle cx="134" cy="92" r="1.8" fill="#0f172a" stroke="none" />
     </g>
   );
 }
@@ -4455,53 +4747,67 @@ function GarchompSvg({ primary, secondary, accent, eyeColor, outline, silhouette
 /** No.68 アルセウス (全知全能の創世神・白銀神馬・黄金の千手車輪リング・十字宝玉) */
 function ArceusSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
   const whiteGod = silhouette ? primary : '#f8fafc';
-  const goldWheel = silhouette ? secondary : '#eab308';
+  const goldWheel = silhouette ? secondary : '#facc15';
   const jewelGreen = silhouette ? secondary : '#10b981';
   const jewelRed = silhouette ? secondary : '#ef4444';
   const darkFace = silhouette ? secondary : '#1e293b';
 
   return (
-    <g stroke={outline} strokeWidth="3" strokeLinejoin="round">
-      {/* 胴体を取り囲む巨大な黄金の千手車輪リング */}
-      <ellipse cx="120" cy="140" rx="48" ry="48" fill="none" stroke={goldWheel} strokeWidth="9" />
-      {/* 車輪の4本の十字スポーク突起 */}
-      <polygon points="120,85 114,95 126,95" fill={goldWheel} />
-      <polygon points="120,195 114,185 126,185" fill={goldWheel} />
-      <polygon points="65,140 75,134 75,146" fill={goldWheel} />
-      <polygon points="175,140 165,134 165,146" fill={goldWheel} />
-      {/* 車輪の宝玉 */}
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 聖なるさばきのつぶて光輪オーラ */}
       {!silhouette && (
-        <g stroke="none">
-          <circle cx="85" cy="105" r="5" fill={jewelGreen} />
-          <circle cx="155" cy="105" r="5" fill={jewelGreen} />
-          <circle cx="85" cy="175" r="5" fill={jewelRed} />
-          <circle cx="155" cy="175" r="5" fill={jewelRed} />
+        <g stroke="none" fill={goldWheel} opacity="0.4">
+          <circle cx="50" cy="60" r="4" />
+          <circle cx="200" cy="60" r="4" />
+          <circle cx="40" cy="180" r="3" />
+          <circle cx="210" cy="180" r="3" />
         </g>
       )}
 
-      {/* 4本の優美な神脚 */}
-      <path d="M102 155 L90 220 L104 220 L110 165 Z" fill={whiteGod} />
-      <path d="M138 155 L150 220 L136 220 L130 165 Z" fill={whiteGod} />
-      <polygon points="88,220 95,212 102,220" fill={goldWheel} />
-      <polygon points="138,220 145,212 152,220" fill={goldWheel} />
+      {/* ★ 胴体を取り囲む巨大な黄金の千手車輪リング（十字宝玉） ★ */}
+      <ellipse cx="125" cy="142" rx="52" ry="52" fill="none" stroke={goldWheel} strokeWidth="11" />
+      {/* 車輪の4本の十字スポーク突起 */}
+      <polygon points="125,82 118,94 132,94" fill={goldWheel} />
+      <polygon points="125,202 118,190 132,190" fill={goldWheel} />
+      <polygon points="65,142 77,135 77,149" fill={goldWheel} />
+      <polygon points="185,142 173,135 173,149" fill={goldWheel} />
+      {/* 車輪の宝玉（エメラルド＆ルビー） */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="88" cy="105" r="6" fill={jewelGreen} />
+          <circle cx="162" cy="105" r="6" fill={jewelGreen} />
+          <circle cx="88" cy="179" r="6" fill={jewelRed} />
+          <circle cx="162" cy="179" r="6" fill={jewelRed} />
+          <circle cx="88" cy="105" r="2" fill="#ffffff" />
+          <circle cx="162" cy="105" r="2" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* 4本の優美な神脚（金蹄） */}
+      <path d="M104 155 L90 226 L106 226 L114 165 Z" fill={whiteGod} />
+      <path d="M144 155 L158 226 L142 226 L134 165 Z" fill={whiteGod} />
+      <polygon points="88,226 96,216 104,226" fill={goldWheel} />
+      <polygon points="144,226 152,216 160,226" fill={goldWheel} />
 
       {/* 白く神聖な四足歩行の神獣ボディ */}
-      <ellipse cx="120" cy="145" rx="34" ry="24" fill={whiteGod} />
-      <path d="M110 135 Q120 142, 130 135 Q128 158, 120 160 Q112 158, 110 135 Z" fill={darkFace} />
+      <ellipse cx="125" cy="146" rx="36" ry="26" fill={whiteGod} />
+      <path d="M114 136 Q125 144, 136 136 Q134 162, 125 164 Q116 162, 114 136 Z" fill={darkFace} />
 
       {/* 優雅に伸びる首と後頭部の神鬣 */}
-      <path d="M115 130 L112 75 L128 75 L125 130 Z" fill={whiteGod} />
+      <path d="M120 132 L116 75 L134 75 L130 132 Z" fill={whiteGod} />
       {/* 後頭部から後ろへ優美に流れる長い鬣 */}
-      <path d="M115 65 Q75 55, 60 70 Q90 85, 115 80 Z" fill={whiteGod} />
-      <path d="M125 65 Q165 55, 180 70 Q150 85, 125 80 Z" fill={whiteGod} />
+      <path d="M118 64 Q72 52, 54 68 Q88 84, 118 78 Z" fill={whiteGod} />
+      <path d="M130 64 Q176 52, 194 68 Q160 84, 130 78 Z" fill={whiteGod} />
 
       {/* アルセウスのダークフェイス面 */}
-      <polygon points="120,55 110,75 130,75" fill={darkFace} />
-      {/* 神秘の赤い瞳 */}
-      <circle cx="115" cy="68" r="2.5" fill="#ef4444" />
-      <circle cx="125" cy="68" r="2.5" fill="#ef4444" />
+      <polygon points="125,54 114,75 136,75" fill={darkFace} />
+      {/* 神秘の赤い瞳＆緑の虹彩 */}
+      <circle cx="118" cy="68" r="3" fill="#ef4444" />
+      <circle cx="118" cy="68" r="1.2" fill={jewelGreen} stroke="none" />
+      <circle cx="132" cy="68" r="3" fill="#ef4444" />
+      <circle cx="132" cy="68" r="1.2" fill={jewelGreen} stroke="none" />
       {/* 額の黄金の十字額飾り */}
-      <polygon points="120,50 117,58 123,58" fill={goldWheel} />
+      <polygon points="125,48 122,58 128,58" fill={goldWheel} />
     </g>
   );
 }
