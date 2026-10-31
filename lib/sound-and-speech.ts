@@ -429,6 +429,9 @@ export function speakJapanese(text: string, soundEnabled = true) {
   try {
     window.speechSynthesis.cancel();
 
+    // スマホ（iOS/Android）の音声エンジンが「黄金」を「こがね」と誤読するのを防ぐため「おうごん」に変換
+    const speechText = text.replace(/黄金/g, 'おうごん');
+
     const voices = window.speechSynthesis.getVoices();
     // 男性ボイス（Otoya, Ichiro, Hattori, Keita 等）を最優先で選択
     const hikakinVoice =
@@ -445,7 +448,7 @@ export function speakJapanese(text: string, soundEnabled = true) {
       voices.find((v) => v.lang.includes('ja'));
 
     // 感嘆詞（「ブンブン！」「キターーー！」「うおおおー！」等）が含まれる場合、前半と後半に分割して抑揚をつける
-    const exclamationMatch = text.match(/^([^！!]+[！!]+)\s*(.+)$/);
+    const exclamationMatch = speechText.match(/^([^！!]+[！!]+)\s*(.+)$/);
 
     if (exclamationMatch && exclamationMatch[1] && exclamationMatch[2]) {
       const part1 = exclamationMatch[1].trim();
@@ -470,7 +473,7 @@ export function speakJapanese(text: string, soundEnabled = true) {
       window.speechSynthesis.speak(u1);
       window.speechSynthesis.speak(u2);
     } else {
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(speechText);
       utterance.lang = 'ja-JP';
       utterance.rate = 1.22;
       utterance.pitch = 0.95;
