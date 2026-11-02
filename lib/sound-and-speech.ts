@@ -1202,3 +1202,39 @@ export function playTournamentGongSound() {
     osc.stop(now + 0.98);
   });
 }
+
+/**
+ * 14. 全滅・敗北時のレトロ哀愁ジングル（ドラクエ風全滅メロディ）
+ */
+export function playBattleDefeatSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const notes = [
+    { freq: 440, delay: 0.05, dur: 0.35 },    // A4
+    { freq: 415.3, delay: 0.42, dur: 0.35 },  // G#4
+    { freq: 392, delay: 0.8, dur: 0.4 },      // G4
+    { freq: 369.99, delay: 1.25, dur: 0.65 }, // F#4
+    { freq: 293.66, delay: 1.95, dur: 1.2 },  // D4 (低音ラスト)
+  ];
+
+  notes.forEach(({ freq, delay, dur }) => {
+    const start = now + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, start);
+
+    gain.gain.setValueAtTime(0.001, start);
+    gain.gain.linearRampToValueAtTime(0.24, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  });
+}
+

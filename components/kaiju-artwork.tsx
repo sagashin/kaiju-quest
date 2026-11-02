@@ -5473,6 +5473,113 @@ function RhapthorneSvg({ primary, secondary, accent, eyeColor, outline, silhouet
   );
 }
 
+/** No.69 真・大魔王バーン (全魔界の絶対神・天地魔闘の構え・カイザーフェニックス・鬼眼の宝冠) */
+function ShinVearnSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const armorDark = silhouette ? primary : '#1e1b4b'; // 濃紺・漆黒
+  const royalPurple = silhouette ? primary : '#4c1d95'; // 深紫ローブ
+  const mantleCrimson = silhouette ? secondary : '#991b1b'; // 深紅マント
+  const goldCrown = silhouette ? secondary : '#facc15'; // 黄金の宝冠
+  const goldLight = silhouette ? primary : '#fef08a'; // 黄金ハイライト
+  const hairSilver = silhouette ? primary : '#f1f5f9'; // 白銀の長髪
+  const flamePhoenix = silhouette ? secondary : '#ef4444'; // カイザーフェニックス紅蓮
+  const flameGold = silhouette ? secondary : '#fbbf24'; // フェニックス黄金光
+  const eyeRuby = silhouette ? primary : '#dc2626'; // 鬼眼・真紅の瞳
+  const auraCyan = silhouette ? secondary : '#38bdf8'; // カラミティエンド刃光
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 漆黒と紅蓮の巨大カイザーフェニックス炎翼（背景オーラ） ★ */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.9">
+          {/* 左の炎翼 */}
+          <path d="M110 120 Q40 40, 10 50 Q18 95, 45 125 Q75 135, 105 130 Z" fill={flamePhoenix} />
+          <path d="M100 120 Q45 60, 25 70 Q30 100, 55 120 Z" fill={flameGold} />
+          {/* 右の炎翼 */}
+          <path d="M150 120 Q220 40, 250 50 Q242 95, 215 125 Q185 135, 155 130 Z" fill={flamePhoenix} />
+          <path d="M160 120 Q215 60, 235 70 Q230 100, 205 120 Z" fill={flameGold} />
+          {/* フェニックスの尾羽フレア */}
+          <polygon points="120,180 90,230 115,205 130,238 145,205 170,230 140,180" fill={flameGold} opacity="0.75" />
+        </g>
+      )}
+
+      {/* 魔界神の深紅と紫のマント（両脇に広がる） */}
+      <path d="M85 110 L45 220 L95 210 L88 150 Z" fill={mantleCrimson} />
+      <path d="M175 110 L215 220 L165 210 L172 150 Z" fill={mantleCrimson} />
+
+      {/* 白銀の神聖な長髪（背後から左右に流れる） */}
+      <path d="M95 70 Q60 90, 52 140 Q75 130, 92 105 Z" fill={hairSilver} />
+      <path d="M165 70 Q200 90, 208 140 Q185 130, 168 105 Z" fill={hairSilver} />
+
+      {/* 強靭な下半身＆漆黒と黄金のブーツ */}
+      <path d="M105 170 L96 226 L120 226 L122 185 Z" fill={armorDark} />
+      <path d="M155 170 L164 226 L140 226 L138 185 Z" fill={armorDark} />
+      <polygon points="94,226 102,216 110,226" fill={goldCrown} />
+      <polygon points="150,226 158,216 166,226" fill={goldCrown} />
+
+      {/* 漆黒と深紫の魔神ローブ＆黄金のベルト */}
+      <path d="M92 118 L86 182 L174 182 L168 118 Z" fill={royalPurple} />
+      <ellipse cx="130" cy="182" rx="42" ry="10" fill={goldCrown} />
+      <circle cx="130" cy="182" r="5" fill={eyeRuby} />
+
+      {/* 胸部の魔甲冑＆神魔の暗黒コア */}
+      <path d="M96 115 L130 152 L164 115 L148 102 L112 102 Z" fill={armorDark} />
+      <polygon points="112,102 130,128 148,102" fill={goldCrown} />
+      <circle cx="130" cy="118" r="6" fill={eyeRuby} />
+      <circle cx="130" cy="118" r="3" fill={goldLight} stroke="none" />
+
+      {/* 巨大な黄金の肩当て（左右） */}
+      <polygon points="88,110 58,95 82,130" fill={goldCrown} />
+      <polygon points="62,98 84,122 76,104" fill={goldLight} stroke="none" />
+      <polygon points="172,110 202,95 178,130" fill={goldCrown} />
+      <polygon points="198,98 176,122 184,104" fill={goldLight} stroke="none" />
+
+      {/* ★ 天地魔闘の構え：右手（天：カイザーフェニックスを掲げる） ★ */}
+      <path d="M168 118 L195 90 L188 78 L158 105 Z" fill={armorDark} />
+      <circle cx="196" cy="85" r="7" fill={goldCrown} />
+      {/* 右手上のカイザーフェニックス火球 */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="204" cy="72" r="14" fill={flamePhoenix} opacity="0.9" />
+          <circle cx="204" cy="72" r="8" fill={flameGold} />
+          <circle cx="204" cy="72" r="4" fill="#ffffff" />
+          <polygon points="204,50 212,65 218,54 212,72 225,66 215,80" fill={flameGold} />
+        </g>
+      )}
+
+      {/* ★ 天地魔闘の構え：左手（地：カラミティエンドの神撃手刀） ★ */}
+      <path d="M92 118 L55 125 L45 116 L80 105 Z" fill={armorDark} />
+      <polygon points="45,116 22,118 42,126" fill={goldCrown} />
+      {/* カラミティエンドの神気光刃 */}
+      {!silhouette && (
+        <g stroke={auraCyan} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M42 108 L14 118 L38 134" />
+          <line x1="8" y1="118" x2="35" y2="118" stroke="#ffffff" strokeWidth="2" />
+        </g>
+      )}
+
+      {/* 真・大魔王の顔・首 */}
+      <path d="M118 108 L116 80 L130 68 L144 80 L142 108 Z" fill="#fbcfe8" />
+
+      {/* 黄金の鬼眼宝冠（頭頂部の角冠＆額の第三の目・鬼眼） */}
+      <path d="M110 74 L100 38 L118 58 L130 46 L142 58 L160 38 L150 74 Z" fill={goldCrown} />
+      <polygon points="120,54 130,42 140,54" fill={goldLight} stroke="none" />
+      {/* 額の真紅の第三の目（鬼眼） */}
+      <ellipse cx="130" cy="62" rx="4.5" ry="7" fill={eyeRuby} />
+      <circle cx="130" cy="62" r="2" fill="#ffffff" stroke="none" />
+
+      {/* 鋭く傲岸不遜な美しき真紅の双眸 */}
+      <polygon points="120,78 127,76 125,83 118,82" fill={eyeRuby} />
+      <circle cx="123" cy="79" r="1" fill="#ffffff" stroke="none" />
+      <polygon points="140,78 133,76 135,83 142,82" fill={eyeRuby} />
+      <circle cx="137" cy="79" r="1" fill="#ffffff" stroke="none" />
+
+      {/* 不敵な笑みを浮かべる口元 */}
+      <path d="M125 90 Q130 94, 135 90" stroke="#881337" strokeWidth="2" fill="none" strokeLinecap="round" />
+    </g>
+  );
+}
+
+
 /* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
@@ -6286,6 +6393,8 @@ function KaijuSpecificSvgDispatcher({
       return <EstarkSvg {...partProps} />;
     case 'nature-dq-rhapthorne':
       return <RhapthorneSvg {...partProps} />;
+    case 'fire-dq-vearn':
+      return <ShinVearnSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;

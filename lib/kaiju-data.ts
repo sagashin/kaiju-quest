@@ -1476,6 +1476,19 @@ const RAW_KAIJU_LIST: KaijuData[] = [
     description: '暗黒の結界を破って世界を闇に沈めた巨大な暗黒神！キング形態にしんかすると全宇宙の闇を取り込んだ「真・暗黒巨神ラプソーン」となり、天空から無数の暗黒彗星とマダンテを降り注がせるぞ！',
     stageNames: ['小悪魔ラプソーン', '暗黒神ラプソーン', '真・暗黒巨神ラプソーン'],
   }),
+  createCustomKaiju({
+    id: 'fire-dq-vearn',
+    dexNumber: 69,
+    element: 'fire',
+    type: 'robot',
+    name: '真・大魔王バーン',
+    roar: '知らなかったのか…？ 大魔王からは 逃げられない…！！',
+    specialMove: '天地魔闘の構え・カイザーフェニックス',
+    stars: 5,
+    titleBadge: '👑 全魔界の絶対神・天地魔闘の構え',
+    description: '老バーンから真の肉体を取り戻した 究極絶対の最強大魔王！神の技「天地魔闘の構え」であらゆる攻撃を破り、暗黒の不死鳥「カイザーフェニックス」ですべてを灰燼に帰す！',
+    stageNames: ['大魔王バーン(老人)', '大魔王バーン(真の肉体)', '鬼眼王・真バーン'],
+  }),
 
   // =========================================================================
   // 🪲 実在こんちゅう大図鑑 No.25〜No.60（全36種）
@@ -2905,6 +2918,7 @@ export interface RaidBossData {
   rewardOrbs: number;
   rewardExp: number;
   isSecretBoss?: boolean;
+  isSupremeBoss?: boolean;
 }
 
 /**
@@ -3084,6 +3098,25 @@ export const RAID_BOSS_LIST: RaidBossData[] = [
     rewardOrbs: 10,
     rewardExp: 250,
     isSecretBoss: true,
+  },
+  {
+    id: 'boss-vearn',
+    name: '真・大魔王バーン',
+    titleBadge: '👑 全魔界の絶対神・天地魔闘の構え',
+    element: 'fire',
+    type: 'robot',
+    kaijuId: 'fire-dq-vearn',
+    level: 20,
+    maxHp: 3600,
+    attack: 112,
+    defense: 58,
+    roar: '知らなかったのか…？ 大魔王からは 逃げられない…！！',
+    specialMove: '天地魔闘の構え・カイザーフェニックス',
+    description: '全魔界を統べる最強の大魔王！約20ターンに及ぶ激闘！こまめに回復呪文（ホイミ）を唱えなければ絶対に勝てないぞ！倒すとまれに起き上がって仲間になる！',
+    rewardOrbs: 15,
+    rewardExp: 500,
+    isSecretBoss: true,
+    isSupremeBoss: true,
   },
 ];
 

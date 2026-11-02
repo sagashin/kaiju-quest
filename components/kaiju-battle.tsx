@@ -15,6 +15,8 @@ import {
   Users,
   Flame,
   Crown,
+  Skull,
+  AlertTriangle,
 } from 'lucide-react';
 import {
   KAIJU_LIST,
@@ -39,6 +41,7 @@ import {
   playHealSound,
   playYoutuberAirhornSound,
   playTagUltimateSound,
+  playBattleDefeatSound,
   speakJapanese,
 } from '@/lib/sound-and-speech';
 
@@ -133,6 +136,9 @@ export function KaijuBattle({
     '⚔️ かいじゅうバトル スタート！ わざを えらんで たたかおう！',
   ]);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
+  const [roundCount, setRoundCount] = useState<number>(1);
+  const [kizunaGuardUsed, setKizunaGuardUsed] = useState<boolean>(false);
+  const [isCoopDefeated, setIsCoopDefeated] = useState<boolean>(false);
 
   const p1Kaiju: KaijuData =
     KAIJU_LIST.find((k) => k.id === p1KaijuId) ?? p1AvailableList[0] ?? KAIJU_LIST[0];
@@ -255,22 +261,38 @@ export function KaijuBattle({
     setDamagePopup(null);
     setTagUltimateFlash(false);
     setRecruitedBossKaiju(null);
+    setRoundCount(1);
+    setKizunaGuardUsed(false);
+    setIsCoopDefeated(false);
 
     if (battleMode === 'coop') {
       setP1Hp(tagMaxHp);
       setP1Mp(tagMaxMp);
       setP2Hp(selectedBoss.maxHp);
       setP2Mp(100);
-      setTagGauge(40); // 最初から40%溜まっていてすぐ合体技が撃てる設計！
-      setBattleLogs([
-        `😈 ${selectedBoss.name} (HP ${selectedBoss.maxHp}) が あらわれた！！`,
-        '🤝 じょう＆パパの タッグで ちからを あわせて たおそう！',
-      ]);
-      setPhase('battle');
-      speakJapanese(
-        `ブンブン！大魔王ボスバトル スタート！${selectedBoss.name}が あらわれたぞ！じょうと パパの ちからをあわせて たおそう！いくぞー！`,
-        soundEnabled
-      );
+      const isSupreme = selectedBoss.isSupremeBoss || selectedBoss.id === 'boss-vearn';
+      setTagGauge(isSupreme ? 20 : 40);
+      if (isSupreme) {
+        setBattleLogs([
+          `👑【最強の大魔王】${selectedBoss.name} (HP ${selectedBoss.maxHp}) が 降臨した！！`,
+          '🔥 約20ターンに及ぶ最終決戦！こまめに「かいふく（ホイミ）」しないと全滅するぞ！',
+        ]);
+        setPhase('battle');
+        speakJapanese(
+          `ブンブン！最強の大魔王 真・大魔王バーンが あらわれたぞ！！約20ターンの激闘だ！たまに回復しながら戦おう！いくぞー！`,
+          soundEnabled
+        );
+      } else {
+        setBattleLogs([
+          `😈 ${selectedBoss.name} (HP ${selectedBoss.maxHp}) が あらわれた！！`,
+          '🤝 じょう＆パパの タッグで ちからを あわせて たおそう！',
+        ]);
+        setPhase('battle');
+        speakJapanese(
+          `ブンブン！大魔王ボスバトル スタート！${selectedBoss.name}が あらわれたぞ！じょうと パパの ちからをあわせて たおそう！いくぞー！`,
+          soundEnabled
+        );
+      }
     } else {
       setP1Hp(p1Stats.maxHp);
       setP1Mp(p1Stats.maxMp);
@@ -334,18 +356,25 @@ export function KaijuBattle({
 
     playTagUltimateSound();
 
-    // 超特大ダメージ（ボスのHPの45%〜55%相当＋1P&2P攻撃力合算）
+    // 合体必殺技ダメージ計算（最強の大魔王は『天地魔闘の構え』でガードし、約440〜500ダメージに受け流す）
+    const isSupreme = selectedBoss.isSupremeBoss || selectedBoss.id === 'boss-vearn';
     const combinedAtk = p1Stats.attack + p2Stats.attack;
-    const rawDamage = Math.max(
-      260,
-      Math.round(selectedBoss.maxHp * 0.44 + combinedAtk * 1.6)
-    );
+    const rawDamage = isSupreme
+      ? Math.max(380, Math.round(440 + combinedAtk * 0.75 + Math.random() * 50))
+      : Math.max(260, Math.round(selectedBoss.maxHp * 0.44 + combinedAtk * 1.6));
     const nextBossHp = Math.max(0, p2Hp - rawDamage);
 
-    speakJapanese(
-      `キターーー！じょうと パパの 合体ひっさつわざ！ダブル・ギガノヴァ・ストライク！！ ${rawDamage} の 超特大ダメージだーっ！神ってるー！`,
-      soundEnabled
-    );
+    if (isSupreme) {
+      speakJapanese(
+        `合体必殺技 ダブル・ギガノヴァ・ストライク！しかし 真・大魔王バーンの 天地魔闘の構えが 防いだ！${rawDamage} のダメージだ！まけるな！`,
+        soundEnabled
+      );
+    } else {
+      speakJapanese(
+        `キターーー！じょうと パパの 合体ひっさつわざ！ダブル・ギガノヴァ・ストライク！！ ${rawDamage} の 超特大ダメージだーっ！神ってるー！`,
+        soundEnabled
+      );
+    }
 
     setTimeout(() => {
       setP1Attacking(false);
@@ -360,7 +389,9 @@ export function KaijuBattle({
 
       setBattleLogs([
         `🌟 じょうの ${p1Stats.displayName} ＆ パパの ${p2Stats.displayName} の 合体必殺技！！`,
-        `💥『ダブル・ギガノヴァ・ストライク』！！ ${selectedBoss.name}に ${rawDamage} の超特大ダメージ！！`,
+        isSupreme
+          ? `🛡️ 真・大魔王バーンは『天地魔闘の構え』で ガード！ それでも ${rawDamage} の大ダメージを与えた！！`
+          : `💥『ダブル・ギガノヴァ・ストライク』！！ ${selectedBoss.name}に ${rawDamage} の超特大ダメージ！！`,
       ]);
 
       setTimeout(() => {
@@ -713,21 +744,67 @@ export function KaijuBattle({
       setBossAttacking(true);
       playBattleAttackSound(false);
 
+      const isSupreme = selectedBoss.isSupremeBoss || selectedBoss.id === 'boss-vearn';
       const avgDef = (p1Stats.defense + p2Stats.defense) / 2;
+      const bossDmgMultiplier = isSupreme ? 1.65 : 1.45;
       const rawBossDmg = Math.max(
-        35,
-        Math.round(selectedBoss.attack * 1.45 - avgDef * 0.25)
+        isSupreme ? 75 : 35,
+        Math.round(selectedBoss.attack * bossDmgMultiplier - avgDef * 0.25)
       );
-      // 4歳児が負けて悲しまないよう、HP1で踏ん張る「親子きずなガード」搭載！
-      const nextTagHp = Math.max(1, p1Hp - rawBossDmg);
-      const kizunaSaved = p1Hp - rawBossDmg <= 0;
+
+      const potentialNextHp = p1Hp - rawBossDmg;
+      let nextTagHp = potentialNextHp;
+      let kizunaSaved = false;
+      let isWipeout = false;
+
+      if (potentialNextHp <= 0) {
+        if (!kizunaGuardUsed) {
+          // 最初の致命傷時のみ「親子きずなガード」でHP 1で踏ん張る！
+          nextTagHp = 1;
+          kizunaSaved = true;
+          setKizunaGuardUsed(true);
+        } else {
+          // 回復せずに再び致命傷を受けたら全滅！
+          nextTagHp = 0;
+          isWipeout = true;
+        }
+      }
 
       setTimeout(() => {
         setBossAttacking(false);
+
+        if (isWipeout) {
+          setP1Damaged(true);
+          setP1Hp(0);
+          setDamagePopup({
+            target: 1,
+            text: `-${rawBossDmg}`,
+            isCritical: true,
+          });
+          setBattleLogs([
+            `😈 ${selectedBoss.name}の『${selectedBoss.specialMove}』！！`,
+            `💀 タッグのHPが 0 になってしまった…！ 全滅だ…！`,
+          ]);
+          playBattleDefeatSound();
+          speakJapanese(
+            `うわあああ！全滅してしまった…！${selectedBoss.name}の圧倒的なちからの前にたおれた！次はこまめに回復しながら戦おう！`,
+            soundEnabled
+          );
+          setTimeout(() => {
+            setP1Damaged(false);
+            setDamagePopup(null);
+            setIsCoopDefeated(true);
+            setWinner(2);
+            setPhase('result');
+            setIsAnimatingAction(false);
+          }, 950);
+          return;
+        }
+
         setP1Damaged(true);
         setP1Hp(nextTagHp);
         // ダメージを受けると合体必殺技ゲージも+25%溜まる！
-        setTagGauge((prev) => Math.min(100, prev + 25));
+        setTagGauge((prev) => Math.min(100, prev + (isSupreme ? 20 : 25)));
 
         setDamagePopup({
           target: 1,
@@ -737,19 +814,33 @@ export function KaijuBattle({
         const logs = [
           `😈 ${selectedBoss.name}の『${selectedBoss.specialMove}』！！`,
           kizunaSaved
-            ? `🛡️ じょうと パパの「きずなガード」が 発動！ HP 1 で ギリギリ たいきったぞ！！`
+            ? `🛡️ じょうと パパの「きずなガード」が 発動！ HP 1 で 奇跡的に 耐えきったぞ！次のターンは回復しよう！`
             : `💥 タッグに ${rawBossDmg} のダメージ！ 負けるな、やりかえそう！`,
         ];
         setBattleLogs(logs);
-        speakJapanese(
-          `${selectedBoss.name}の ${selectedBoss.specialMove}！${rawBossDmg} のダメージ！まけるな、じょうくん！`,
-          soundEnabled
-        );
+
+        if (kizunaSaved) {
+          speakJapanese(
+            `あぶない！親子のきずなガードで HP 1 で たえきったぞ！つぎのターンは かならず かいふくしよう！`,
+            soundEnabled
+          );
+        } else if (nextTagHp <= tagMaxHp * 0.35) {
+          speakJapanese(
+            `${selectedBoss.name}の攻撃！${rawBossDmg} のダメージ！じょうくん、HPがピンチだ！かいふくボタンをおそう！`,
+            soundEnabled
+          );
+        } else {
+          speakJapanese(
+            `${selectedBoss.name}の ${selectedBoss.specialMove}！${rawBossDmg} のダメージ！まけるな、じょうくん！`,
+            soundEnabled
+          );
+        }
 
         setTimeout(() => {
           setP1Damaged(false);
           setDamagePopup(null);
           setTurn(1);
+          setRoundCount((prev) => prev + 1);
           setIsAnimatingAction(false);
         }, 850);
       }, 420);
@@ -757,7 +848,7 @@ export function KaijuBattle({
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, battleMode, turn, isAnimatingAction]);
+  }, [phase, battleMode, turn, isAnimatingAction, kizunaGuardUsed, p1Hp, tagMaxHp]);
 
   // パパがCPU（オート）モードのときの自動行動（turn === 2）
   useEffect(() => {
@@ -774,7 +865,7 @@ export function KaijuBattle({
       const checkMaxHp = battleMode === 'coop' ? tagMaxHp : p2Stats.maxHp;
       const checkMp = battleMode === 'coop' ? p1Mp : p2Mp;
 
-      if (checkHp <= checkMaxHp * 0.35 && checkMp >= 15 && Math.random() < 0.65) {
+      if (checkHp <= checkMaxHp * 0.38 && checkMp >= 15 && Math.random() < 0.75) {
         executeHeal(2);
         return;
       }
@@ -1222,6 +1313,26 @@ export function KaijuBattle({
         >
           {/* ==================== 1. 一体化バトルステージ ==================== */}
           <div className="relative rounded-3xl bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 border-2 border-white/20 p-3 sm:p-4 overflow-hidden shadow-2xl">
+            {/* ⚔️ ターンカウンター＆ステータスバッジ */}
+            <div className="flex items-center justify-between mb-2 z-10 relative px-0.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/90 border border-amber-400/80 text-yellow-300 font-black text-xs shadow-md">
+                <Swords className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>激闘 {roundCount} ターン目</span>
+                {battleMode === 'coop' && (selectedBoss.isSupremeBoss || selectedBoss.id === 'boss-vearn') && (
+                  <span className="text-[10px] text-rose-300 font-bold ml-1">
+                    (目標: 約20ターン / かいふく必須！)
+                  </span>
+                )}
+              </div>
+
+              {battleMode === 'coop' && p1Hp <= tagMaxHp * 0.35 && (
+                <div className="animate-pulse inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-600/95 border border-white text-white font-black text-[11px] shadow-lg">
+                  <AlertTriangle className="w-3.5 h-3.5 text-yellow-300 shrink-0" />
+                  <span>HPピンチ！回復しよう！</span>
+                </div>
+              )}
+            </div>
+
             {/* 上部ステータスバー */}
             <div className="grid grid-cols-2 gap-2 mb-2 z-10 relative">
               {/* 左側ステータス（COOP時は親子タッグ合算HP/MP、VS時は1P） */}
@@ -1636,27 +1747,36 @@ export function KaijuBattle({
                   })}
 
                   {/* 💚 かいふく（ホイミ） */}
-                  <button
-                    type="button"
-                    onClick={() => executeHeal(turn === 1 ? 1 : 2)}
-                    disabled={currentActorMp < 15}
-                    className={`min-h-[52px] rounded-xl p-2 text-left border-2 flex items-center justify-between gap-1.5 transition-all active:scale-95 cursor-pointer ${
-                      currentActorMp < 15
-                        ? 'bg-slate-900/60 border-slate-700 text-slate-500 opacity-60'
-                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-300 shadow'
-                    }`}
+                  {(() => {
+                    const isHpInDanger = battleMode === 'coop' && p1Hp <= tagMaxHp * 0.35;
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => executeHeal(turn === 1 ? 1 : 2)}
+                        disabled={currentActorMp < 15}
+                        className={`min-h-[52px] rounded-xl p-2 text-left border-2 flex items-center justify-between gap-1.5 transition-all active:scale-95 cursor-pointer ${
+                          currentActorMp < 15
+                            ? 'bg-slate-900/60 border-slate-700 text-slate-500 opacity-60'
+                            : isHpInDanger
+                            ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white border-yellow-300 ring-2 ring-yellow-300 shadow-[0_0_20px_rgba(52,211,153,0.8)] animate-pulse'
+                            : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-300 shadow'
+                        }`}
                   >
                     <div className="min-w-0 flex-1">
                       <div className="text-xs sm:text-sm font-black truncate flex items-center gap-1 text-emerald-200">
                         <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400 shrink-0" />
                         <span>かいふく（ホイミ）</span>
                       </div>
-                      <div className="text-[10px] text-emerald-100">HP 35% かいふく</div>
+                      <div className="text-[10px] text-emerald-100">
+                        {isHpInDanger ? '⚠️ 今すぐHP回復！' : 'HP 35% かいふく'}
+                      </div>
                     </div>
                     <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-slate-950/80 border border-emerald-400/40 text-emerald-300 shrink-0 tabular-nums">
                       MP 15
                     </span>
                   </button>
+                    );
+                  })()}
 
                   {/* ⚡ パワーためる */}
                   <button
@@ -1689,16 +1809,85 @@ export function KaijuBattle({
          ============================================================ */}
       {phase === 'result' && (
         <div className="dq-window p-5 sm:p-6 text-center text-white space-y-4">
-          <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-400 text-slate-950 font-black text-base sm:text-lg shadow-lg">
-            <Trophy className="w-6 h-6" />
-            <span>
-              {battleMode === 'coop'
-                ? `🎉 じょう＆パパ タッグで ${selectedBoss.name} を げきは！！`
-                : winner === 1
-                ? '🎉 1P（じょう）の だいしょうり！！'
-                : '👏 2P（パパ）の しょうり！！'}
-            </span>
-          </div>
+          {isCoopDefeated ? (
+            /* 💀 全滅・敗北画面 */
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-rose-600 text-white font-black text-base sm:text-lg shadow-xl border-2 border-white animate-pulse">
+                <Skull className="w-6 h-6 text-yellow-300" />
+                <span>💀 全滅してしまった…！</span>
+              </div>
+
+              <div className="max-w-md mx-auto py-2">
+                <div className="w-28 h-28 mx-auto opacity-75 grayscale contrast-125">
+                  <KaijuSvgIllustration
+                    element={selectedBoss.element}
+                    type={selectedBoss.type}
+                    kaijuId={selectedBoss.kaijuId}
+                    evolutionStage={3}
+                  />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-rose-300 mt-2">
+                  {selectedBoss.name} の前に 敗れ去った…！
+                </h3>
+                <p className="text-xs sm:text-sm font-bold text-slate-300 mt-1">
+                  激闘 {roundCount} ターン で 力尽きてしまった…！
+                </p>
+              </div>
+
+              {/* 💡 攻略ヒントカード */}
+              <div className="rounded-2xl bg-gradient-to-br from-rose-950/90 to-purple-950/90 border-2 border-rose-400/60 p-4 max-w-md mx-auto text-left space-y-2 shadow-lg">
+                <div className="text-sm font-black text-amber-300 flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-400" />
+                  <span>💡 最強の大魔王に勝つための極意！</span>
+                </div>
+                <ul className="text-xs sm:text-sm text-slate-200 space-y-1.5 font-bold list-disc list-inside">
+                  <li>
+                    大魔王の攻撃は超強力！HPが減ったら<span className="text-emerald-300">『かいふく（ホイミ）』</span>でこまめにHPを全快近くに保とう！
+                  </li>
+                  <li>
+                    MPが足りなくなったら<span className="text-cyan-300">『パワーをためる』</span>！MPを25回復でき、次の攻撃も会心の一撃になるぞ！
+                  </li>
+                  <li>
+                    合体必殺技『ダブル・ギガノヴァ・ストライク』も大魔王の『天地魔闘の構え』に防がれる！粘り強く約20ターン戦い抜こう！
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-2">
+                <button
+                  type="button"
+                  onClick={handleStartBattle}
+                  className="min-h-[56px] flex-1 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-base flex items-center justify-center gap-2 border-2 border-white shadow-lg cursor-pointer"
+                >
+                  <RotateCcw className="w-5 h-5 text-slate-950" />
+                  <span>🔄 リベンジ！もういちど挑戦！（全快リトライ）</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetScrollTop();
+                    setPhase('select');
+                  }}
+                  className="min-h-[56px] flex-1 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-black text-base flex items-center justify-center gap-2 border border-white/25 cursor-pointer"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                  <span>ボスを えらびなおす</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* 🎉 勝利画面 */
+            <>
+              <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-amber-400 text-slate-950 font-black text-base sm:text-lg shadow-lg">
+                <Trophy className="w-6 h-6" />
+                <span>
+                  {battleMode === 'coop'
+                    ? `🎉 じょう＆パパ タッグで ${selectedBoss.name} を げきは！！ (激闘 ${roundCount}ターン！)`
+                    : winner === 1
+                    ? '🎉 1P（じょう）の だいしょうり！！'
+                    : '👏 2P（パパ）の しょうり！！'}
+                </span>
+              </div>
 
           <div className="max-w-md mx-auto py-2">
             {battleMode === 'coop' ? (
@@ -1834,6 +2023,8 @@ export function KaijuBattle({
               <span>ボスや なかまを えらびなおす</span>
             </button>
           </div>
+            </>
+          )}
         </div>
       )}
     </section>
