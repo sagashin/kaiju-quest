@@ -5581,6 +5581,401 @@ function ShinVearnSvg({ primary, secondary, accent, eyeColor, outline, silhouett
 
 
 /* ==========================================================================
+   🐉 ドラゴンボール・伝説の超戦士 (No.70〜73: 孫悟空・ベジータ・ピッコロ・ブロリー)
+   ========================================================================== */
+
+/** No.70 孫悟空 (地球育ちの超サイヤ人・山吹色道着・悟マーク・かめはめ波) */
+function GokuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const dogiOrange = silhouette ? primary : '#f97316';
+  const innerBlue = silhouette ? secondary : '#1d4ed8';
+  const hairGold = silhouette ? primary : '#facc15';
+  const hairHighlight = silhouette ? primary : '#fef08a';
+  const skinTone = silhouette ? primary : '#fcd34d';
+  const kamehamehaCyan = silhouette ? secondary : '#38bdf8';
+  const kiAura = silhouette ? secondary : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 立ち上る超サイヤ人の黄金気功オーラ */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.85">
+          <polygon points="130,25 90,75 110,65 75,120 100,110 60,180 100,165 70,225 190,225 160,165 200,180 160,110 185,120 150,65 170,75" fill={kiAura} opacity="0.4" />
+          <polygon points="130,40 100,80 115,75 88,125 108,118 80,170 180,170 152,118 172,125 145,75 160,80" fill={hairHighlight} opacity="0.5" />
+        </g>
+      )}
+
+      {/* がっしりした下半身（オレンジの道着ズボン＆青の帯・ブーツ） */}
+      <path d="M102 165 L88 224 L122 224 L120 185 Z" fill={dogiOrange} />
+      <path d="M158 165 L172 224 L138 224 L140 185 Z" fill={dogiOrange} />
+      {/* ブーツ（青＆赤いライン紐） */}
+      <path d="M86 215 L124 215 L122 226 L84 226 Z" fill={innerBlue} />
+      <path d="M136 215 L174 215 L176 226 L138 226 Z" fill={innerBlue} />
+      {!silhouette && (
+        <g stroke="#ef4444" strokeWidth="2" fill="none">
+          <line x1="104" y1="215" x2="104" y2="226" />
+          <line x1="156" y1="215" x2="156" y2="226" />
+        </g>
+      )}
+
+      {/* 胴体：オレンジの道着＆青のインナー＆青い帯ベルト */}
+      <path d="M96 112 L84 175 L176 175 L164 112 Z" fill={dogiOrange} />
+      {/* 胸元の青いアンダーシャツVネック */}
+      <polygon points="110,112 130,145 150,112" fill={innerBlue} />
+      {/* 胸の「悟」白円マーク */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="112" cy="142" r="10" fill="#ffffff" />
+          <circle cx="112" cy="142" r="10" fill="none" stroke="#000000" strokeWidth="1.5" />
+          {/* 悟のシンボル略線 */}
+          <path d="M107 138 L117 138 M112 138 L112 146 M107 142 L117 142 M108 146 L116 146" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" />
+        </g>
+      )}
+      {/* 青い結び帯 */}
+      <rect x="94" y="165" width="72" height="12" rx="3" fill={innerBlue} />
+      <path d="M102 177 L96 202 L106 200 L110 177 Z" fill={innerBlue} />
+
+      {/* 鍛え抜かれた両腕＆青いリストバンド */}
+      {/* 左腕（かめはめ波を構えて引き寄せる） */}
+      <path d="M96 120 L66 140 L72 154 L102 135 Z" fill={skinTone} />
+      <rect x="62" y="138" width="16" height="12" rx="2" fill={innerBlue} />
+      {/* 右腕（腰の横で両手を重ねる） */}
+      <path d="M164 120 L195 140 L188 154 L158 135 Z" fill={skinTone} />
+      <rect x="182" y="138" width="16" height="12" rx="2" fill={innerBlue} />
+
+      {/* ★ 両手から放たれる輝くかめはめ波エネルギー球 ★ */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="130" cy="158" r="22" fill={kamehamehaCyan} opacity="0.85" />
+          <circle cx="130" cy="158" r="12" fill="#ffffff" />
+          {/* 前方に放たれる光線フレア */}
+          <ellipse cx="130" cy="158" rx="28" ry="8" fill="#e0f2fe" opacity="0.7" />
+          <polygon points="130,158 80,185 180,185" fill={kamehamehaCyan} opacity="0.3" />
+        </g>
+      )}
+
+      {/* 首と顔 */}
+      <path d="M118 108 L116 88 L130 76 L144 88 L142 108 Z" fill={skinTone} />
+
+      {/* ★ 孫悟空の象徴：特徴的な超サイヤ人のトゲトゲ金髪 ★ */}
+      {/* 幾重にも重なる鋭い毛束 */}
+      <path
+        d="M92 82 L65 55 L90 62 L75 32 L105 48 L108 18 L130 38 L152 18 L155 48 L185 32 L170 62 L195 55 L168 82 Z"
+        fill={hairGold}
+      />
+      {/* 内側の立体ハイライト毛束 */}
+      {!silhouette && (
+        <path
+          d="M102 70 L85 45 L105 52 L116 30 L130 48 L144 30 L155 52 L175 45 L158 70 Z"
+          fill={hairHighlight}
+          stroke="none"
+        />
+      )}
+      {/* 額にかかる鋭い前髪 */}
+      <polygon points="105,75 116,92 120,78" fill={hairGold} />
+      <polygon points="122,78 128,96 134,78" fill={hairGold} />
+      <polygon points="136,78 142,92 152,75" fill={hairGold} />
+
+      {/* 勇ましく凛々しい目元と眉 */}
+      <polygon points="112,82 124,80 122,86 110,85" fill={hairGold} />
+      <polygon points="148,82 136,80 138,86 150,85" fill={hairGold} />
+      {/* 強い意志の瞳（エメラルドグリーン／ブルー） */}
+      <circle cx="118" cy="88" r="3" fill="#06b6d4" />
+      <circle cx="118" cy="88" r="1.5" fill="#0f172a" stroke="none" />
+      <circle cx="142" cy="88" r="3" fill="#06b6d4" />
+      <circle cx="142" cy="88" r="1.5" fill="#0f172a" stroke="none" />
+
+      {/* ニッと笑う不敵な口元 */}
+      <path d="M124 98 Q130 102, 136 98" stroke="#881337" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+    </g>
+  );
+}
+
+/** No.71 ベジータ (誇り高きサイヤ人の王子・戦闘服・超サイヤ人・ファイナルフラッシュ) */
+function VegetaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const suitBlue = silhouette ? primary : '#1e3a8a';
+  const armorWhite = silhouette ? secondary : '#f8fafc';
+  const armorGold = silhouette ? secondary : '#eab308';
+  const hairGold = silhouette ? primary : '#eab308';
+  const hairLight = silhouette ? primary : '#fef08a';
+  const skinTone = silhouette ? primary : '#fcd34d';
+  const blastYellow = silhouette ? secondary : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 立ち上る激しい黄金のイナズマ闘気オーラ */}
+      {!silhouette && (
+        <g stroke={blastYellow} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M60 140 L75 115 L68 95 L80 75" />
+          <path d="M200 140 L185 115 L192 95 L180 75" />
+          <path d="M100 35 L115 15 L125 28" />
+        </g>
+      )}
+
+      {/* 筋肉質な下半身（濃紺タイツ＆白のサイヤ人ブーツ） */}
+      <path d="M102 165 L90 224 L122 224 L120 185 Z" fill={suitBlue} />
+      <path d="M158 165 L170 224 L138 224 L140 185 Z" fill={suitBlue} />
+      {/* サイヤ人ブーツ（白ブーツ＆つま先ゴールド） */}
+      <path d="M88 208 L124 208 L122 226 L86 226 Z" fill={armorWhite} />
+      <polygon points="86,226 98,216 110,226" fill={armorGold} />
+      <path d="M136 208 L172 208 L174 226 L138 226 Z" fill={armorWhite} />
+      <polygon points="150,226 162,216 174,226" fill={armorGold} />
+
+      {/* 胴体：濃紺スーツ＆サイヤ人胸部アーマー（白＆ゴールドストラップ） */}
+      <path d="M96 112 L88 175 L172 175 L164 112 Z" fill={suitBlue} />
+      {/* ホワイト胸当て装甲 */}
+      <path d="M98 116 L92 165 L168 165 L162 116 Z" fill={armorWhite} />
+      {/* ゴールドの肩ストラップ＆腹部リブ */}
+      <rect x="104" y="116" width="14" height="28" fill={armorGold} />
+      <rect x="142" y="116" width="14" height="28" fill={armorGold} />
+      <line x1="102" y1="148" x2="158" y2="148" stroke={armorGold} strokeWidth="3" />
+      <line x1="104" y1="156" x2="156" y2="156" stroke={armorGold} strokeWidth="3" />
+
+      {/* 両腕＆白い戦闘用グローブ（ファイナルフラッシュを前方に構える） */}
+      <path d="M94 122 L62 142 L55 132 L88 114 Z" fill={suitBlue} />
+      <path d="M55 132 L40 128 L36 142 L58 145 Z" fill={armorWhite} />
+
+      <path d="M166 122 L198 142 L205 132 L172 114 Z" fill={suitBlue} />
+      <path d="M205 132 L220 128 L224 142 L202 145 Z" fill={armorWhite} />
+
+      {/* ★ 両手掌から放たれる激烈なファイナルフラッシュ閃光 ★ */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="36" cy="136" r="16" fill={blastYellow} opacity="0.85" />
+          <circle cx="36" cy="136" r="8" fill="#ffffff" />
+          <circle cx="224" cy="136" r="16" fill={blastYellow} opacity="0.85" />
+          <circle cx="224" cy="136" r="8" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* 首と顔 */}
+      <path d="M118 108 L116 88 L130 76 L144 88 L142 108 Z" fill={skinTone} />
+
+      {/* ★ ベジータの象徴：炎のように天を衝く尖った逆立ち金髪 ★ */}
+      {/* 炎型シルエット */}
+      <path
+        d="M98 78 L80 42 L95 46 L88 18 L110 32 L118 8 L130 22 L142 8 L150 32 L172 18 L165 46 L180 42 L162 78 Z"
+        fill={hairGold}
+      />
+      {!silhouette && (
+        <path
+          d="M106 65 L94 38 L108 42 L118 20 L130 32 L142 20 L152 42 L166 38 L154 65 Z"
+          fill={hairLight}
+          stroke="none"
+        />
+      )}
+      {/* 特徴的なM字の富士額（M字生え際） */}
+      <path d="M105 76 Q118 78, 130 86 Q142 78, 155 76 Z" fill={skinTone} stroke="none" />
+
+      {/* 誇り高き王子の鋭い睨み目＆釣り眉 */}
+      <polygon points="112,82 125,78 123,85 110,85" fill={hairGold} />
+      <polygon points="148,82 135,78 137,85 150,85" fill={hairGold} />
+      {/* 鋭い三白眼 */}
+      <polygon points="114,84 124,82 121,90 113,89" fill="#ffffff" />
+      <circle cx="118" cy="86" r="2.2" fill="#06b6d4" stroke="none" />
+      <polygon points="146,84 136,82 139,90 147,89" fill="#ffffff" />
+      <circle cx="142" cy="86" r="2.2" fill="#06b6d4" stroke="none" />
+
+      {/* 不敵なニヤリ笑い */}
+      <path d="M122 98 L136 96" stroke="#881337" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    </g>
+  );
+}
+
+/** No.72 ピッコロ (ナメック星の超戦士・緑の魔族・白マント＆ターバン・魔貫光殺砲) */
+function PiccoloSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const skinGreen = silhouette ? primary : '#22c55e';
+  const musclePink = silhouette ? secondary : '#f472b6';
+  const dogiPurple = silhouette ? secondary : '#6b21a8';
+  const darkPurple = silhouette ? secondary : '#4c1d95';
+  const capeWhite = silhouette ? primary : '#f8fafc';
+  const sashBlue = silhouette ? secondary : '#38bdf8';
+  const beamGold = silhouette ? secondary : '#facc15';
+  const beamViolet = silhouette ? secondary : '#c084fc';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 優雅に広がる純白のマント（背後） */}
+      <path d="M85 95 L50 225 L105 215 L95 150 Z" fill={capeWhite} />
+      <path d="M175 95 L210 225 L155 215 L165 150 Z" fill={capeWhite} />
+
+      {/* 紫の道着ズボン＆茶色いとんがり靴 */}
+      <path d="M102 165 L88 220 L122 220 L120 185 Z" fill={dogiPurple} />
+      <path d="M158 165 L172 220 L138 220 L140 185 Z" fill={dogiPurple} />
+      {/* ナメック靴（先がくるんと尖った茶色い靴） */}
+      <path d="M84 216 L122 216 L120 226 L80 226 Q82 220, 84 216 Z" fill="#92400e" />
+      <path d="M138 216 L176 216 Q178 220, 180 226 L140 226 Z" fill="#92400e" />
+
+      {/* 紫の道着＆空色の帯 */}
+      <path d="M96 112 L88 175 L172 175 L164 112 Z" fill={dogiPurple} />
+      {/* 胴体の胸元 */}
+      <polygon points="112,112 130,140 148,112" fill={darkPurple} />
+      {/* 水色の太い帯 */}
+      <rect x="92" y="162" width="76" height="14" rx="3" fill={sashBlue} />
+
+      {/* 巨大な白いマント肩当て（高襟・ホワイトショルダーストール） */}
+      <path d="M80 102 Q130 115, 180 102 L192 118 Q130 135, 68 118 Z" fill={capeWhite} />
+
+      {/* ナメック星人の緑の腕＆ピンクの筋肉パッチ */}
+      {/* 左腕（胸の前で構える） */}
+      <path d="M86 118 L60 142 L68 152 L98 132 Z" fill={skinGreen} />
+      <ellipse cx="74" cy="136" rx="8" ry="5" fill={musclePink} stroke={outline} strokeWidth="1.5" />
+      {/* 右腕（額に二本指を当てて魔貫光殺砲をチャージ！） */}
+      <path d="M166 118 L188 128 L152 88 L142 96 Z" fill={skinGreen} />
+      <ellipse cx="172" cy="122" rx="8" ry="5" fill={musclePink} stroke={outline} strokeWidth="1.5" />
+      {/* 額に当てた二本指 */}
+      <polygon points="144,92 134,80 140,78 148,88" fill={skinGreen} />
+
+      {/* ★ 額の指先から放たれる螺旋の魔貫光殺砲！ ★ */}
+      {!silhouette && (
+        <g strokeLinecap="round">
+          {/* 直線コアビーム */}
+          <line x1="136" y1="78" x2="250" y2="40" stroke={beamGold} strokeWidth="5" />
+          <line x1="136" y1="78" x2="250" y2="40" stroke="#ffffff" strokeWidth="2" />
+          {/* まわりを螺旋状に回転する紫のドリル光線 */}
+          <path
+            d="M145 76 Q165 60, 180 72 Q195 85, 210 65 Q225 50, 245 58"
+            fill="none"
+            stroke={beamViolet}
+            strokeWidth="4"
+          />
+          {/* 指先のスパーク光球 */}
+          <circle cx="136" cy="78" r="8" fill={beamGold} stroke="none" />
+          <circle cx="136" cy="78" r="4" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+
+      {/* ピッコロの緑の頭部 */}
+      <ellipse cx="130" cy="85" rx="22" ry="26" fill={skinGreen} />
+
+      {/* ナメック星人の特徴：2本の触角（頭頂部から前方にカーブ） */}
+      <path d="M120 68 Q108 45, 95 48" stroke={outline} strokeWidth="3" fill="none" />
+      <circle cx="95" cy="48" r="3" fill={beamGold} />
+      <path d="M140 68 Q152 45, 165 48" stroke={outline} strokeWidth="3" fill="none" />
+      <circle cx="165" cy="48" r="3" fill={beamGold} />
+
+      {/* 長く尖ったエルフ耳（左右） */}
+      <polygon points="108,82 82,72 108,92" fill={skinGreen} />
+      <polygon points="88,75 104,82 96,86" fill={musclePink} stroke="none" />
+      <polygon points="152,82 178,72 152,92" fill={skinGreen} />
+      <polygon points="172,75 156,82 164,86" fill={musclePink} stroke="none" />
+
+      {/* 鋭く引き締まった眼光＆黒いアイライン */}
+      <polygon points="115,82 126,80 124,88 113,87" fill="#ffffff" />
+      <circle cx="120" cy="84" r="2" fill="#000000" stroke="none" />
+      <polygon points="145,82 134,80 136,88 147,87" fill="#ffffff" />
+      <circle cx="140" cy="84" r="2" fill="#000000" stroke="none" />
+
+      {/* 冷静沈着な口元 */}
+      <line x1="124" y1="96" x2="136" y2="96" stroke="#064e3b" strokeWidth="2.5" strokeLinecap="round" />
+    </g>
+  );
+}
+
+/** No.73 ブロリー (暴走の伝説超サイヤ人・筋骨隆々巨躯・ライムグリーン乱れ髪・ギガンティックミーティア) */
+function BrolySvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const muscleTan = silhouette ? primary : '#fcd34d';
+  const furGreen = silhouette ? secondary : '#15803d';
+  const sashRed = silhouette ? secondary : '#dc2626';
+  const pantsBlack = silhouette ? secondary : '#0f172a';
+  const hairGreen = silhouette ? primary : '#84cc16';
+  const hairLight = silhouette ? primary : '#bef264';
+  const blastEmerald = silhouette ? secondary : '#10b981';
+  const blastCore = silhouette ? primary : '#d1fae5';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 噴き出す圧倒的なライムグリーンの破壊的超オーラ */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.8">
+          <polygon points="130,10 70,60 95,50 50,110 80,100 35,170 80,160 40,230 220,230 180,160 225,170 180,100 210,110 165,50 190,60" fill={hairGreen} opacity="0.4" />
+          <polygon points="130,25 80,70 100,65 65,120 90,115 55,180 205,180 170,115 195,120 160,65 180,70" fill={hairLight} opacity="0.5" />
+        </g>
+      )}
+
+      {/* 巨大でたくましい大腿部＆黒パンツ */}
+      <path d="M100 160 L80 225 L124 225 L122 185 Z" fill={pantsBlack} />
+      <path d="M160 160 L180 225 L136 225 L138 185 Z" fill={pantsBlack} />
+      {/* 白と緑の大型ブーツ */}
+      <path d="M78 215 L124 215 L122 226 L76 226 Z" fill="#f8fafc" />
+      <polygon points="76,226 90,218 104,226" fill={furGreen} />
+      <path d="M136 215 L182 215 L184 226 L138 226 Z" fill="#f8fafc" />
+      <polygon points="156,226 170,218 184,226" fill={furGreen} />
+
+      {/* ★ バァの耳の緑毛皮（腰巻き）＆鮮やかな赤の帯ベルト ★ */}
+      <path d="M88 152 Q65 185, 78 212 L125 205 Q105 175, 95 152 Z" fill={furGreen} />
+      <path d="M172 152 Q195 185, 182 212 L135 205 Q155 175, 165 152 Z" fill={furGreen} />
+      {/* 赤い結び帯ベルト */}
+      <rect x="88" y="150" width="84" height="14" rx="3" fill={sashRed} />
+      <path d="M105 162 L98 190 L112 188 L115 162 Z" fill={sashRed} />
+
+      {/* 超ド級の筋骨隆々な大胸筋＆腹筋（鍛え抜かれた褐色の肉体） */}
+      <path d="M84 105 L82 155 L178 155 L176 105 Z" fill={muscleTan} />
+      {/* 割れた大胸筋モールド */}
+      <path d="M84 105 Q105 138, 130 138 Q155 138, 176 105" fill="none" stroke={outline} strokeWidth="3" />
+      <line x1="130" y1="108" x2="130" y2="152" stroke={outline} strokeWidth="2.5" />
+      {/* 腹筋6パックライン */}
+      <line x1="112" y1="145" x2="148" y2="145" stroke={outline} strokeWidth="2" />
+      {/* 胸の象徴的な古傷（十字スカー） */}
+      {!silhouette && (
+        <g stroke="#b91c1c" strokeWidth="2.5" fill="none" strokeLinecap="round">
+          <line x1="102" y1="115" x2="118" y2="128" />
+          <line x1="145" y1="120" x2="155" y2="132" />
+        </g>
+      )}
+
+      {/* 超巨大な剛腕（両手を大きく広げてギガンティックミーティアを溜める） */}
+      <path d="M84 110 L45 132 L36 120 L78 98 Z" fill={muscleTan} />
+      <path d="M176 110 L215 132 L224 120 L182 98 Z" fill={muscleTan} />
+      {/* リストバンド */}
+      <rect x="36" y="118" width="14" height="16" rx="2" fill="#047857" />
+      <rect x="210" y="118" width="14" height="16" rx="2" fill="#047857" />
+
+      {/* ★ 両手掌から生み出される巨大なエメラルドギガンティックミーティア ★ */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="28" cy="122" r="20" fill={blastEmerald} opacity="0.85" />
+          <circle cx="28" cy="122" r="10" fill={blastCore} />
+          <circle cx="232" cy="122" r="20" fill={blastEmerald} opacity="0.85" />
+          <circle cx="232" cy="122" r="10" fill={blastCore} />
+        </g>
+      )}
+
+      {/* 太く力強い首と顎 */}
+      <path d="M112 105 L112 84 L130 70 L148 84 L148 105 Z" fill={muscleTan} />
+
+      {/* ★ ブロリーの象徴：荒れ狂う巨大なライムグリーン毛束（フルパワー超サイヤ人） ★ */}
+      <path
+        d="M85 80 L45 42 L78 52 L60 18 L100 35 L112 2 L130 18 L148 2 L160 35 L200 18 L182 52 L215 42 L175 80 Z"
+        fill={hairGreen}
+      />
+      {!silhouette && (
+        <path
+          d="M95 68 L65 38 L90 44 L108 22 L130 32 L152 22 L170 44 L195 38 L165 68 Z"
+          fill={hairLight}
+          stroke="none"
+        />
+      )}
+      {/* 額にかかる荒々しい前髪 */}
+      <polygon points="102,72 115,92 120,76" fill={hairGreen} />
+      <polygon points="122,76 130,95 138,76" fill={hairGreen} />
+      <polygon points="140,76 145,92 158,72" fill={hairGreen} />
+
+      {/* 暴走状態の白光した凶暴な瞳（白眼・グリーンリング） */}
+      <polygon points="110,82 123,78 122,87 108,86" fill={hairGreen} />
+      <polygon points="150,82 137,78 138,87 152,86" fill={hairGreen} />
+      <circle cx="116" cy="86" r="3.5" fill="#ffffff" />
+      <circle cx="144" cy="86" r="3.5" fill="#ffffff" />
+
+      {/* 雄叫びをあげる大口と剥き出しの白い牙 */}
+      <path d="M116 94 Q130 108, 144 94 Q130 102, 116 94 Z" fill="#7f1d1d" />
+      <polygon points="118,94 124,98 130,94" fill="#ffffff" />
+      <polygon points="130,94 136,98 142,94" fill="#ffffff" />
+    </g>
+  );
+}
+
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -6395,6 +6790,16 @@ function KaijuSpecificSvgDispatcher({
       return <RhapthorneSvg {...partProps} />;
     case 'fire-dq-vearn':
       return <ShinVearnSvg {...partProps} />;
+
+    // 🐉 ドラゴンボール・伝説の超戦士
+    case 'fire-db-goku':
+      return <GokuSvg {...partProps} />;
+    case 'thunder-db-vegeta':
+      return <VegetaSvg {...partProps} />;
+    case 'nature-db-piccolo':
+      return <PiccoloSvg {...partProps} />;
+    case 'nature-db-broly':
+      return <BrolySvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;

@@ -1491,6 +1491,66 @@ const RAW_KAIJU_LIST: KaijuData[] = [
   }),
 
   // =========================================================================
+  // 🐉 ドラゴンボール・伝説の超戦士 No.70〜73（孫悟空・ベジータ・ピッコロ・ブロリー）
+  // =========================================================================
+  createCustomKaiju({
+    id: 'fire-db-goku',
+    dexNumber: 70,
+    element: 'fire',
+    type: 'beast',
+    name: '孫悟空',
+    roar: 'オラ悟空！いっちょやってみっか！',
+    specialMove: 'かめはめ波・超元気玉',
+    stars: 5,
+    titleBadge: '地球育ちの伝説の超サイヤ人',
+    description: '強敵と戦うのが大好きな地球育ちのサイヤ人！キング形態にしんかすると神の領域「身勝手の極意」へと覚醒し、銀色の超オーラをまとって超光速のかめはめ波を放つぞ！',
+    stageNames: ['孫悟空', '超サイヤ人孫悟空', '身勝手の極意・孫悟空'],
+    realColors: { primary: '#f97316', secondary: '#1d4ed8', accent: '#facc15' },
+  }),
+  createCustomKaiju({
+    id: 'thunder-db-vegeta',
+    dexNumber: 71,
+    element: 'thunder',
+    type: 'beast',
+    name: 'ベジータ',
+    roar: 'オレはサイヤ人の王子、ベジータ様だ！',
+    specialMove: 'ファイナルフラッシュ・ギャリック砲',
+    stars: 5,
+    titleBadge: '誇り高き戦闘民族サイヤ人の王子',
+    description: '限界を超え続ける誇り高きサイヤ人の王子！キング形態にしんかすると破壊神の力に目覚めた「我儘の極意・ベジータ」となり、すべてを粉砕する紫のビッグバンアタックを炸裂させるぞ！',
+    stageNames: ['ベジータ', '超サイヤ人ベジータ', '我儘の極意・ベジータ'],
+    realColors: { primary: '#1e3a8a', secondary: '#ffffff', accent: '#eab308' },
+  }),
+  createCustomKaiju({
+    id: 'nature-db-piccolo',
+    dexNumber: 72,
+    element: 'nature',
+    type: 'dino',
+    name: 'ピッコロ',
+    roar: '待たせたな…！魔貫光殺砲ーーッ！！',
+    specialMove: '魔貫光殺砲・激震魔球',
+    stars: 5,
+    titleBadge: 'ナメック星の叡智と武の超戦士',
+    description: '冷静沈着な頭脳と高い戦闘力をもつナメック星の超戦士！キング形態にしんかすると潜在能力が極限突破した「オレンジピッコロ」となり、超巨大な剛腕と激震の魔弾で敵を圧倒するぞ！',
+    stageNames: ['ピッコロ', '超ナメック星人ピッコロ', 'オレンジピッコロ'],
+    realColors: { primary: '#16a34a', secondary: '#581c87', accent: '#f97316' },
+  }),
+  createCustomKaiju({
+    id: 'nature-db-broly',
+    dexNumber: 73,
+    element: 'nature',
+    type: 'dragon',
+    name: 'ブロリー',
+    roar: 'ウガァァァッ！！オレの力は…無限だぁぁぁっ！！',
+    specialMove: 'ギガンティックミーティア・オメガブラスター',
+    stars: 5,
+    titleBadge: '暴走せし 伝説の超サイヤ人',
+    description: '底なしの潜在能力を秘めた伝説の超サイヤ人！キング形態にしんかするとエメラルドの超闘気をまとった「伝説の超サイヤ人・フルパワーブロリー」となり、惑星をも粉砕する巨大エネルギー弾を叩き込むぞ！',
+    stageNames: ['ブロリー(怒り)', '超サイヤ人ブロリー', '伝説の超サイヤ人ブロリー'],
+    realColors: { primary: '#84cc16', secondary: '#15803d', accent: '#dc2626' },
+  }),
+
+  // =========================================================================
   // 🪲 実在こんちゅう大図鑑 No.25〜No.60（全36種）
   // =========================================================================
 
