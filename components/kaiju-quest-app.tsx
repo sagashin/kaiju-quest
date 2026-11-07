@@ -78,7 +78,7 @@ interface SavedAppState {
   unlockedEquipmentIds?: string[];
   chestKeys?: number;
   tournamentWins?: number;
-  zukanViewMode?: 'grid4' | 'card2';
+  zukanViewMode?: 'grid3' | 'grid4' | 'card2';
 }
 
 const STORAGE_KEY = 'kaiju_oshitaku_quest_v1';
@@ -129,7 +129,7 @@ export default function KaijuQuestApp() {
   // 図鑑タブの選択・フィルターステート
   const [zukanCategoryFilter, setZukanCategoryFilter] = useState<'all' | CreatureCategory>('all');
   const [zukanFilter, setZukanFilter] = useState<'all' | ElementId>('all');
-  const [zukanViewMode, setZukanViewMode] = useState<'grid4' | 'card2'>('grid4');
+  const [zukanViewMode, setZukanViewMode] = useState<'grid3' | 'card2'>('grid3');
   const [selectedZukanKaiju, setSelectedZukanKaiju] = useState<KaijuData | null>(null);
 
   // 初回マウント時に localStorage から読み込み
@@ -222,8 +222,10 @@ export default function KaijuQuestApp() {
           if (typeof parsed.tournamentWins === 'number') {
             setTournamentWins(parsed.tournamentWins);
           }
-          if (parsed.zukanViewMode === 'grid4' || parsed.zukanViewMode === 'card2') {
-            setZukanViewMode(parsed.zukanViewMode);
+          if (parsed.zukanViewMode === 'card2') {
+            setZukanViewMode('card2');
+          } else if (parsed.zukanViewMode === 'grid3' || parsed.zukanViewMode === 'grid4') {
+            setZukanViewMode('grid3');
           }
         }
       } catch {
@@ -1738,17 +1740,17 @@ export default function KaijuQuestApp() {
                   type="button"
                   onClick={() => {
                     playTapSound(600);
-                    setZukanViewMode('grid4');
+                    setZukanViewMode('grid3');
                   }}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
-                    zukanViewMode === 'grid4'
+                    zukanViewMode === 'grid3'
                       ? 'bg-amber-400 text-slate-950 shadow'
                       : 'text-slate-400 hover:text-white'
                   }`}
-                  title="ポケモンGO風 4列表示"
+                  title="ポケモンGO風 3列表示"
                 >
                   <Grid className="w-3.5 h-3.5" />
-                  <span>4列 (GO風)</span>
+                  <span>3列 (GO風)</span>
                 </button>
                 <button
                   type="button"
@@ -1769,9 +1771,9 @@ export default function KaijuQuestApp() {
               </div>
             </div>
 
-            {/* ポケモンGO風 4列コンパクトグリッド */}
-            {zukanViewMode === 'grid4' ? (
-              <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1.5 sm:gap-2.5">
+            {/* ポケモンGO風 3列コンパクトグリッド */}
+            {zukanViewMode === 'grid3' ? (
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
                 {filteredZukanList.map((kaiju) => {
                   const isUnlocked = unlockedKaijuIds.includes(kaiju.id);
                   const elMeta = getElementMeta(kaiju.element);
@@ -1783,39 +1785,39 @@ export default function KaijuQuestApp() {
                       key={kaiju.id}
                       type="button"
                       onClick={() => handleZukanCardTap(kaiju, isUnlocked)}
-                      className={`group relative rounded-2xl p-1.5 transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[124px] sm:min-h-[138px] overflow-hidden text-center ${
+                      className={`group relative rounded-2xl p-2 transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[142px] sm:min-h-[158px] overflow-hidden text-center ${
                         isUnlocked
-                          ? `bg-slate-900/95 border border-white/20 hover:border-amber-400 shadow-sm hover:shadow-[0_0_15px_rgba(250,204,21,0.35)]`
+                          ? `bg-slate-900/95 border border-white/20 hover:border-amber-400 shadow-sm hover:shadow-[0_0_18px_rgba(250,204,21,0.35)]`
                           : 'bg-slate-950/70 border border-dashed border-white/10 opacity-70 hover:opacity-100'
                       }`}
                     >
                       {/* 上段：図鑑No ＆ あいぼう/覚醒/MAX バッジ */}
-                      <div className="w-full flex items-center justify-between text-[9px] sm:text-[10px] font-black leading-none px-0.5">
+                      <div className="w-full flex items-center justify-between text-[10px] sm:text-xs font-black leading-none px-0.5">
                         <span className="text-amber-300/90 tabular-nums">
                           #{String(kaiju.dexNumber).padStart(2, '0')}
                         </span>
                         <div className="flex items-center gap-0.5">
                           {isUnlocked && isCurrentPartner && (
-                            <span title="あいぼう" className="text-[10px] leading-none">🤝</span>
+                            <span title="あいぼう" className="text-xs leading-none">🤝</span>
                           )}
                           {isUnlocked && stats.awakeningStar > 0 && (
                             <span
                               title={`覚醒★${stats.awakeningStar}`}
-                              className="text-[9px] leading-none text-yellow-300 font-black"
+                              className="text-[10px] sm:text-xs leading-none text-yellow-300 font-black"
                             >
                               {stats.awakeningStar === 3 ? '🌈' : stats.awakeningStar === 2 ? '💎' : '✨'}
                             </span>
                           )}
                           {isUnlocked && stats.level >= MAX_KAIJU_LEVEL && (
-                            <span title="レベルMAX" className="text-[10px] leading-none">👑</span>
+                            <span title="レベルMAX" className="text-xs leading-none">👑</span>
                           )}
                         </div>
                       </div>
 
                       {/* 中段：ポケモンGO風 円形台座 ＆ キャラクターイラスト */}
-                      <div className="relative my-0.5 flex items-center justify-center">
+                      <div className="relative my-1 flex items-center justify-center">
                         <div
-                          className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center relative overflow-hidden transition-transform group-hover:scale-105 ${
+                          className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center relative overflow-hidden transition-transform group-hover:scale-105 ${
                             isUnlocked
                               ? `bg-gradient-to-b from-slate-800 to-slate-950 border border-white/20 shadow-inner`
                               : 'bg-slate-950/90 border border-dashed border-white/15'
@@ -1830,9 +1832,9 @@ export default function KaijuQuestApp() {
                           }`}
                         >
                           {/* ポケモンGO風 足元シャドウ */}
-                          <div className="absolute bottom-1 w-8 h-1.5 bg-black/50 rounded-full blur-[1px]" />
+                          <div className="absolute bottom-1 w-10 sm:w-12 h-2 bg-black/50 rounded-full blur-[1px]" />
 
-                          <div className="w-12 h-12 sm:w-14 sm:h-14 relative flex items-center justify-center">
+                          <div className="w-14 h-14 sm:w-16 sm:h-16 relative flex items-center justify-center">
                             <KaijuSvgIllustration
                               element={kaiju.element}
                               type={kaiju.type}
@@ -1855,12 +1857,12 @@ export default function KaijuQuestApp() {
                       <div className="w-full">
                         {isUnlocked ? (
                           <>
-                            <div className="text-[10px] sm:text-xs font-black text-white truncate px-0.5 leading-tight">
+                            <div className="text-[11px] sm:text-xs font-black text-white truncate px-0.5 leading-tight">
                               {stats.displayName}
                             </div>
-                            <div className="text-[9px] sm:text-[10px] font-black text-slate-300 flex items-center justify-center gap-1 mt-0.5">
+                            <div className="text-[10px] sm:text-[11px] font-black text-slate-300 flex items-center justify-center gap-1 mt-0.5">
                               <span className="text-amber-400 tabular-nums">Lv.{stats.level}</span>
-                              <span className="text-[9px] sm:text-[10px]">
+                              <span className="text-[11px]">
                                 {kaiju.category === 'insect' && elMeta.insectFieldEmoji
                                   ? elMeta.insectFieldEmoji
                                   : elMeta.emoji}
@@ -1869,10 +1871,10 @@ export default function KaijuQuestApp() {
                           </>
                         ) : (
                           <>
-                            <div className="text-[10px] sm:text-xs font-black text-slate-400 truncate px-0.5 leading-tight">
+                            <div className="text-[11px] sm:text-xs font-black text-slate-400 truncate px-0.5 leading-tight">
                               ？？？
                             </div>
-                            <div className="text-[9px] font-bold text-slate-500 truncate mt-0.5">
+                            <div className="text-[10px] font-bold text-slate-500 truncate mt-0.5">
                               {kaiju.id.includes('-dq-') ? (
                                 <span className="text-rose-400 font-black">⚔️ボス</span>
                               ) : (
