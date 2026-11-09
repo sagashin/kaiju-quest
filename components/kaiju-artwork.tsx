@@ -5976,6 +5976,658 @@ function BrolySvg({ primary, secondary, accent, eyeColor, outline, silhouette }:
 
 
 /* ==========================================================================
+   🍄 スーパーマリオ・キノコ王国の英雄 (マリオ・ルイージ・クッパ・ヨッシー)
+   ========================================================================== */
+
+/** No.82 マリオ (赤帽子M・ヒゲ・青オーバーオール・ジャンプパンチ＆ファイアボール) */
+function MarioSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const capRed = silhouette ? primary : '#dc2626';
+  const capDark = silhouette ? primary : '#991b1b';
+  const overallBlue = silhouette ? secondary : '#2563eb';
+  const overallDark = silhouette ? secondary : '#1d4ed8';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairBrown = silhouette ? secondary : '#78350f';
+  const buttonYellow = silhouette ? accent : '#facc15';
+  const gloveWhite = silhouette ? primary : '#ffffff';
+  const shoeBrown = silhouette ? secondary : '#713f12';
+  const fireOrange = silhouette ? primary : '#f97316';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 輝くファイアボール＆スーパースターの煌めきエフェクト */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="205" cy="85" r="18" fill={fireOrange} opacity="0.85" />
+          <circle cx="205" cy="85" r="10" fill="#facc15" />
+          <circle cx="205" cy="85" r="5" fill="#ffffff" />
+          <polygon points="205,58 209,78 225,85 209,92 205,112 201,92 185,85 201,78" fill="#fde047" opacity="0.7" />
+          <polygon points="50,90 53,100 64,103 53,107 50,118 47,107 36,103 47,100" fill="#fde047" opacity="0.8" />
+        </g>
+      )}
+
+      {/* 両足・茶色いワークブーツ */}
+      <ellipse cx="104" cy="225" rx="18" ry="12" fill={shoeBrown} />
+      <ellipse cx="156" cy="225" rx="18" ry="12" fill={shoeBrown} />
+
+      {/* 青いデニムオーバーオールのズボン脚 */}
+      <path d="M92 170 L90 220 L120 220 L122 180 Z" fill={overallBlue} />
+      <path d="M168 170 L170 220 L140 220 L138 180 Z" fill={overallBlue} />
+      <rect x="94" y="155" width="72" height="30" rx="6" fill={overallBlue} />
+
+      {/* 赤いシャツ胴体 */}
+      <path d="M90 120 L80 165 L180 165 L170 120 Z" fill={capRed} />
+
+      {/* オーバーオールのサスペンダー肩紐＆黄色いボタン */}
+      <rect x="100" y="122" width="16" height="42" rx="3" fill={overallDark} />
+      <rect x="144" y="122" width="16" height="42" rx="3" fill={overallDark} />
+      <circle cx="108" cy="158" r="5" fill={buttonYellow} />
+      <circle cx="152" cy="158" r="5" fill={buttonYellow} />
+
+      {/* 左手：腰でグッと構える白い手袋 */}
+      <path d="M85 125 L65 145 L72 165 L95 145 Z" fill={capRed} />
+      <circle cx="68" cy="165" r="12" fill={gloveWhite} />
+
+      {/* 右手：天高く突き上げるジャンプパンチ！ */}
+      <path d="M168 125 L190 95 L202 105 L178 135 Z" fill={capRed} />
+      <circle cx="196" cy="90" r="14" fill={gloveWhite} />
+
+      {/* 頭部・茶色い髪・耳 */}
+      <circle cx="92" cy="95" r="10" fill={hairBrown} />
+      <circle cx="168" cy="95" r="10" fill={hairBrown} />
+      <circle cx="96" cy="96" r="8" fill={skinTone} />
+      <circle cx="164" cy="96" r="8" fill={skinTone} />
+      <ellipse cx="130" cy="96" rx="34" ry="30" fill={skinTone} />
+
+      {/* おなじみ立派なヒゲ（6つのウェーブ山） */}
+      <path
+        d="M102 108 Q106 102, 114 104 Q122 98, 130 102 Q138 98, 146 104 Q154 102, 158 108 Q162 116, 152 118 Q140 120, 130 117 Q120 120, 108 118 Q98 116, 102 108 Z"
+        fill={hairBrown}
+      />
+
+      {/* まん丸な大きなお鼻 */}
+      <ellipse cx="130" cy="94" rx="14" ry="11" fill={skinTone} />
+
+      {/* パッチリした青い目 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="118" cy="84" rx="5" ry="8" fill="#ffffff" />
+          <ellipse cx="142" cy="84" rx="5" ry="8" fill="#ffffff" />
+          <ellipse cx="120" cy="84" rx="3.5" ry="6" fill="#2563eb" />
+          <ellipse cx="140" cy="84" rx="3.5" ry="6" fill="#2563eb" />
+          <circle cx="119" cy="82" r="1.5" fill="#ffffff" />
+          <circle cx="139" cy="82" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* トレードマークの赤いキャスケット帽子＆ツバ */}
+      <path d="M96 74 Q130 40, 164 74 Q168 85, 130 84 Q92 85, 96 74 Z" fill={capRed} />
+      {/* 帽子のツバ（バイザー） */}
+      <path d="M100 78 Q130 70, 160 78 Q162 86, 130 85 Q98 86, 100 78 Z" fill={capDark} />
+
+      {/* 白いエンブレム円 ＆ 赤い「M」のマーク */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="130" cy="62" r="11" fill="#ffffff" />
+          <path
+            d="M123 68 L123 57 L127 63 L130 63 L133 57 L133 68 L131 68 L131 60 L128 65 L125 60 L125 68 Z"
+            fill="#dc2626"
+          />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.83 ルイージ (緑帽子L・スマートヒゲ・オバキューム＆緑電撃) */
+function LuigiSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const capGreen = silhouette ? primary : '#16a34a';
+  const capDark = silhouette ? primary : '#15803d';
+  const overallBlue = silhouette ? secondary : '#1e3a8a';
+  const overallDark = silhouette ? secondary : '#172554';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairBrown = silhouette ? secondary : '#78350f';
+  const buttonYellow = silhouette ? accent : '#facc15';
+  const gloveWhite = silhouette ? primary : '#ffffff';
+  const shoeBrown = silhouette ? secondary : '#713f12';
+  const poltergustRed = silhouette ? primary : '#dc2626';
+  const sparkCyan = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 背中のオバキューム（吸い込み掃除機）タンク＆ノズル */}
+      <rect x="62" y="115" width="26" height="48" rx="8" fill={poltergustRed} />
+      <circle cx="75" cy="130" r="7" fill="#64748b" />
+      <path d="M75 160 Q60 185, 80 205" fill="none" stroke="#64748b" strokeWidth="6" strokeLinecap="round" />
+
+      {/* 手先から放たれるエレキサンダー電撃スパーク */}
+      {!silhouette && (
+        <g stroke={sparkCyan} strokeWidth="2.5" fill="none" strokeLinecap="round">
+          <path d="M195 145 L215 135 L205 125 L225 115" />
+          <path d="M185 170 L205 180 L200 195 L220 200" />
+          <circle cx="218" cy="120" r="3" fill="#ffffff" stroke="none" />
+          <circle cx="215" cy="195" r="3" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+
+      {/* 両足・長めの茶色い靴 */}
+      <ellipse cx="106" cy="228" rx="16" ry="11" fill={shoeBrown} />
+      <ellipse cx="154" cy="228" rx="16" ry="11" fill={shoeBrown} />
+
+      {/* 紺色オーバーオールの少しスリムな長ズボン */}
+      <path d="M96 168 L94 224 L120 224 L122 178 Z" fill={overallBlue} />
+      <path d="M164 168 L166 224 L140 224 L138 178 Z" fill={overallBlue} />
+      <rect x="98" y="152" width="64" height="32" rx="5" fill={overallBlue} />
+
+      {/* 緑のシャツ胴体 */}
+      <path d="M94 116 L86 162 L174 162 L166 116 Z" fill={capGreen} />
+
+      {/* サスペンダー肩紐＆黄色いボタン */}
+      <rect x="104" y="118" width="14" height="42" rx="3" fill={overallDark} />
+      <rect x="142" y="118" width="14" height="42" rx="3" fill={overallDark} />
+      <circle cx="111" cy="154" r="4.5" fill={buttonYellow} />
+      <circle cx="149" cy="154" r="4.5" fill={buttonYellow} />
+
+      {/* 左手：オバキュームのパイプをしっかり構える */}
+      <path d="M88 122 L72 145 L80 158 L98 138 Z" fill={capGreen} />
+      <circle cx="76" cy="156" r="11" fill={gloveWhite} />
+
+      {/* 右手：電気を放つポーズ */}
+      <path d="M166 122 L185 142 L180 156 L160 136 Z" fill={capGreen} />
+      <circle cx="186" cy="152" r="11" fill={gloveWhite} />
+
+      {/* 頭部（マリオよりやや面長でスマート） */}
+      <circle cx="95" cy="88" r="9" fill={hairBrown} />
+      <circle cx="165" cy="88" r="9" fill={hairBrown} />
+      <ellipse cx="130" cy="88" rx="30" ry="28" fill={skinTone} />
+
+      {/* ルイージの特徴的なヒゲ（なめらかな2つの流線型） */}
+      <path
+        d="M106 102 Q118 96, 130 100 Q142 96, 154 102 Q158 112, 148 113 Q130 111, 112 113 Q102 112, 106 102 Z"
+        fill={hairBrown}
+      />
+
+      {/* スラリとした楕円の鼻 */}
+      <ellipse cx="130" cy="88" rx="12" ry="12" fill={skinTone} />
+
+      {/* つぶらで少し優しげな青い目 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="120" cy="78" rx="4.5" ry="7.5" fill="#ffffff" />
+          <ellipse cx="140" cy="78" rx="4.5" ry="7.5" fill="#ffffff" />
+          <ellipse cx="121" cy="78" rx="3" ry="5.5" fill="#2563eb" />
+          <ellipse cx="139" cy="78" rx="3" ry="5.5" fill="#2563eb" />
+          <circle cx="120" cy="76" r="1.5" fill="#ffffff" />
+          <circle cx="138" cy="76" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* やや縦長の緑のキャスケット帽子＆ツバ */}
+      <path d="M98 68 Q130 30, 162 68 Q166 78, 130 76 Q94 78, 98 68 Z" fill={capGreen} />
+      <path d="M102 72 Q130 64, 158 72 Q160 80, 130 78 Q100 80, 102 72 Z" fill={capDark} />
+
+      {/* 白いエンブレム円 ＆ 緑の「L」マーク */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="130" cy="54" r="10" fill="#ffffff" />
+          <path
+            d="M126 48 L129 48 L129 58 L135 58 L135 61 L126 61 Z"
+            fill="#16a34a"
+          />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.84 大魔王クッパ (巨大トゲ甲羅・角・赤い毛髪・火炎ブレス) */
+function BowserSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const shellGreen = silhouette ? secondary : '#15803d';
+  const bodyYellow = silhouette ? primary : '#eab308';
+  const rimOrange = silhouette ? accent : '#ea580c';
+  const hairRed = silhouette ? primary : '#dc2626';
+  const hornWhite = silhouette ? accent : '#f8fafc';
+  const cuffBlack = silhouette ? secondary : '#0f172a';
+  const spikeMetal = silhouette ? accent : '#cbd5e1';
+  const flameFire = silhouette ? primary : '#f97316';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 咆哮する大火炎ブレス */}
+      {!silhouette && (
+        <g stroke="none">
+          <path d="M145 110 Q210 95, 235 60 Q215 110, 245 130 Q190 135, 145 115 Z" fill={flameFire} opacity="0.8" />
+          <path d="M148 112 Q190 100, 215 75 Q195 105, 220 120 Q180 125, 148 114 Z" fill="#facc15" />
+          <circle cx="225" cy="90" r="12" fill="#ffffff" opacity="0.6" />
+        </g>
+      )}
+
+      {/* 巨大な緑のトゲ甲羅（背中） */}
+      <ellipse cx="90" cy="155" rx="58" ry="62" fill={shellGreen} />
+      <ellipse cx="90" cy="155" rx="58" ry="62" fill="none" stroke={rimOrange} strokeWidth="8" />
+
+      {/* 甲羅の鋭いトゲ（円錐形＋リング台座） */}
+      <polygon points="50,120 30,105 60,110" fill={hornWhite} />
+      <polygon points="75,100 70,75 88,95" fill={hornWhite} />
+      <polygon points="40,165 15,165 42,180" fill={hornWhite} />
+      <polygon points="65,200 48,225 78,212" fill={hornWhite} />
+
+      {/* がっしりした黄色い巨体・太い両足・鋭いツメ */}
+      <ellipse cx="105" cy="225" rx="22" ry="14" fill={bodyYellow} />
+      <ellipse cx="165" cy="225" rx="24" ry="14" fill={bodyYellow} />
+      {/* 足の白いツメ */}
+      <polygon points="90,225 82,235 96,233" fill={hornWhite} />
+      <polygon points="102,228 102,238 112,233" fill={hornWhite} />
+      <polygon points="152,228 150,238 160,234" fill={hornWhite} />
+      <polygon points="168,225 174,236 178,227" fill={hornWhite} />
+
+      {/* 腹部の蛇腹プレート（クリームイエロー） */}
+      <path d="M105 130 Q145 125, 165 160 Q150 215, 115 215 Z" fill="#fef08a" />
+      <line x1="112" y1="155" x2="152" y2="155" stroke="#ca8a04" strokeWidth="2.5" />
+      <line x1="110" y1="180" x2="148" y2="180" stroke="#ca8a04" strokeWidth="2.5" />
+
+      {/* 剛腕・黒いトゲ付きリストバンド */}
+      <path d="M150 145 L190 160 L180 185 L145 170 Z" fill={bodyYellow} />
+      <rect x="172" y="152" width="14" height="26" rx="3" transform="rotate(20 172 152)" fill={cuffBlack} />
+      <polygon points="186,160 196,160 188,166" fill={spikeMetal} />
+      {/* 手のツメ */}
+      <circle cx="192" cy="180" r="14" fill={bodyYellow} />
+      <polygon points="198,172 212,172 202,180" fill={hornWhite} />
+      <polygon points="196,184 210,190 198,194" fill={hornWhite} />
+
+      {/* 凶悪で威厳ある頭部・大きな顎 */}
+      <ellipse cx="135" cy="98" rx="28" ry="24" fill={bodyYellow} />
+
+      {/* 突き出した巨大な口吻・牙 */}
+      <path d="M125 90 Q158 85, 172 105 Q150 128, 120 120 Z" fill="#fef08a" />
+      {/* 上下の鋭い牙 */}
+      <polygon points="132,96 138,108 144,98" fill={hornWhite} />
+      <polygon points="152,98 158,110 164,102" fill={hornWhite} />
+      <polygon points="140,118 146,108 152,118" fill={hornWhite} />
+
+      {/* 燃えるような赤い眉と赤い瞳 */}
+      <polygon points="112,82 138,76 132,88 114,88" fill={hairRed} />
+      <circle cx="126" cy="85" r="4.5" fill="#dc2626" />
+      <circle cx="127" cy="84" r="1.5" fill="#ffffff" />
+
+      {/* 頭上の巨大な2本の白角 */}
+      <path d="M110 75 Q95 45, 78 48 Q96 68, 106 82 Z" fill={hornWhite} />
+      <path d="M138 70 Q145 42, 162 45 Q148 65, 142 78 Z" fill={hornWhite} />
+
+      {/* 逆立つ赤いモヒカンヘア */}
+      <path
+        d="M115 72 Q110 32, 122 25 Q125 45, 134 40 Q135 25, 146 32 Q140 50, 142 72 Z"
+        fill={hairRed}
+      />
+    </g>
+  );
+}
+
+/** No.85 ヨッシー (緑の恐竜・丸い鼻・白お腹・タマゴ・赤鞍) */
+function YoshiSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const yoshiGreen = silhouette ? primary : '#22c55e';
+  const bellyWhite = silhouette ? secondary : '#ffffff';
+  const bootOrange = silhouette ? accent : '#f97316';
+  const saddleRed = silhouette ? primary : '#dc2626';
+  const crestRed = silhouette ? primary : '#ef4444';
+  const eggWhite = silhouette ? primary : '#ffffff';
+  const eggGreen = silhouette ? secondary : '#16a34a';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 寄り添うヨッシーの緑水玉タマゴ */}
+      {!silhouette && (
+        <g stroke={outline} strokeWidth="3">
+          <ellipse cx="60" cy="185" rx="20" ry="25" fill={eggWhite} />
+          {/* タマゴの緑水玉 */}
+          <circle cx="52" cy="175" r="6" fill={eggGreen} stroke="none" />
+          <circle cx="68" cy="188" r="7" fill={eggGreen} stroke="none" />
+          <circle cx="56" cy="200" r="5" fill={eggGreen} stroke="none" />
+        </g>
+      )}
+
+      {/* 太い尻尾 */}
+      <path d="M100 185 Q75 195, 68 180 Q85 160, 108 165 Z" fill={yoshiGreen} />
+
+      {/* 背中の赤い鞍（サドル） */}
+      <ellipse cx="106" cy="155" rx="12" ry="8" fill={saddleRed} />
+
+      {/* 大きなオレンジのブーツ両足 */}
+      <ellipse cx="112" cy="225" rx="20" ry="14" fill={bootOrange} />
+      <ellipse cx="160" cy="225" rx="20" ry="14" fill={bootOrange} />
+      {/* ブーツの黄色い靴底 */}
+      <path d="M96 232 Q112 238, 128 232" stroke="#eab308" strokeWidth="3" fill="none" />
+      <path d="M144 232 Q160 238, 176 232" stroke="#eab308" strokeWidth="3" fill="none" />
+
+      {/* 緑のぽってりした胴体＆白いお腹 */}
+      <ellipse cx="130" cy="175" rx="28" ry="32" fill={yoshiGreen} />
+      <path d="M128 152 Q158 160, 156 195 Q140 208, 126 205 Q145 180, 128 152 Z" fill={bellyWhite} />
+
+      {/* 小さくてかわいい緑の手 */}
+      <ellipse cx="152" cy="162" rx="10" ry="8" fill={yoshiGreen} />
+      <ellipse cx="120" cy="165" rx="9" ry="7" fill={yoshiGreen} />
+
+      {/* 後頭部の赤いトゲ突起 */}
+      <polygon points="106,95 90,92 102,105" fill={crestRed} />
+      <polygon points="104,110 88,112 102,122" fill={crestRed} />
+      <polygon points="106,128 92,135 108,140" fill={crestRed} />
+
+      {/* ヨッシーのチャームポイント：超巨大な丸い緑の鼻・顔 */}
+      <circle cx="160" cy="100" r="26" fill={yoshiGreen} />
+      {/* 鼻の穴 */}
+      <circle cx="168" cy="85" r="2.5" fill="#15803d" stroke="none" />
+
+      {/* 白いふっくらほっぺ */}
+      <ellipse cx="145" cy="116" rx="18" ry="14" fill={bellyWhite} />
+
+      {/* 縦に並んだ大きなパッチリ目 */}
+      <ellipse cx="125" cy="74" rx="12" ry="18" fill="#ffffff" />
+      <ellipse cx="142" cy="74" rx="12" ry="18" fill="#ffffff" />
+
+      {/* 澄んだ青い黒目瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="127" cy="75" rx="6" ry="10" fill="#0284c7" />
+          <ellipse cx="141" cy="75" rx="6" ry="10" fill="#0284c7" />
+          <ellipse cx="127" cy="75" rx="4" ry="7" fill="#0f172a" />
+          <ellipse cx="141" cy="75" rx="4" ry="7" fill="#0f172a" />
+          <circle cx="125" cy="70" r="2.5" fill="#ffffff" />
+          <circle cx="139" cy="70" r="2.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+
+/* ==========================================================================
+   ⛏️ マインクラフト・無限世界の冒険者＆魔獣 (スティーブ・クリーパー・エンダーマン・エンダードラゴン)
+   ========================================================================== */
+
+/** No.86 スティーブ (マイクラ四角ヘッド・ダイヤ剣・水色シャツ・青ズボン) */
+function SteveSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const shirtCyan = silhouette ? primary : '#06b6d4';
+  const pantsBlue = silhouette ? secondary : '#2563eb';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairBrown = silhouette ? secondary : '#78350f';
+  const shoeGrey = silhouette ? secondary : '#475569';
+  const diamondCyan = silhouette ? accent : '#22d3ee';
+  const diamondDark = silhouette ? accent : '#0891b2';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 構え持つ輝くダイヤモンドの剣（ピクセルブロック調） */}
+      <g transform="translate(160, 60) rotate(25)">
+        {/* 刀身 */}
+        <polygon points="12,0 24,12 12,80 0,68" fill={diamondCyan} />
+        <polygon points="12,0 18,6 9,74 0,68" fill="#a5f3fc" />
+        {/* 鍔（クロスガード） */}
+        <rect x="-10" y="72" width="44" height="10" rx="1" fill={diamondDark} />
+        {/* 柄＆柄頭 */}
+        <rect x="7" y="82" width="10" height="22" rx="1" fill="#78350f" />
+        <rect x="5" y="104" width="14" height="8" rx="1" fill={diamondDark} />
+      </g>
+
+      {/* エンチャントの紫光キューブ粒子 */}
+      {!silhouette && (
+        <g stroke="none" fill="#c084fc" opacity="0.8">
+          <rect x="50" y="90" width="8" height="8" />
+          <rect x="195" y="160" width="10" height="10" />
+          <rect x="40" y="170" width="7" height="7" />
+          <rect x="180" y="45" width="8" height="8" fill="#e879f9" />
+        </g>
+      )}
+
+      {/* ブロック調の足・グレーの靴 */}
+      <rect x="96" y="212" width="28" height="16" fill={shoeGrey} />
+      <rect x="136" y="212" width="28" height="16" fill={shoeGrey} />
+
+      {/* 青い直方体ズボン脚 */}
+      <rect x="96" y="160" width="28" height="54" fill={pantsBlue} />
+      <rect x="136" y="160" width="28" height="54" fill={pantsBlue} />
+
+      {/* 水色（シアン）のブロックシャツ胴体 */}
+      <rect x="92" y="108" width="76" height="54" fill={shirtCyan} />
+      {/* 胸元のVネック切り込み */}
+      <polygon points="120,108 130,120 140,108" fill={skinTone} stroke="none" />
+
+      {/* 左腕（直方体ブロック） */}
+      <rect x="66" y="108" width="26" height="30" fill={shirtCyan} />
+      <rect x="66" y="138" width="26" height="36" fill={skinTone} />
+
+      {/* 右腕（剣を握る直方体ブロック） */}
+      <rect x="168" y="108" width="26" height="30" fill={shirtCyan} />
+      <rect x="168" y="138" width="26" height="36" fill={skinTone} />
+
+      {/* 完全正方形のブロックヘッド（70x70） */}
+      <rect x="95" y="38" width="70" height="70" fill={skinTone} />
+
+      {/* 茶色いブロック髪の毛 */}
+      <rect x="95" y="38" width="70" height="22" fill={hairBrown} />
+      <rect x="95" y="60" width="12" height="20" fill={hairBrown} />
+      <rect x="153" y="60" width="12" height="20" fill={hairBrown} />
+
+      {/* ピクセル目＆青い瞳＆ヒゲ口 */}
+      {!silhouette && (
+        <g stroke="none">
+          {/* 白目 */}
+          <rect x="110" y="68" width="10" height="8" fill="#ffffff" />
+          <rect x="140" y="68" width="10" height="8" fill="#ffffff" />
+          {/* 濃紺/紫の瞳 */}
+          <rect x="114" y="68" width="6" height="8" fill="#1e3a8a" />
+          <rect x="140" y="68" width="6" height="8" fill="#1e3a8a" />
+          {/* 鼻 */}
+          <rect x="126" y="74" width="8" height="6" fill="#e0a96d" />
+          {/* おなじみ笑顔のヒゲ/口 */}
+          <rect x="122" y="84" width="16" height="6" fill="#5c2d11" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.87 クリーパー (緑モザイク・悲壮なピクセル顔・4脚・青雷の帯電スパーク) */
+function CreeperSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const greenBase = silhouette ? primary : '#22c55e';
+  const greenDark = silhouette ? secondary : '#15803d';
+  const greenLight = silhouette ? primary : '#4ade80';
+  const faceBlack = silhouette ? secondary : '#0f172a';
+  const sparkBlue = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 帯電クリーパー（Charged Creeper）の強力な青雷オーラ */}
+      {!silhouette && (
+        <g stroke={sparkBlue} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M40 80 L60 100 L50 120 L75 140" />
+          <path d="M210 70 L195 95 L215 115 L190 145" />
+          <path d="M45 180 L65 195 L55 215" />
+          <path d="M205 180 L185 200 L210 220" />
+          {/* シューーーッ！の導火線スパーク煙 */}
+          <circle cx="130" cy="22" r="5" fill="#facc15" stroke="none" />
+          <path d="M130 35 Q125 28, 130 22" stroke="#eab308" strokeWidth="2.5" />
+        </g>
+      )}
+
+      {/* 4つのブロック脚（前脚2・後脚2） */}
+      <rect x="88" y="195" width="22" height="32" fill={greenDark} />
+      <rect x="110" y="200" width="20" height="27" fill={greenBase} />
+      <rect x="130" y="200" width="20" height="27" fill={greenBase} />
+      <rect x="150" y="195" width="22" height="32" fill={greenDark} />
+      {/* 足元の黒いツメ模様 */}
+      <rect x="88" y="220" width="22" height="7" fill={faceBlack} stroke="none" />
+      <rect x="150" y="220" width="22" height="7" fill={faceBlack} stroke="none" />
+
+      {/* 直方体の胴体（緑のピクセルモザイク） */}
+      <rect x="98" y="115" width="64" height="84" fill={greenBase} />
+      {!silhouette && (
+        <g stroke="none">
+          <rect x="102" y="120" width="14" height="16" fill={greenDark} />
+          <rect x="134" y="125" width="16" height="14" fill={greenLight} />
+          <rect x="115" y="145" width="18" height="18" fill={greenDark} />
+          <rect x="142" y="158" width="16" height="18" fill="#166534" />
+          <rect x="100" y="172" width="18" height="16" fill={greenLight} />
+        </g>
+      )}
+
+      {/* 完全正方形の頭部ブロック（72x72） */}
+      <rect x="94" y="42" width="72" height="72" fill={greenBase} />
+
+      {/* 頭部のモザイクピクセル */}
+      {!silhouette && (
+        <g stroke="none">
+          <rect x="96" y="44" width="14" height="14" fill={greenDark} />
+          <rect x="148" y="44" width="16" height="14" fill={greenLight} />
+          <rect x="114" y="46" width="14" height="12" fill="#166534" />
+          <rect x="96" y="96" width="16" height="16" fill={greenLight} />
+          <rect x="148" y="96" width="16" height="16" fill={greenDark} />
+        </g>
+      )}
+
+      {/* ★ クリーパーの象徴：哀愁と恐怖の黒ピクセルフェイス ★ */}
+      {/* 両目 */}
+      <rect x="106" y="60" width="14" height="14" fill={faceBlack} />
+      <rect x="140" y="60" width="14" height="14" fill={faceBlack} />
+      {/* 鼻と口の一体型特徴的ブロックパターン */}
+      <rect x="122" y="74" width="16" height="22" fill={faceBlack} />
+      <rect x="114" y="82" width="8" height="24" fill={faceBlack} />
+      <rect x="138" y="82" width="8" height="24" fill={faceBlack} />
+      <rect x="122" y="96" width="16" height="10" fill={greenBase} />
+    </g>
+  );
+}
+
+/** No.88 エンダーマン (極細漆黒シルエット・紫発光目・草ブロック所持・テレポート立方体) */
+function EndermanSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const bodyBlack = silhouette ? primary : '#090d16';
+  const eyeMagenta = silhouette ? accent : '#f472b6';
+  const eyePurple = silhouette ? accent : '#c084fc';
+  const grassGreen = silhouette ? primary : '#15803d';
+  const dirtBrown = silhouette ? secondary : '#78350f';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 異次元テレポートの紫立方体パーティクル */}
+      {!silhouette && (
+        <g stroke="none" fill={eyePurple} opacity="0.85">
+          <rect x="35" y="60" width="9" height="9" />
+          <rect x="55" y="110" width="11" height="11" fill={eyeMagenta} />
+          <rect x="40" y="180" width="8" height="8" />
+          <rect x="210" y="85" width="10" height="10" fill={eyeMagenta} />
+          <rect x="195" y="145" width="8" height="8" />
+          <rect x="215" y="200" width="11" height="11" />
+        </g>
+      )}
+
+      {/* 超長身の極細両足 */}
+      <rect x="114" y="145" width="11" height="90" fill={bodyBlack} />
+      <rect x="135" y="145" width="11" height="90" fill={bodyBlack} />
+
+      {/* 細身の胴体ブロック */}
+      <rect x="112" y="85" width="36" height="62" fill={bodyBlack} />
+
+      {/* 長く垂れ下がる極細両腕 */}
+      <rect x="96" y="88" width="12" height="95" fill={bodyBlack} />
+      <rect x="152" y="88" width="12" height="95" fill={bodyBlack} />
+
+      {/* ★ エンダーマンが両手で抱える草ブロック（Grass Block） ★ */}
+      <g stroke={outline} strokeWidth="3">
+        {/* 土ブロックベース */}
+        <rect x="105" y="135" width="50" height="42" fill={dirtBrown} />
+        {/* 草の上面緑レイヤー */}
+        <rect x="105" y="135" width="50" height="12" fill={grassGreen} />
+        {/* 垂れ下がる草のピクセルギザギザ */}
+        <polygon points="105,147 112,154 118,147 125,156 132,147 140,155 148,147 155,152 155,147" fill={grassGreen} stroke="none" />
+      </g>
+
+      {/* 角ばった漆黒の頭部ブロック */}
+      <rect x="104" y="32" width="52" height="52" fill={bodyBlack} />
+
+      {/* ★ エンダーマンの象徴：横長に妖しく光るマゼンタ紫の瞳 ★ */}
+      {!silhouette && (
+        <g stroke="none">
+          {/* 左目 */}
+          <rect x="110" y="54" width="14" height="6" fill={eyePurple} />
+          <rect x="114" y="55" width="6" height="4" fill="#ffffff" />
+          {/* 右目 */}
+          <rect x="136" y="54" width="14" height="6" fill={eyePurple} />
+          <rect x="140" y="55" width="6" height="4" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.89 エンダードラゴン (ジ・エンドの黒曜石巨竜・紫の翼膜・ピンクの瞳・ブレス) */
+function EnderDragonSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const dragonBlack = silhouette ? primary : '#090d16';
+  const wingPurple = silhouette ? secondary : '#7c3aed';
+  const eyePink = silhouette ? accent : '#ec4899';
+  const breathMagenta = silhouette ? primary : '#d946ef';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 紫の酸性ドラゴンブレス渦巻き */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.75">
+          <ellipse cx="205" cy="75" rx="30" ry="18" fill={breathMagenta} />
+          <ellipse cx="205" cy="75" rx="16" ry="9" fill="#f472b6" />
+          <circle cx="225" cy="65" r="7" fill="#ffffff" />
+          <circle cx="215" cy="92" r="5" fill="#f472b6" />
+        </g>
+      )}
+
+      {/* 長いブロック尻尾と尾翼 */}
+      <path d="M70 190 L40 215 L32 205 L62 180 Z" fill={dragonBlack} />
+      <polygon points="32,205 18,225 35,225" fill="#475569" />
+
+      {/* 左の巨大なドラゴン翼（外骨格＋紫の翼膜） */}
+      <polygon points="105,140 30,70 15,115 50,150 95,165" fill={wingPurple} opacity="0.9" />
+      <polyline points="105,140 30,70 15,115" stroke={dragonBlack} strokeWidth="6" fill="none" />
+      <line x1="30" y1="70" x2="50" y2="150" stroke={dragonBlack} strokeWidth="4" />
+
+      {/* 右の巨大なドラゴン翼 */}
+      <polygon points="155,140 230,70 245,115 210,150 165,165" fill={wingPurple} opacity="0.9" />
+      <polyline points="155,140 230,70 245,115" stroke={dragonBlack} strokeWidth="6" fill="none" />
+      <line x1="230" y1="70" x2="210" y2="150" stroke={dragonBlack} strokeWidth="4" />
+
+      {/* 2本のブロック脚と鋭い爪 */}
+      <rect x="94" y="195" width="18" height="28" fill={dragonBlack} />
+      <rect x="148" y="195" width="18" height="28" fill={dragonBlack} />
+      <polygon points="88,223 98,228 92,233" fill="#cbd5e1" />
+      <polygon points="160,223 170,228 164,233" fill="#cbd5e1" />
+
+      {/* 漆黒の直方体ブロック胴体 */}
+      <rect x="90" y="130" width="80" height="70" rx="4" fill={dragonBlack} />
+      {/* 背中のグレーのブロック背びれ */}
+      <rect x="124" y="125" width="12" height="12" fill="#64748b" />
+      <rect x="124" y="148" width="12" height="12" fill="#64748b" />
+      <rect x="124" y="172" width="12" height="12" fill="#64748b" />
+
+      {/* 前方に突き出す首ブロック */}
+      <polygon points="110,132 120,88 140,88 150,132" fill={dragonBlack} />
+
+      {/* ブロック調のドラゴンヘッド */}
+      <rect x="108" y="52" width="44" height="40" fill={dragonBlack} />
+      {/* 突き出した吻部 */}
+      <rect x="145" y="62" width="28" height="25" fill={dragonBlack} />
+
+      {/* 頭部のグレーの角突起 */}
+      <polygon points="114,52 104,36 122,48" fill="#64748b" />
+      <polygon points="138,52 148,36 130,48" fill="#64748b" />
+
+      {/* ★ 妖しく輝くピンクのピクセルアイ ★ */}
+      {!silhouette && (
+        <g stroke="none">
+          <rect x="142" y="62" width="10" height="6" fill={eyePink} />
+          <rect x="144" y="63" width="5" height="4" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -6800,6 +7452,26 @@ function KaijuSpecificSvgDispatcher({
       return <PiccoloSvg {...partProps} />;
     case 'nature-db-broly':
       return <BrolySvg {...partProps} />;
+
+    // 🍄 スーパーマリオ・キノコ王国の英雄
+    case 'fire-mario-mario':
+      return <MarioSvg {...partProps} />;
+    case 'thunder-mario-luigi':
+      return <LuigiSvg {...partProps} />;
+    case 'fire-mario-bowser':
+      return <BowserSvg {...partProps} />;
+    case 'nature-mario-yoshi':
+      return <YoshiSvg {...partProps} />;
+
+    // ⛏️ マインクラフト・無限世界の冒険者＆魔獣
+    case 'water-mc-steve':
+      return <SteveSvg {...partProps} />;
+    case 'nature-mc-creeper':
+      return <CreeperSvg {...partProps} />;
+    case 'thunder-mc-enderman':
+      return <EndermanSvg {...partProps} />;
+    case 'water-mc-enderdragon':
+      return <EnderDragonSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;
