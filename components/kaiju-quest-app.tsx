@@ -129,6 +129,7 @@ export default function KaijuQuestApp() {
   // 図鑑タブの選択・フィルターステート
   const [zukanCategoryFilter, setZukanCategoryFilter] = useState<'all' | CreatureCategory>('all');
   const [zukanFilter, setZukanFilter] = useState<'all' | ElementId>('all');
+  const [zukanInsectTypeFilter, setZukanInsectTypeFilter] = useState<'all' | KaijuTypeId>('all');
   const [zukanViewMode, setZukanViewMode] = useState<'grid3' | 'card2'>('grid3');
   const [selectedZukanKaiju, setSelectedZukanKaiju] = useState<KaijuData | null>(null);
 
@@ -862,10 +863,17 @@ export default function KaijuQuestApp() {
       ? KAIJU_LIST
       : KAIJU_LIST.filter((k) => (k.category || 'kaiju') === zukanCategoryFilter);
 
-  const filteredZukanList =
-    zukanFilter === 'all'
-      ? categoryFilteredZukanList
-      : categoryFilteredZukanList.filter((k) => k.element === zukanFilter);
+  const filteredZukanList = categoryFilteredZukanList.filter((k) => {
+    if (zukanFilter !== 'all' && k.element !== zukanFilter) return false;
+    if (
+      zukanCategoryFilter === 'insect' &&
+      zukanInsectTypeFilter !== 'all' &&
+      k.type !== zukanInsectTypeFilter
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   // 現在のあいぼう怪獣データ
   const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
@@ -1410,7 +1418,7 @@ export default function KaijuQuestApp() {
                       }`}
                     >
                       <span className="text-xl">🪲</span>
-                      <span>ほんもの昆虫 (36種)</span>
+                      <span>ほんもの昆虫 (37種)</span>
                     </button>
                   </div>
 
@@ -1635,13 +1643,15 @@ export default function KaijuQuestApp() {
                 />
               </div>
 
-              {/* カテゴリ切り替えボタン（すべて 64種 / かいじゅう 28種 / ほんもの昆虫 36種） */}
+              {/* カテゴリ切り替えボタン（すべて 138種 / かいじゅう 101種 / ほんもの昆虫 37種） */}
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     playTapSound(500);
                     setZukanCategoryFilter('all');
+                    setZukanFilter('all');
+                    setZukanInsectTypeFilter('all');
                   }}
                   className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     zukanCategoryFilter === 'all'
@@ -1656,6 +1666,8 @@ export default function KaijuQuestApp() {
                   onClick={() => {
                     playTapSound(500);
                     setZukanCategoryFilter('kaiju');
+                    setZukanFilter('all');
+                    setZukanInsectTypeFilter('all');
                   }}
                   className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     zukanCategoryFilter === 'kaiju'
@@ -1670,6 +1682,8 @@ export default function KaijuQuestApp() {
                   onClick={() => {
                     playTapSound(500);
                     setZukanCategoryFilter('insect');
+                    setZukanFilter('all');
+                    setZukanInsectTypeFilter('all');
                   }}
                   className={`min-h-[46px] rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     zukanCategoryFilter === 'insect'
@@ -1681,52 +1695,120 @@ export default function KaijuQuestApp() {
                 </button>
               </div>
 
-              {/* 属性・フィールドフィルターボタン */}
-              <div className="grid grid-cols-5 gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTapSound(520);
-                    setZukanFilter('all');
-                  }}
-                  className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                    zukanFilter === 'all'
-                      ? 'bg-white text-slate-950 border-white shadow-md'
-                      : 'bg-slate-950 text-slate-300 border-white/15'
-                  }`}
-                >
-                  <span className="text-lg">🌟</span>
-                  <span>すべて</span>
-                </button>
-                {ELEMENT_OPTIONS.map((el) => {
-                  const icon =
-                    zukanCategoryFilter === 'insect' && el.insectFieldEmoji
-                      ? el.insectFieldEmoji
-                      : el.emoji;
-                  const label =
-                    zukanCategoryFilter === 'insect' && el.insectFieldLabel
-                      ? el.insectFieldLabel
-                      : el.label;
-
-                  return (
+              {/* 🪲 昆虫モード専用：昆虫の仲間タイプフィルター（カブト 11 / クワガタ 9 / ハンター 9 / フライヤー 8） */}
+              {zukanCategoryFilter === 'insect' && (
+                <div className="space-y-1 pt-1 border-t border-white/10">
+                  <div className="text-[11px] font-black text-amber-300 flex items-center gap-1 px-0.5">
+                    <span>🪲 昆虫のしゅるい（タップで絞り込み）:</span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                     <button
-                      key={el.id}
                       type="button"
                       onClick={() => {
-                        playTapSound(560);
-                        setZukanFilter(el.id);
+                        playTapSound(520);
+                        setZukanInsectTypeFilter('all');
                       }}
-                      className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                        zukanFilter === el.id
-                          ? `bg-gradient-to-br ${el.bgGradient} text-white border-white shadow-md`
-                          : 'bg-slate-950 text-slate-300 border-white/15'
+                      className={`min-h-[44px] rounded-xl font-black text-[11px] sm:text-xs flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                        zukanInsectTypeFilter === 'all'
+                          ? 'bg-amber-400 text-slate-950 border-white shadow-md'
+                          : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
                       }`}
                     >
-                      <span className="text-lg">{icon}</span>
-                      <span className="truncate max-w-full px-0.5">{label}</span>
+                      <span>🌟 すべて</span>
+                      <span className="text-[10px] tabular-nums font-bold">
+                        ({KAIJU_LIST.filter((k) => k.category === 'insect').length})
+                      </span>
                     </button>
-                  );
-                })}
+                    {INSECT_TYPE_OPTIONS.map((tp) => {
+                      const count = KAIJU_LIST.filter(
+                        (k) => k.category === 'insect' && k.type === tp.id
+                      ).length;
+                      const isSelected = zukanInsectTypeFilter === tp.id;
+                      return (
+                        <button
+                          key={tp.id}
+                          type="button"
+                          onClick={() => {
+                            playTapSound(540);
+                            setZukanInsectTypeFilter(tp.id);
+                          }}
+                          className={`min-h-[44px] rounded-xl font-black text-[11px] sm:text-xs flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                            isSelected
+                              ? 'bg-emerald-500 text-slate-950 border-white shadow-md'
+                              : 'bg-slate-950 text-slate-300 border-white/15 hover:border-slate-500'
+                          }`}
+                        >
+                          <span className="truncate max-w-full px-0.5">
+                            {tp.emoji} {tp.label.replace('系', '')}
+                          </span>
+                          <span className="text-[10px] tabular-nums font-bold">({count})</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* 属性・フィールドフィルターボタン */}
+              <div className="space-y-1 pt-1 border-t border-white/10">
+                {zukanCategoryFilter === 'insect' && (
+                  <div className="text-[11px] font-black text-emerald-300 flex items-center gap-1 px-0.5">
+                    <span>🌳 むしとりフィールド（生息地）:</span>
+                  </div>
+                )}
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound(520);
+                      setZukanFilter('all');
+                    }}
+                    className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      zukanFilter === 'all'
+                        ? 'bg-white text-slate-950 border-white shadow-md'
+                        : 'bg-slate-950 text-slate-300 border-white/15'
+                    }`}
+                  >
+                    <span className="text-base sm:text-lg">🌟</span>
+                    <span>全フィールド</span>
+                    <span className="text-[10px] tabular-nums font-bold">
+                      ({categoryFilteredZukanList.length})
+                    </span>
+                  </button>
+                  {ELEMENT_OPTIONS.map((el) => {
+                    const icon =
+                      zukanCategoryFilter === 'insect' && el.insectFieldEmoji
+                        ? el.insectFieldEmoji
+                        : el.emoji;
+                    const label =
+                      zukanCategoryFilter === 'insect' && el.insectFieldLabel
+                        ? el.insectFieldLabel
+                        : el.label;
+                    const count = categoryFilteredZukanList.filter((k) => k.element === el.id).length;
+
+                    return (
+                      <button
+                        key={el.id}
+                        type="button"
+                        onClick={() => {
+                          playTapSound(560);
+                          setZukanFilter(el.id);
+                        }}
+                        className={`min-h-[52px] rounded-xl font-black text-xs sm:text-sm flex flex-col items-center justify-center border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                          zukanFilter === el.id
+                            ? `bg-gradient-to-br ${el.bgGradient} text-white border-white shadow-md`
+                            : 'bg-slate-950 text-slate-300 border-white/15'
+                        }`}
+                      >
+                        <span className="text-base sm:text-lg">{icon}</span>
+                        <span className="truncate max-w-full px-0.5 text-[11px] sm:text-xs">
+                          {label}
+                        </span>
+                        <span className="text-[10px] tabular-nums font-bold">({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -1785,7 +1867,7 @@ export default function KaijuQuestApp() {
                       key={kaiju.id}
                       type="button"
                       onClick={() => handleZukanCardTap(kaiju, isUnlocked)}
-                      className={`zukan-card-item group relative rounded-2xl p-2 transition-transform active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[142px] sm:min-h-[158px] overflow-hidden text-center ${
+                      className={`group relative rounded-2xl p-2 transition-transform active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[142px] sm:min-h-[158px] overflow-hidden text-center ${
                         isUnlocked
                           ? `bg-slate-900/95 border border-white/20 hover:border-amber-400 shadow-sm hover:shadow-[0_0_18px_rgba(250,204,21,0.35)]`
                           : 'bg-slate-950/70 border border-dashed border-white/10 opacity-70 hover:opacity-100'
@@ -1903,7 +1985,7 @@ export default function KaijuQuestApp() {
                       key={kaiju.id}
                       type="button"
                       onClick={() => handleZukanCardTap(kaiju, isUnlocked)}
-                      className={`zukan-card-large group relative rounded-3xl p-1 transition-transform active:scale-95 cursor-pointer text-left ${
+                      className={`group relative rounded-3xl p-1 transition-transform active:scale-95 cursor-pointer text-left ${
                         isUnlocked
                           ? `bg-gradient-to-br ${elMeta.bgGradient} shadow-lg hover:shadow-[0_0_25px_rgba(250,204,21,0.5)]`
                           : 'bg-slate-800/80 border border-white/10'
