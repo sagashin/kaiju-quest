@@ -6628,6 +6628,945 @@ function EnderDragonSvg({ primary, secondary, accent, eyeColor, outline, silhoue
 
 
 /* ==========================================================================
+   ⚔️ 鬼滅の刃・鬼殺隊と柱たち (炭治郎・禰豆子・善逸・伊之助・煉獄・義勇・しのぶ・天元)
+   ========================================================================== */
+
+/** No.90 竈門炭治郎 (市松模様羽織・日輪刀・水と炎の龍・花札耳飾り) */
+function TanjiroSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const haoriGreen = silhouette ? primary : '#15803d';
+  const haoriBlack = silhouette ? secondary : '#0f172a';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairBurgundy = silhouette ? secondary : '#581c87';
+  const waterCyan = silhouette ? accent : '#38bdf8';
+  const fireOrange = silhouette ? primary : '#f97316';
+  const bladeBlack = silhouette ? secondary : '#1e293b';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 水と炎の二重螺旋エフェクト（水の呼吸＆ヒノカミ神楽） */}
+      {!silhouette && (
+        <g stroke="none">
+          <path d="M40 180 Q80 230, 160 215 Q220 200, 235 140 Q215 170, 150 185 Q90 195, 40 180 Z" fill={waterCyan} opacity="0.75" />
+          <path d="M220 70 Q180 35, 120 45 Q70 55, 45 105 Q70 75, 130 70 Q180 65, 220 70 Z" fill={fireOrange} opacity="0.8" />
+          <circle cx="215" cy="65" r="8" fill="#facc15" />
+          <circle cx="48" cy="115" r="6" fill="#fde047" />
+          <circle cx="230" cy="145" r="7" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* 脚・脚絆・草履 */}
+      <rect x="100" y="215" width="24" height="15" fill="#f8fafc" />
+      <rect x="136" y="215" width="24" height="15" fill="#f8fafc" />
+      <ellipse cx="112" cy="230" rx="15" ry="6" fill="#ca8a04" />
+      <ellipse cx="148" cy="230" rx="15" ry="6" fill="#ca8a04" />
+
+      {/* 漆黒の隊服ズボン（たっつけ袴） */}
+      <path d="M96 168 L92 216 L122 216 L124 178 Z" fill="#1e293b" />
+      <path d="M164 168 L168 216 L138 216 L136 178 Z" fill="#1e293b" />
+
+      {/* 隊服の上着＆白いベルト */}
+      <rect x="98" y="122" width="64" height="50" rx="4" fill="#1e293b" />
+      <rect x="98" y="160" width="64" height="8" fill="#ffffff" stroke="none" />
+
+      {/* ★ 炭治郎の象徴：緑と黒の市松模様の羽織 ★ */}
+      {/* 左袖 */}
+      <rect x="66" y="120" width="34" height="48" rx="4" fill={haoriGreen} />
+      <rect x="66" y="120" width="17" height="24" fill={haoriBlack} />
+      <rect x="83" y="144" width="17" height="24" fill={haoriBlack} />
+      {/* 右袖 */}
+      <rect x="160" y="120" width="34" height="48" rx="4" fill={haoriGreen} />
+      <rect x="160" y="120" width="17" height="24" fill={haoriBlack} />
+      <rect x="177" y="144" width="17" height="24" fill={haoriBlack} />
+      {/* 羽織の胴体 */}
+      <rect x="94" y="122" width="72" height="46" rx="3" fill={haoriGreen} />
+      <rect x="94" y="122" width="18" height="23" fill={haoriBlack} />
+      <rect x="130" y="122" width="18" height="23" fill={haoriBlack} />
+      <rect x="112" y="145" width="18" height="23" fill={haoriBlack} />
+      <rect x="148" y="145" width="18" height="23" fill={haoriBlack} />
+
+      {/* 右手：構えた黒い日輪刀（鍔は車輪模様） */}
+      <path d="M178 140 L210 95 L222 105 L188 150 Z" fill={skinTone} />
+      {/* 日輪刀の刀身 */}
+      <polygon points="215,90 235,40 240,44 222,96" fill={bladeBlack} />
+      <line x1="215" y1="90" x2="235" y2="40" stroke="#94a3b8" strokeWidth="2" />
+      {/* 赤い車輪鍔 */}
+      <circle cx="218" cy="94" r="8" fill="#dc2626" />
+
+      {/* 左手 */}
+      <circle cx="78" cy="165" r="9" fill={skinTone} />
+
+      {/* 頭部・顔 */}
+      <ellipse cx="130" cy="88" rx="28" ry="26" fill={skinTone} />
+
+      {/* 花札の耳飾り */}
+      <rect x="98" y="94" width="7" height="16" fill="#ffffff" />
+      <circle cx="101" cy="99" r="2.5" fill="#dc2626" stroke="none" />
+      <rect x="155" y="94" width="7" height="16" fill="#ffffff" />
+      <circle cx="158" cy="99" r="2.5" fill="#dc2626" stroke="none" />
+
+      {/* 額の赤い痣（火傷痕） */}
+      <path d="M116 72 Q120 70, 122 75 Q118 78, 116 72 Z" fill="#b91c1c" stroke="none" />
+
+      {/* 赤黒い逆立ち髪 */}
+      <path
+        d="M102 85 L95 65 L110 68 L108 50 L122 58 L126 42 L138 52 L148 44 L146 60 L158 54 L154 72 L164 74 L156 86 Z"
+        fill={hairBurgundy}
+      />
+
+      {/* まっすぐで優しい赤い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="120" cy="88" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="140" cy="88" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="120" cy="88" rx="3" ry="4.5" fill="#991b1b" />
+          <ellipse cx="140" cy="88" rx="3" ry="4.5" fill="#991b1b" />
+          <circle cx="119" cy="86" r="1.5" fill="#ffffff" />
+          <circle cx="139" cy="86" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.91 竈門禰豆子 (竹筒・麻の葉ピンク着物・覚醒角・ピンク爆血炎) */
+function NezukoSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const kimonoPink = silhouette ? primary : '#f472b6';
+  const haoriBlack = silhouette ? secondary : '#0f172a';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairBlack = silhouette ? secondary : '#0f172a';
+  const hairOrange = silhouette ? primary : '#f97316';
+  const bambooGreen = silhouette ? accent : '#16a34a';
+  const flamePink = silhouette ? primary : '#ec4899';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 渦巻く血鬼術・爆血のピンク炎 */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.85">
+          <path d="M45 190 Q20 150, 50 120 Q65 145, 55 175 Z" fill={flamePink} />
+          <path d="M215 190 Q240 150, 210 120 Q195 145, 205 175 Z" fill={flamePink} />
+          <circle cx="35" cy="140" r="8" fill="#fbcfe8" />
+          <circle cx="225" cy="140" r="8" fill="#fbcfe8" />
+        </g>
+      )}
+
+      {/* 長い黒髪（毛先が鮮やかなオレンジグラデーション） */}
+      <path d="M95 90 Q65 140, 75 220 Q95 210, 100 170 Z" fill={hairBlack} />
+      <path d="M165 90 Q195 140, 185 220 Q165 210, 160 170 Z" fill={hairBlack} />
+      {/* 毛先のオレンジ */}
+      <polygon points="75,200 68,225 85,225 80,205" fill={hairOrange} stroke="none" />
+      <polygon points="185,200 192,225 175,225 180,205" fill={hairOrange} stroke="none" />
+
+      {/* ピンクの麻の葉着物 */}
+      <path d="M102 125 L92 225 L168 225 L158 125 Z" fill={kimonoPink} />
+      {/* 赤白の市松帯 */}
+      <rect x="100" y="152" width="60" height="18" fill="#dc2626" />
+      <rect x="105" y="155" width="10" height="12" fill="#ffffff" stroke="none" />
+      <rect x="125" y="155" width="10" height="12" fill="#ffffff" stroke="none" />
+      <rect x="145" y="155" width="10" height="12" fill="#ffffff" stroke="none" />
+
+      {/* 黒い羽織（外側コート） */}
+      <path d="M85 125 L75 195 L98 190 L96 125 Z" fill={haoriBlack} />
+      <path d="M175 125 L185 195 L162 190 L164 125 Z" fill={haoriBlack} />
+
+      {/* 小さくて可愛い両手 */}
+      <circle cx="95" cy="180" r="8" fill={skinTone} />
+      <circle cx="165" cy="180" r="8" fill={skinTone} />
+
+      {/* 頭部・顔 */}
+      <ellipse cx="130" cy="85" rx="26" ry="24" fill={skinTone} />
+
+      {/* 前髪とサイドの髪飾り（ピンクのリボン） */}
+      <circle cx="108" cy="65" r="7" fill={flamePink} />
+      <path d="M104 68 Q130 55, 156 68 Q160 80, 150 72 Q130 65, 110 72 Z" fill={hairBlack} />
+
+      {/* 覚醒時の額の白い角 */}
+      <polygon points="144,68 152,48 148,68" fill="#ffffff" stroke={outline} strokeWidth="2.5" />
+
+      {/* ★ トレードマーク：口元の緑の竹筒 ★ */}
+      <rect x="114" y="92" width="32" height="10" rx="3" fill={bambooGreen} />
+      <line x1="102" y1="97" x2="158" y2="97" stroke="#dc2626" strokeWidth="2" fill="none" />
+
+      {/* 美しく澄んだピンクの丸い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="120" cy="82" rx="5" ry="6.5" fill="#ffffff" />
+          <ellipse cx="140" cy="82" rx="5" ry="6.5" fill="#ffffff" />
+          <ellipse cx="120" cy="82" rx="3.5" ry="5" fill="#ec4899" />
+          <ellipse cx="140" cy="82" rx="3.5" ry="5" fill="#ec4899" />
+          <circle cx="119" cy="80" r="1.5" fill="#ffffff" />
+          <circle cx="139" cy="80" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.92 我妻善逸 (黄色三角鱗羽織・金髪・居合抜刀・黄金の稲妻神速) */
+function ZenitsuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const haoriYellow = silhouette ? primary : '#facc15';
+  const haoriOrange = silhouette ? primary : '#f97316';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairGold = silhouette ? primary : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 霹靂一閃の鋭い黄金稲妻スパーク */}
+      {!silhouette && (
+        <g stroke="#fef08a" strokeWidth="3.5" fill="none" strokeLinecap="round">
+          <path d="M30 110 L70 130 L55 155 L90 170" />
+          <path d="M230 100 L190 125 L210 145 L175 165" />
+          <path d="M70 215 L100 195 L120 225 L160 205 L190 225" />
+          <circle cx="45" cy="95" r="4" fill="#ffffff" stroke="none" />
+          <circle cx="215" cy="85" r="4" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+
+      {/* 脚絆・白足袋 */}
+      <rect x="98" y="215" width="22" height="15" fill={haoriYellow} />
+      <rect x="140" y="215" width="22" height="15" fill={haoriYellow} />
+      <ellipse cx="109" cy="230" rx="14" ry="6" fill="#ffffff" />
+      <ellipse cx="151" cy="230" rx="14" ry="6" fill="#ffffff" />
+
+      {/* 黒い隊服ズボン */}
+      <path d="M96 168 L92 216 L122 216 L124 178 Z" fill="#1e293b" />
+      <path d="M164 168 L168 216 L138 216 L136 178 Z" fill="#1e293b" />
+
+      {/* ★ 善逸の象徴：黄〜オレンジグラデーション＆白三角の鱗羽織 ★ */}
+      <rect x="65" y="120" width="32" height="46" rx="4" fill={haoriYellow} />
+      <rect x="163" y="120" width="32" height="46" rx="4" fill={haoriYellow} />
+      <rect x="94" y="122" width="72" height="48" rx="4" fill={haoriYellow} />
+      {/* 裾のオレンジ */}
+      <path d="M94 154 L94 170 L166 170 L166 154 Z" fill={haoriOrange} />
+      {/* 白い三角幾何学模様 */}
+      {!silhouette && (
+        <g fill="#ffffff" stroke="none">
+          <polygon points="106,134 112,142 100,142" />
+          <polygon points="126,132 132,140 120,140" />
+          <polygon points="146,134 152,142 140,142" />
+          <polygon points="116,148 122,156 110,156" />
+          <polygon points="136,148 142,156 130,156" />
+        </g>
+      )}
+
+      {/* 腰に差した白鞘の日輪刀・抜刀の構え */}
+      <rect x="75" y="152" width="60" height="7" rx="2" transform="rotate(18 75 152)" fill="#ffffff" />
+      <circle cx="132" cy="170" r="6" fill="#facc15" />
+      {/* 刀を握り締める右手 */}
+      <circle cx="135" cy="170" r="8" fill={skinTone} />
+      {/* 鞘を抑える左手 */}
+      <circle cx="85" cy="155" r="8" fill={skinTone} />
+
+      {/* 頭部・顔（神速の集中状態） */}
+      <ellipse cx="130" cy="85" rx="26" ry="24" fill={skinTone} />
+
+      {/* おかっぱ風のパッツン金髪（毛先オレンジ） */}
+      <path
+        d="M102 75 L98 95 L106 95 L106 100 L114 92 L122 98 L130 90 L138 98 L146 92 L154 100 L154 95 L162 95 L158 75 Z"
+        fill={hairGold}
+      />
+      <polygon points="104,95 106,102 114,94" fill={haoriOrange} stroke="none" />
+      <polygon points="146,94 154,102 156,95" fill={haoriOrange} stroke="none" />
+
+      {/* 居合抜刀の凛々しく閉じた細い目 */}
+      {!silhouette && (
+        <g stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" fill="none">
+          <path d="M114 84 Q122 81, 126 84" />
+          <path d="M134 84 Q138 81, 146 84" />
+          <line x1="120" y1="88" x2="140" y2="88" stroke="#facc15" strokeWidth="1.5" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.93 嘴平伊之助 (猪頭マスク・筋肉美・二刀流ギザギザ刀・風刃) */
+function InosukeSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const boarGrey = silhouette ? primary : '#94a3b8';
+  const boarDark = silhouette ? secondary : '#475569';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const peltBrown = silhouette ? secondary : '#78350f';
+  const pantsBlue = silhouette ? secondary : '#1e3a8a';
+  const eyeBlue = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 荒れ狂う獣の呼吸・突進風斬エフェクト */}
+      {!silhouette && (
+        <g stroke={eyeBlue} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M30 65 Q60 50, 85 70" />
+          <path d="M230 65 Q200 50, 175 70" />
+          <path d="M35 190 Q65 210, 95 195" />
+          <path d="M225 190 Q195 210, 165 195" />
+        </g>
+      )}
+
+      {/* 藍色の袴ズボン＆毛皮の脛当て */}
+      <path d="M96 175 L92 225 L122 225 L124 185 Z" fill={pantsBlue} />
+      <path d="M164 175 L168 225 L138 225 L136 185 Z" fill={pantsBlue} />
+      <rect x="94" y="210" width="26" height="15" fill={peltBrown} />
+      <rect x="140" y="210" width="26" height="15" fill={peltBrown} />
+
+      {/* 腰に巻いたもこもこの鹿の毛皮 */}
+      <ellipse cx="130" cy="172" rx="42" ry="14" fill={peltBrown} />
+
+      {/* 鍛え抜かれた筋骨隆々の素肌上半身 */}
+      <rect x="98" y="118" width="64" height="48" rx="6" fill={skinTone} />
+      {!silhouette && (
+        <g stroke="#ea580c" strokeWidth="2" fill="none">
+          <path d="M110 135 Q130 142, 150 135" />
+          <line x1="130" y1="135" x2="130" y2="162" />
+          <line x1="118" y1="148" x2="142" y2="148" />
+        </g>
+      )}
+
+      {/* ★ 伊之助の象徴：両手のギザギザ刃こぼれ二刀流！ ★ */}
+      {/* 左手＆刀 */}
+      <path d="M95 125 L65 105 L52 118 L85 142 Z" fill={skinTone} />
+      <circle cx="58" cy="110" r="8" fill={skinTone} />
+      <path
+        d="M58 110 L30 50 L38 52 L34 60 L42 62 L38 72 L46 74 L42 84 L50 86 L58 110 Z"
+        fill="#cbd5e1"
+      />
+
+      {/* 右手＆刀 */}
+      <path d="M165 125 L195 105 L208 118 L175 142 Z" fill={skinTone} />
+      <circle cx="202" cy="110" r="8" fill={skinTone} />
+      <path
+        d="M202 110 L230 50 L222 52 L226 60 L218 62 L222 72 L214 74 L218 84 L210 86 L202 110 Z"
+        fill="#cbd5e1"
+      />
+
+      {/* ★ 猪の頭マスク（リアルで愛嬌のある猪頭） ★ */}
+      <ellipse cx="130" cy="80" rx="34" ry="28" fill={boarGrey} />
+
+      {/* 猪の尖った耳 */}
+      <polygon points="102,60 92,38 112,48" fill={boarDark} />
+      <polygon points="158,60 168,38 148,48" fill={boarDark} />
+
+      {/* 突き出たピンクの鼻と大きな鼻の穴 */}
+      <ellipse cx="130" cy="88" rx="14" ry="10" fill="#f472b6" />
+      <circle cx="125" cy="88" r="3" fill="#831843" stroke="none" />
+      <circle cx="135" cy="88" r="3" fill="#831843" stroke="none" />
+
+      {/* 大きなつぶらな青い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="114" cy="74" rx="8" ry="7" fill="#ffffff" />
+          <ellipse cx="146" cy="74" rx="8" ry="7" fill="#ffffff" />
+          <ellipse cx="114" cy="74" rx="5" ry="5.5" fill={eyeBlue} />
+          <ellipse cx="146" cy="74" rx="5" ry="5.5" fill={eyeBlue} />
+          <circle cx="112" cy="72" r="2" fill="#ffffff" />
+          <circle cx="144" cy="72" r="2" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.94 煉獄杏寿郎 (炎羽織・燃える長髪・日輪刀・大迫力煉獄の業火) */
+function RengokuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const flameRed = silhouette ? primary : '#dc2626';
+  const flameOrange = silhouette ? primary : '#f97316';
+  const flameYellow = silhouette ? accent : '#fde047';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const uniformBrown = silhouette ? secondary : '#451a03';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 咆哮する奥義「玖ノ型・煉獄」の巨大な猛火オーラ */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.85">
+          <path d="M35 150 Q10 80, 50 40 Q85 70, 75 120 Z" fill={flameOrange} />
+          <path d="M225 150 Q250 80, 210 40 Q175 70, 185 120 Z" fill={flameOrange} />
+          <path d="M40 210 Q130 250, 220 210 Q170 230, 130 220 Q90 230, 40 210 Z" fill={flameRed} />
+          <circle cx="45" cy="55" r="10" fill={flameYellow} />
+          <circle cx="215" cy="55" r="10" fill={flameYellow} />
+        </g>
+      )}
+
+      {/* 白い脚絆＆赤い火炎の紐 */}
+      <rect x="98" y="215" width="22" height="15" fill="#ffffff" />
+      <rect x="140" y="215" width="22" height="15" fill="#ffffff" />
+      <ellipse cx="109" cy="230" rx="14" ry="6" fill="#ca8a04" />
+      <ellipse cx="151" cy="230" rx="14" ry="6" fill="#ca8a04" />
+
+      {/* 茶色い鬼殺隊服ズボン */}
+      <path d="M96 168 L92 216 L122 216 L124 178 Z" fill={uniformBrown} />
+      <path d="M164 168 L168 216 L138 216 L136 178 Z" fill={uniformBrown} />
+
+      {/* 茶色い隊服上着＆白いベルト */}
+      <rect x="98" y="122" width="64" height="48" rx="4" fill={uniformBrown} />
+      <rect x="98" y="158" width="64" height="8" fill="#ffffff" stroke="none" />
+
+      {/* ★ 煉獄さんの象徴：裾が炎の形になったマント羽織 ★ */}
+      <path
+        d="M80 118 L68 185 L80 178 L90 190 L100 178 L110 190 L120 178 L130 190 L140 178 L150 190 L160 178 L170 190 L180 178 L192 185 L180 118 Z"
+        fill="#ffffff"
+      />
+      {!silhouette && (
+        <g stroke="none">
+          <polygon points="75,178 85,188 95,178 105,188 115,178 125,188 135,178 145,188 155,178 165,188 175,178 185,188 185,190 75,190" fill={flameRed} />
+          <polygon points="80,180 90,188 100,180 110,188 120,180 130,188 140,180 150,188 160,180 170,188 180,180 180,186 80,186" fill={flameYellow} />
+        </g>
+      )}
+
+      {/* 構えた深紅の日輪刀（炎の鍔） */}
+      <polygon points="168,140 215,85 224,93 176,148" fill="#dc2626" />
+      <line x1="168" y1="140" x2="215" y2="85" stroke="#fef08a" strokeWidth="2.5" />
+      <polygon points="170,135 178,138 180,146 172,148 164,142" fill={flameOrange} />
+      <circle cx="168" cy="144" r="9" fill={skinTone} />
+
+      {/* 左手 */}
+      <circle cx="92" cy="155" r="9" fill={skinTone} />
+
+      {/* 頭部・顔 */}
+      <ellipse cx="130" cy="85" rx="26" ry="24" fill={skinTone} />
+
+      {/* ★ 燃え立つ金赤のボリューム満点ヘア ★ */}
+      <path
+        d="M92 88 L75 50 L98 55 L90 30 L115 42 L130 18 L145 42 L170 30 L162 55 L185 50 L168 88 Z"
+        fill={flameYellow}
+      />
+      <polygon points="75,50 85,60 95,50" fill={flameRed} stroke="none" />
+      <polygon points="90,30 102,42 110,32" fill={flameRed} stroke="none" />
+      <polygon points="150,32 158,42 170,30" fill={flameRed} stroke="none" />
+      <polygon points="165,50 175,60 185,50" fill={flameRed} stroke="none" />
+
+      {/* 熱く見開かれた鋭い眉と瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <polygon points="110,72 126,68 124,73 112,76" fill="#0f172a" />
+          <polygon points="150,72 134,68 136,73 148,76" fill="#0f172a" />
+          <circle cx="118" cy="82" r="6" fill="#dc2626" />
+          <circle cx="142" cy="82" r="6" fill="#dc2626" />
+          <circle cx="118" cy="82" r="4" fill={flameYellow} />
+          <circle cx="142" cy="82" r="4" fill={flameYellow} />
+          <circle cx="117" cy="80" r="1.5" fill="#ffffff" />
+          <circle cx="141" cy="80" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.95 冨岡義勇 (半々羽織・水柱日輪刀・静寂の凪の水紋サークル) */
+function GiyuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const haoriRed = silhouette ? secondary : '#991b1b';
+  const haoriGreen = silhouette ? primary : '#15803d';
+  const haoriYellow = silhouette ? accent : '#eab308';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const uniformDark = silhouette ? secondary : '#0f172a';
+  const waterBlue = silhouette ? primary : '#0284c7';
+  const calmCyan = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 拾壱ノ型「凪」の完全静寂・水面サークル */}
+      {!silhouette && (
+        <g fill="none" opacity="0.8">
+          <ellipse cx="130" cy="225" rx="90" ry="24" stroke={calmCyan} strokeWidth="2.5" />
+          <ellipse cx="130" cy="225" rx="65" ry="16" stroke="#ffffff" strokeWidth="2" />
+          <ellipse cx="130" cy="225" rx="35" ry="8" stroke={waterBlue} strokeWidth="2" />
+          <circle cx="130" cy="225" r="3" fill="#ffffff" stroke="none" />
+        </g>
+      )}
+
+      {/* 脚絆・白足袋 */}
+      <rect x="98" y="210" width="22" height="15" fill="#ffffff" />
+      <rect x="140" y="210" width="22" height="15" fill="#ffffff" />
+      <ellipse cx="109" cy="225" rx="14" ry="6" fill="#ca8a04" />
+      <ellipse cx="151" cy="225" rx="14" ry="6" fill="#ca8a04" />
+
+      {/* 漆黒の隊服ズボン */}
+      <path d="M96 168 L92 212 L122 212 L124 178 Z" fill={uniformDark} />
+      <path d="M164 168 L168 212 L138 212 L136 178 Z" fill={uniformDark} />
+
+      {/* ★ 義勇さんの象徴：左右で柄が違う「半々羽織」 ★ */}
+      <rect x="66" y="120" width="32" height="48" rx="3" fill={haoriGreen} />
+      <polygon points="66,120 82,120 66,136" fill={haoriYellow} />
+      <polygon points="82,136 98,136 82,152" fill={haoriYellow} />
+      <rect x="98" y="122" width="32" height="46" rx="2" fill={haoriGreen} />
+      <polygon points="98,122 114,122 98,138" fill={haoriYellow} />
+      <polygon points="114,138 130,138 114,154" fill={haoriYellow} />
+
+      <rect x="130" y="122" width="34" height="46" rx="2" fill={haoriRed} />
+      <rect x="162" y="120" width="32" height="48" rx="3" fill={haoriRed} />
+
+      {/* 深青色の日輪刀を静かに水平に構える */}
+      <line x1="65" y1="145" x2="205" y2="145" stroke={waterBlue} strokeWidth="4.5" strokeLinecap="round" />
+      <line x1="65" y1="144" x2="205" y2="144" stroke="#ffffff" strokeWidth="1.5" />
+      <rect x="110" y="141" width="10" height="8" rx="1" fill="#991b1b" stroke="none" />
+      <circle cx="106" cy="145" r="7.5" fill={skinTone} />
+      <circle cx="120" cy="145" r="7.5" fill={skinTone} />
+
+      {/* 頭部・顔 */}
+      <ellipse cx="130" cy="85" rx="26" ry="24" fill={skinTone} />
+
+      {/* 黒髪ボサボサのローポニーテール */}
+      <path
+        d="M104 80 L96 65 L112 62 L110 45 L126 52 L132 38 L142 50 L152 42 L150 62 L164 68 L156 82 Z"
+        fill="#0f172a"
+      />
+      <path d="M152 75 Q175 90, 168 110" stroke="#0f172a" strokeWidth="8" strokeLinecap="round" fill="none" />
+
+      {/* 冷静沈着で理知的な青い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="118" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="142" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="118" cy="84" rx="3" ry="4.5" fill="#1e3a8a" />
+          <ellipse cx="142" cy="84" rx="3" ry="4.5" fill="#1e3a8a" />
+          <circle cx="117" cy="82" r="1.5" fill="#ffffff" />
+          <circle cx="141" cy="82" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.96 胡蝶しのぶ (蝶の羽織・紫蝶ヘアピン・細剣・舞い散る藤の花蝶) */
+function ShinobuSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const haoriWhite = silhouette ? primary : '#ffffff';
+  const haoriTurquoise = silhouette ? accent : '#14b8a6';
+  const haoriPurple = silhouette ? primary : '#a855f7';
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const hairPurple = silhouette ? secondary : '#581c87';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 舞い散る藤の花と発光する蝶たち */}
+      {!silhouette && (
+        <g stroke="none" fill={haoriPurple} opacity="0.85">
+          <path d="M40 70 Q30 50, 45 45 Q50 60, 40 70 Z" />
+          <path d="M40 70 Q30 90, 45 95 Q50 80, 40 70 Z" />
+          <path d="M220 70 Q210 50, 225 45 Q230 60, 220 70 Z" fill={haoriTurquoise} />
+          <path d="M220 70 Q210 90, 225 95 Q230 80, 220 70 Z" fill={haoriTurquoise} />
+          <circle cx="42" cy="70" r="3" fill="#ffffff" />
+          <circle cx="222" cy="70" r="3" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* 蝶の羽模様の脚絆 */}
+      <rect x="98" y="212" width="22" height="15" fill={haoriTurquoise} />
+      <rect x="140" y="212" width="22" height="15" fill={haoriTurquoise} />
+      <ellipse cx="109" cy="226" rx="14" ry="6" fill="#ffffff" />
+      <ellipse cx="151" cy="226" rx="14" ry="6" fill="#ffffff" />
+
+      {/* 漆黒の隊服ズボン */}
+      <path d="M96 168 L92 214 L122 214 L124 178 Z" fill="#1e1b4b" />
+      <path d="M164 168 L168 214 L138 214 L136 178 Z" fill="#1e1b4b" />
+
+      {/* 隊服上着＆白いベルト */}
+      <rect x="98" y="122" width="64" height="48" rx="4" fill="#1e1b4b" />
+      <rect x="98" y="158" width="64" height="8" fill="#ffffff" stroke="none" />
+
+      {/* ★ しのぶさんの象徴：蝶の羽を広げたようなグラデーション羽織 ★ */}
+      <path
+        d="M60 120 Q55 170, 75 185 Q90 165, 96 150 L98 122 Z"
+        fill={haoriWhite}
+      />
+      <path
+        d="M200 120 Q205 170, 185 185 Q170 165, 164 150 L162 122 Z"
+        fill={haoriWhite}
+      />
+      <polygon points="62,165 75,185 85,175 75,160" fill={haoriTurquoise} stroke="none" />
+      <polygon points="72,175 75,185 85,175" fill={haoriPurple} stroke="none" />
+      <polygon points="198,165 185,185 175,175 185,160" fill={haoriTurquoise} stroke="none" />
+      <polygon points="188,175 185,185 175,175" fill={haoriPurple} stroke="none" />
+
+      {/* 特殊な針状の日輪刀（毒を注入する細剣） */}
+      <line x1="168" y1="140" x2="225" y2="105" stroke="#cbd5e1" strokeWidth="2.5" />
+      <polygon points="220,108 228,103 223,112" fill="#cbd5e1" />
+      <circle cx="170" cy="138" r="6" fill={haoriTurquoise} />
+      <circle cx="166" cy="142" r="7" fill={skinTone} />
+      <circle cx="94" cy="155" r="7" fill={skinTone} />
+
+      {/* 頭部・顔（微笑み） */}
+      <ellipse cx="130" cy="85" rx="25" ry="23" fill={skinTone} />
+
+      {/* 後頭部の大きな紫の蝶ヘアピン */}
+      <polygon points="145,55 165,40 155,60 168,70 148,65" fill={haoriPurple} />
+      <polygon points="148,58 160,45 152,62" fill={haoriTurquoise} stroke="none" />
+
+      {/* 黒髪（毛先が艶やかな紫グラデーションの夜会巻き） */}
+      <path
+        d="M106 75 Q130 60, 154 75 Q158 90, 148 85 Q130 75, 112 85 Z"
+        fill="#0f172a"
+      />
+      <polygon points="106,82 110,95 116,84" fill={hairPurple} stroke="none" />
+      <polygon points="144,84 150,95 154,82" fill={hairPurple} stroke="none" />
+
+      {/* 吸い込まれそうな紫の瞳（ハイライトのない神秘的な瞳） */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="120" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="140" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="120" cy="84" rx="3.5" ry="5" fill={hairPurple} />
+          <ellipse cx="140" cy="84" rx="3.5" ry="5" fill={hairPurple} />
+          <ellipse cx="120" cy="86" rx="2.5" ry="2" fill={haoriTurquoise} />
+          <ellipse cx="140" cy="86" rx="2.5" ry="2" fill={haoriTurquoise} />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.97 宇髄天元 (宝石額当て・銀髪・ド派手二刀流鎖剣・音の爆発) */
+function TengenSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const skinTone = silhouette ? primary : '#fed7aa';
+  const silverHair = silhouette ? primary : '#f1f5f9';
+  const maroonBand = silhouette ? secondary : '#831843';
+  const gemBlue = silhouette ? accent : '#38bdf8';
+  const bladeGold = silhouette ? primary : '#eab308';
+  const sparkRed = silhouette ? accent : '#ef4444';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 音の呼吸・ド派手な花火爆発エフェクト */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="35" cy="55" r="9" fill="#facc15" />
+          <circle cx="225" cy="55" r="9" fill={sparkRed} />
+          <polygon points="35,35 38,50 50,55 38,60 35,75 32,60 20,55 32,50" fill="#fde047" />
+          <polygon points="225,35 228,50 240,55 228,60 225,75 222,60 210,55 222,50" fill="#fde047" />
+        </g>
+      )}
+
+      {/* 脚・黄金のリング付き脛当て */}
+      <rect x="96" y="210" width="24" height="15" fill="#ca8a04" />
+      <rect x="140" y="210" width="24" height="15" fill="#ca8a04" />
+      <ellipse cx="108" cy="226" rx="15" ry="6" fill="#713f12" />
+      <ellipse cx="152" cy="226" rx="15" ry="6" fill="#713f12" />
+
+      {/* 黒い隊服ズボン */}
+      <path d="M96 168 L92 212 L122 212 L124 178 Z" fill="#1e293b" />
+      <path d="M164 168 L168 212 L138 212 L136 178 Z" fill="#1e293b" />
+
+      {/* ノースリーブの漆黒隊服（がっしりした胸板） */}
+      <rect x="100" y="118" width="60" height="52" rx="4" fill="#1e293b" />
+      <rect x="100" y="158" width="60" height="8" fill="#ffffff" stroke="none" />
+
+      {/* 露出した太い筋肉質の腕＆金の二の腕リング */}
+      <rect x="76" y="120" width="24" height="42" rx="5" fill={skinTone} />
+      <rect x="160" y="120" width="24" height="42" rx="5" fill={skinTone} />
+      <rect x="74" y="130" width="26" height="6" fill="#eab308" stroke="none" />
+      <rect x="160" y="130" width="26" height="6" fill="#eab308" stroke="none" />
+
+      {/* ★ 天元の象徴：鎖で繋がれた巨大な二刀流・幅広の日輪刀 ★ */}
+      <path d="M78 155 L40 100 L56 90 L88 150 Z" fill="#1e293b" />
+      <path d="M40 100 L48 95 L56 90" stroke={bladeGold} strokeWidth="3" />
+      <circle cx="58" cy="115" r="5" fill="#ffffff" />
+
+      <path d="M182 155 L220 100 L204 90 L172 150 Z" fill="#1e293b" />
+      <path d="M220 100 L212 95 L204 90" stroke={bladeGold} strokeWidth="3" />
+      <circle cx="202" cy="115" r="5" fill="#ffffff" />
+
+      {/* 刀の柄尻を繋ぐ太い鎖 */}
+      <path d="M85 158 Q130 195, 175 158" fill="none" stroke="#64748b" strokeWidth="4" strokeDasharray="6 4" />
+
+      {/* 頭部・顔 */}
+      <ellipse cx="130" cy="85" rx="27" ry="25" fill={skinTone} />
+
+      {/* ★ ド派手な宝石の額当て＆垂れ下がる宝石飾り ★ */}
+      <rect x="106" y="62" width="48" height="12" rx="2" fill={maroonBand} />
+      <circle cx="114" cy="68" r="3.5" fill={gemBlue} />
+      <circle cx="130" cy="68" r="4.5" fill="#ffffff" />
+      <circle cx="146" cy="68" r="3.5" fill={gemBlue} />
+
+      {/* ツンツンした銀髪 */}
+      <path
+        d="M104 64 L88 45 L106 50 L112 32 L128 44 L145 30 L148 48 L168 45 L154 64 Z"
+        fill={silverHair}
+      />
+
+      {/* 左目の周りの赤いメイク（太陽のような刺青） */}
+      <circle cx="140" cy="84" r="9" fill={sparkRed} stroke="none" opacity="0.85" />
+
+      {/* 不敵で自信に満ちた瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="120" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <ellipse cx="140" cy="84" rx="4.5" ry="6" fill="#ffffff" />
+          <circle cx="120" cy="84" r="3.5" fill="#dc2626" />
+          <circle cx="140" cy="84" r="3.5" fill="#dc2626" />
+          <circle cx="119" cy="82" r="1.5" fill="#ffffff" />
+          <circle cx="139" cy="82" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+
+/* ==========================================================================
+   ⚡ ポケモン・伝説と究極の激闘 (エースバーン・カメックス・ディアルガ・ザシアン)
+   ========================================================================== */
+
+/** No.98 エースバーン (炎のウサギストライカー・火炎ボール・キックポーズ) */
+function CinderaceSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const furWhite = silhouette ? primary : '#f8fafc';
+  const earRed = silhouette ? secondary : '#dc2626';
+  const bandYellow = silhouette ? accent : '#facc15';
+  const pantsBlack = silhouette ? secondary : '#1e293b';
+  const flameOrange = silhouette ? primary : '#f97316';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 足元で燃え盛る巨大な火炎サッカーボール！ */}
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="85" cy="210" r="24" fill={flameOrange} />
+          <circle cx="85" cy="210" r="15" fill="#facc15" />
+          <circle cx="85" cy="210" r="8" fill="#ffffff" />
+          <path d="M95 195 Q140 180, 155 130 Q120 165, 80 190 Z" fill={flameOrange} opacity="0.8" />
+        </g>
+      )}
+
+      {/* 白い長い足＆黒いスポーツパンツ */}
+      <path d="M108 155 L90 205 L112 210 L125 165 Z" fill={pantsBlack} />
+      <path d="M142 155 L165 200 L185 190 L155 155 Z" fill={pantsBlack} />
+      <ellipse cx="102" cy="210" rx="14" ry="8" fill={furWhite} />
+      <ellipse cx="175" cy="195" rx="14" ry="8" fill={furWhite} />
+
+      {/* スタイリッシュな白い胴体 */}
+      <ellipse cx="130" cy="140" rx="22" ry="28" fill={furWhite} />
+      <polygon points="120,118 130,132 140,118" fill={earRed} />
+
+      {/* アスリートらしい腕のポーズ */}
+      <path d="M110 128 L85 140 L92 152 L116 138 Z" fill={furWhite} />
+      <path d="M150 128 L175 135 L170 148 L145 138 Z" fill={furWhite} />
+
+      {/* 白いウサギの顔 */}
+      <ellipse cx="130" cy="85" rx="24" ry="22" fill={furWhite} />
+
+      {/* 額の黄色い王冠ヘッドバンド */}
+      <polygon points="115,70 130,55 145,70" fill={bandYellow} />
+
+      {/* ★ エースバーンの象徴：長く立ち上がった炎の耳 ★ */}
+      <path d="M116 68 Q100 20, 105 12 Q125 25, 122 68 Z" fill={furWhite} />
+      <path d="M104 25 Q100 12, 105 12 Q115 15, 114 28 Z" fill={earRed} stroke="none" />
+      <path d="M144 68 Q160 20, 155 12 Q135 25, 138 68 Z" fill={furWhite} />
+      <path d="M156 25 Q160 12, 155 12 Q145 15, 146 28 Z" fill={earRed} stroke="none" />
+
+      {/* 勝ち気でシャープな赤い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <polygon points="118,80 126,82 122,88 116,84" fill={earRed} />
+          <polygon points="142,80 134,82 138,88 144,84" fill={earRed} />
+          <circle cx="121" cy="83" r="1.5" fill="#ffffff" />
+          <circle cx="139" cy="83" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.99 カメックス (二門大砲・巨大甲羅戦車・強力ハイドロポンプ水流) */
+function BlastoiseSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const bodyBlue = silhouette ? primary : '#2563eb';
+  const shellBrown = silhouette ? secondary : '#78350f';
+  const shellRim = silhouette ? accent : '#fef08a';
+  const cannonMetal = silhouette ? accent : '#94a3b8';
+  const waterCyan = silhouette ? primary : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 2門の大砲から噴射される高圧ハイドロポンプ激流 */}
+      {!silhouette && (
+        <g stroke="none" opacity="0.8">
+          <path d="M55 75 Q15 45, 5 15 Q45 25, 65 65 Z" fill={waterCyan} />
+          <path d="M205 75 Q245 45, 255 15 Q215 25, 195 65 Z" fill={waterCyan} />
+          <circle cx="15" cy="25" r="10" fill="#ffffff" />
+          <circle cx="245" cy="25" r="10" fill="#ffffff" />
+        </g>
+      )}
+
+      {/* ★ カメックスの象徴：甲羅から突き出た2門のロケット大砲 ★ */}
+      <polygon points="68,90 52,65 68,55 84,80" fill={cannonMetal} />
+      <ellipse cx="60" cy="60" rx="10" ry="6" fill="#475569" />
+
+      <polygon points="192,90 208,65 192,55 176,80" fill={cannonMetal} />
+      <ellipse cx="200" cy="60" rx="10" ry="6" fill="#475569" />
+
+      {/* 巨大な茶色の甲羅＆クリーム色の縁取り */}
+      <ellipse cx="130" cy="155" rx="65" ry="62" fill={shellBrown} />
+      <ellipse cx="130" cy="155" rx="65" ry="62" fill="none" stroke={shellRim} strokeWidth="8" />
+
+      {/* がっしりした太い青い両足・鋭いツメ */}
+      <ellipse cx="90" cy="225" rx="24" ry="14" fill={bodyBlue} />
+      <ellipse cx="170" cy="225" rx="24" ry="14" fill={bodyBlue} />
+      <polygon points="76,225 70,234 82,232" fill="#ffffff" />
+      <polygon points="88,226 86,236 96,232" fill="#ffffff" />
+      <polygon points="164,226 162,236 172,232" fill="#ffffff" />
+      <polygon points="176,225 182,234 188,226" fill="#ffffff" />
+
+      {/* 腹部の黄色い甲羅プレート */}
+      <ellipse cx="130" cy="165" rx="38" ry="42" fill={shellRim} />
+      <line x1="105" y1="150" x2="155" y2="150" stroke="#ca8a04" strokeWidth="2.5" />
+      <line x1="102" y1="175" x2="158" y2="175" stroke="#ca8a04" strokeWidth="2.5" />
+
+      {/* 逞しい太い両腕 */}
+      <ellipse cx="80" cy="160" rx="16" ry="24" transform="rotate(25 80 160)" fill={bodyBlue} />
+      <ellipse cx="180" cy="160" rx="16" ry="24" transform="rotate(-25 180 160)" fill={bodyBlue} />
+
+      {/* 堂々たるカメの頭部・小さな三角耳 */}
+      <ellipse cx="130" cy="95" rx="30" ry="26" fill={bodyBlue} />
+      <polygon points="102,82 92,68 108,74" fill={bodyBlue} />
+      <polygon points="158,82 168,68 152,74" fill={bodyBlue} />
+
+      {/* 口元と牙 */}
+      <path d="M115 105 Q130 115, 145 105" stroke="#1e3a8a" strokeWidth="3" fill="none" />
+      <polygon points="118,105 122,112 126,106" fill="#ffffff" />
+      <polygon points="134,106 138,112 142,105" fill="#ffffff" />
+
+      {/* 鋭く睨む茶色い瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <ellipse cx="118" cy="88" rx="6" ry="7" fill="#ffffff" />
+          <ellipse cx="142" cy="88" rx="6" ry="7" fill="#ffffff" />
+          <circle cx="118" cy="88" r="3.5" fill="#78350f" />
+          <circle cx="142" cy="88" r="3.5" fill="#78350f" />
+          <circle cx="116" cy="86" r="1.5" fill="#ffffff" />
+          <circle cx="140" cy="86" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.100 ディアルガ (時間を操るダイヤモンド神竜・胸部ダイヤ・時空リング) */
+function DialgaSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const metalBlue = silhouette ? primary : '#1e3a8a';
+  const steelSilver = silhouette ? secondary : '#94a3b8';
+  const diamondCyan = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 時間の歪み・コズミックサークル（時の咆哮） */}
+      {!silhouette && (
+        <g fill="none" opacity="0.8">
+          <circle cx="130" cy="130" r="110" stroke={diamondCyan} strokeWidth="2.5" strokeDasharray="16 10" />
+          <circle cx="130" cy="130" r="90" stroke="#93c5fd" strokeWidth="2" strokeDasharray="8 6" />
+          <polygon points="130,10 135,25 150,30 135,35 130,50 125,35 110,30 125,25" fill={diamondCyan} stroke="none" />
+        </g>
+      )}
+
+      {/* 4本の頑丈な神竜の脚・鋼鉄の爪 */}
+      <rect x="75" y="175" width="22" height="55" fill={metalBlue} />
+      <rect x="110" y="180" width="20" height="50" fill={metalBlue} />
+      <rect x="135" y="180" width="20" height="50" fill={metalBlue} />
+      <rect x="165" y="175" width="22" height="55" fill={metalBlue} />
+      <polygon points="68,225 78,235 88,228" fill={steelSilver} />
+      <polygon points="160,228 170,235 180,225" fill={steelSilver} />
+
+      {/* 背中の巨大な鋼鉄の扇状フィン */}
+      <polygon points="130,110 70,55 90,45 130,70 170,45 190,55" fill={steelSilver} />
+
+      {/* メタリックブルーの巨体胴体 */}
+      <ellipse cx="130" cy="155" rx="52" ry="38" fill={metalBlue} />
+      {!silhouette && (
+        <g stroke={diamondCyan} strokeWidth="3" fill="none">
+          <path d="M90 150 Q130 165, 170 150" />
+          <path d="M100 165 Q130 180, 160 165" />
+        </g>
+      )}
+
+      {/* ★ ディアルガの象徴：胸の大型ダイヤモンド宝石 ★ */}
+      <polygon points="130,115 150,135 130,165 110,135" fill={steelSilver} />
+      <polygon points="130,122 144,135 130,158 116,135" fill={diamondCyan} />
+      <polygon points="130,128 138,135 130,148 122,135" fill="#ffffff" stroke="none" />
+
+      {/* 前方に伸びる長い首と頭部 */}
+      <path d="M118 135 L120 70 L140 70 L142 135 Z" fill={metalBlue} />
+
+      {/* 王冠のように鋭く突き出たシルバーの頭部角 */}
+      <polygon points="105,65 85,35 112,50" fill={steelSilver} />
+      <polygon points="155,65 175,35 148,50" fill={steelSilver} />
+      <polygon points="130,55 130,25 135,55" fill={steelSilver} />
+
+      {/* 神竜の頭部・頑丈な顎 */}
+      <ellipse cx="130" cy="65" rx="22" ry="16" fill={metalBlue} />
+
+      {/* 赤く神々しく光る瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <polygon points="116,62 124,60 120,68 114,66" fill="#ef4444" />
+          <polygon points="144,62 136,60 140,68 146,66" fill="#ef4444" />
+          <circle cx="119" cy="63" r="1.5" fill="#ffffff" />
+          <circle cx="141" cy="63" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/** No.101 ザシアン (剣の王・口にくわえた黄金聖剣・マゼンタの三つ編み・聖なる斬撃) */
+function ZacianSvg({ primary, secondary, accent, eyeColor, outline, silhouette }: SvgPartProps) {
+  const wolfCyan = silhouette ? primary : '#0284c7';
+  const maneMagenta = silhouette ? secondary : '#f43f5e';
+  const swordGold = silhouette ? accent : '#facc15';
+  const swordBlade = silhouette ? accent : '#fde047';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 聖剣きょじゅうざんの黄金一閃スラッシュ */}
+      {!silhouette && (
+        <g stroke="none">
+          <path d="M15 130 Q130 50, 245 130 Q170 90, 15 130 Z" fill={swordBlade} opacity="0.8" />
+          <circle cx="230" cy="120" r="10" fill="#ffffff" />
+          <circle cx="35" cy="120" r="8" fill="#facc15" />
+        </g>
+      )}
+
+      {/* 4本の俊敏なシアンの脚 */}
+      <rect x="80" y="175" width="16" height="52" rx="4" fill={wolfCyan} />
+      <rect x="105" y="180" width="16" height="47" rx="4" fill={wolfCyan} />
+      <rect x="140" y="180" width="16" height="47" rx="4" fill={wolfCyan} />
+      <rect x="165" y="175" width="16" height="52" rx="4" fill={wolfCyan} />
+
+      {/* 背中の黄金の翼状アーマー（剣の王形態） */}
+      <polygon points="100,120 60,65 85,85 105,95" fill={swordGold} />
+      <polygon points="160,120 200,65 175,85 155,95" fill={swordGold} />
+
+      {/* 引き締まったオオカミの胴体 */}
+      <ellipse cx="130" cy="150" rx="46" ry="32" fill={wolfCyan} />
+
+      {/* ★ マゼンタ色の三つ編みタテガミ ★ */}
+      <path d="M105 110 Q85 140, 92 180 Q105 160, 110 130 Z" fill={maneMagenta} />
+      <path d="M155 110 Q175 140, 168 180 Q155 160, 150 130 Z" fill={maneMagenta} />
+
+      {/* オオカミの精悍な頭部・耳 */}
+      <ellipse cx="130" cy="95" rx="26" ry="22" fill={wolfCyan} />
+      <polygon points="108,80 95,45 118,65" fill={wolfCyan} />
+      <polygon points="152,80 165,45 142,65" fill={wolfCyan} />
+      <polygon points="98,52 106,68 102,68" fill={maneMagenta} stroke="none" />
+      <polygon points="162,52 154,68 158,68" fill={maneMagenta} stroke="none" />
+
+      {/* ★ ザシアンの象徴：口にくわえた黄金の朽ちた剣（聖剣） ★ */}
+      <polygon points="50,112 210,112 225,116 210,120 50,120" fill={swordGold} />
+      <line x1="50" y1="116" x2="215" y2="116" stroke="#ffffff" strokeWidth="2" />
+      <rect x="75" y="106" width="12" height="20" rx="2" fill={maneMagenta} />
+      <circle cx="70" cy="116" r="6" fill={swordGold} />
+
+      {/* 剣をしっかりとくわえる口元 */}
+      <ellipse cx="130" cy="116" rx="14" ry="9" fill={wolfCyan} />
+
+      {/* 誇り高く輝く黄金の瞳 */}
+      {!silhouette && (
+        <g stroke="none">
+          <polygon points="116,90 124,88 122,96 114,94" fill={swordGold} />
+          <polygon points="144,90 136,88 138,96 146,94" fill={swordGold} />
+          <circle cx="119" cy="91" r="1.5" fill="#ffffff" />
+          <circle cx="141" cy="91" r="1.5" fill="#ffffff" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -7472,6 +8411,34 @@ function KaijuSpecificSvgDispatcher({
       return <EndermanSvg {...partProps} />;
     case 'water-mc-enderdragon':
       return <EnderDragonSvg {...partProps} />;
+
+    // ⚔️ 鬼滅の刃・鬼殺隊と柱たち
+    case 'water-kmt-tanjiro':
+      return <TanjiroSvg {...partProps} />;
+    case 'fire-kmt-nezuko':
+      return <NezukoSvg {...partProps} />;
+    case 'thunder-kmt-zenitsu':
+      return <ZenitsuSvg {...partProps} />;
+    case 'nature-kmt-inosuke':
+      return <InosukeSvg {...partProps} />;
+    case 'fire-kmt-rengoku':
+      return <RengokuSvg {...partProps} />;
+    case 'water-kmt-giyu':
+      return <GiyuSvg {...partProps} />;
+    case 'nature-kmt-shinobu':
+      return <ShinobuSvg {...partProps} />;
+    case 'thunder-kmt-tengen':
+      return <TengenSvg {...partProps} />;
+
+    // ⚡ ポケモン・伝説と究極の激闘
+    case 'fire-pkmn-cinderace':
+      return <CinderaceSvg {...partProps} />;
+    case 'water-pkmn-blastoise':
+      return <BlastoiseSvg {...partProps} />;
+    case 'thunder-pkmn-dialga':
+      return <DialgaSvg {...partProps} />;
+    case 'nature-pkmn-zacian':
+      return <ZacianSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;
