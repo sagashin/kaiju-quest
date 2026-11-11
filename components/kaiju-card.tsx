@@ -310,7 +310,7 @@ export function KaijuHeroCard({
                 {stats.stageTitle}
               </span>
               {stats.awakeningStar > 0 && (
-                <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2.5 py-0.5 rounded-full text-xs shadow animate-pulse">
+                <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2.5 py-0.5 rounded-full text-xs shadow">
                   {stats.awakeningTitle}
                 </span>
               )}
@@ -329,7 +329,7 @@ export function KaijuHeroCard({
                 Lv.{stats.level} / {MAX_KAIJU_LEVEL}
               </span>
               {stats.level >= MAX_KAIJU_LEVEL && (
-                <span className="bg-gradient-to-r from-yellow-400 via-rose-500 to-purple-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse shadow">
+                <span className="bg-gradient-to-r from-yellow-400 via-rose-500 to-purple-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow">
                   👑 MAX
                 </span>
               )}
@@ -339,7 +339,7 @@ export function KaijuHeroCard({
                 </span>
               )}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               {displayedName}
             </h2>
           </div>
@@ -445,7 +445,7 @@ export function KaijuHeroCard({
 
             {/* 装備中の伝説アイテムバッジ */}
             {stats.equippedItem && !isAttacking && (
-              <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs px-2.5 py-1 rounded-xl shadow-lg border border-white animate-pulse">
+              <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs px-2.5 py-1 rounded-xl shadow-lg border border-white">
                 <span>{stats.equippedItem.icon}</span>
                 <span>{stats.equippedItem.name}</span>
               </div>

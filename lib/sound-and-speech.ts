@@ -3,6 +3,7 @@
 import confetti from 'canvas-confetti';
 
 let audioCtx: AudioContext | null = null;
+let suspendTimer: ReturnType<typeof setTimeout> | null = null;
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
@@ -16,6 +17,13 @@ function getAudioContext(): AudioContext | null {
   if (audioCtx && audioCtx.state === 'suspended') {
     audioCtx.resume().catch(() => {});
   }
+  // 効果音再生後、4秒間操作がなければAudioContextを自動suspendしてスマホのオーディオDSP発熱・電池消費をゼロにする
+  if (suspendTimer) clearTimeout(suspendTimer);
+  suspendTimer = setTimeout(() => {
+    if (audioCtx && audioCtx.state === 'running') {
+      audioCtx.suspend().catch(() => {});
+    }
+  }, 4000);
   return audioCtx;
 }
 

@@ -1546,7 +1546,7 @@ export function KaijuBattle({
 
                 {battleMode === 'coop' ? (
                   <div
-                    className={`w-32 h-32 sm:w-44 sm:h-44 scale-110 drop-shadow-[0_0_25px_rgba(250,204,21,0.85)] transition-transform duration-200 ${
+                    className={`w-32 h-32 sm:w-44 sm:h-44 scale-110 transition-transform duration-200 ${
                       bossAttacking ? '-translate-x-6 scale-125' : ''
                     }`}
                   >

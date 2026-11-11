@@ -885,7 +885,7 @@ export default function KaijuQuestApp() {
   return (
     <div className="min-h-screen bg-slate-950 text-white pb-28">
       {/* ==================== コンパクト・トップヘッダー ==================== */}
-      <header className="sticky top-0 z-30 h-14 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-3 sm:px-4 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-30 h-14 bg-slate-900/98 border-b border-white/10 px-3 sm:px-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
           <span className="text-2xl" aria-hidden="true">
             {heroRank.badge}
@@ -1065,7 +1065,7 @@ export default function KaijuQuestApp() {
                         <span>あいぼう</span>
                       </span>
                       {partnerStats.awakeningStar > 0 && (
-                        <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2 py-0.5 rounded-full text-[10px] shadow animate-pulse">
+                        <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 font-black px-2 py-0.5 rounded-full text-[10px] shadow">
                           {partnerStats.awakeningStar === 3 ? '🌈★3' : partnerStats.awakeningStar === 2 ? '💎★2' : '✨★1'}
                         </span>
                       )}
@@ -1785,7 +1785,7 @@ export default function KaijuQuestApp() {
                       key={kaiju.id}
                       type="button"
                       onClick={() => handleZukanCardTap(kaiju, isUnlocked)}
-                      className={`group relative rounded-2xl p-2 transition-all active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[142px] sm:min-h-[158px] overflow-hidden text-center ${
+                      className={`zukan-card-item group relative rounded-2xl p-2 transition-transform active:scale-95 cursor-pointer flex flex-col items-center justify-between min-h-[142px] sm:min-h-[158px] overflow-hidden text-center ${
                         isUnlocked
                           ? `bg-slate-900/95 border border-white/20 hover:border-amber-400 shadow-sm hover:shadow-[0_0_18px_rgba(250,204,21,0.35)]`
                           : 'bg-slate-950/70 border border-dashed border-white/10 opacity-70 hover:opacity-100'
@@ -1832,7 +1832,7 @@ export default function KaijuQuestApp() {
                           }`}
                         >
                           {/* ポケモンGO風 足元シャドウ */}
-                          <div className="absolute bottom-1 w-10 sm:w-12 h-2 bg-black/50 rounded-full blur-[1px]" />
+                          <div className="absolute bottom-1 w-10 sm:w-12 h-2 bg-black/50 rounded-full" />
 
                           <div className="w-14 h-14 sm:w-16 sm:h-16 relative flex items-center justify-center">
                             <KaijuSvgIllustration
@@ -1903,7 +1903,7 @@ export default function KaijuQuestApp() {
                       key={kaiju.id}
                       type="button"
                       onClick={() => handleZukanCardTap(kaiju, isUnlocked)}
-                      className={`group relative rounded-3xl p-1 transition-all active:scale-95 cursor-pointer text-left ${
+                      className={`zukan-card-large group relative rounded-3xl p-1 transition-transform active:scale-95 cursor-pointer text-left ${
                         isUnlocked
                           ? `bg-gradient-to-br ${elMeta.bgGradient} shadow-lg hover:shadow-[0_0_25px_rgba(250,204,21,0.5)]`
                           : 'bg-slate-800/80 border border-white/10'
@@ -1945,7 +1945,7 @@ export default function KaijuQuestApp() {
                             </div>
                           )}
                           {isUnlocked && stats.awakeningStar > 0 && (
-                            <div className="inline-flex items-center gap-1 self-start bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow animate-pulse">
+                            <div className="inline-flex items-center gap-1 self-start bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow">
                               {stats.awakeningStar === 3 ? '🌈★3' : stats.awakeningStar === 2 ? '💎★2' : '✨★1'}
                             </div>
                           )}
@@ -2117,7 +2117,7 @@ export default function KaijuQuestApp() {
       {/* ==================== 🐉 黄金の神龍（シェンロン）お願いモーダル ==================== */}
       {showShenronModal && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md p-4 flex items-center justify-center overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/92 p-4 flex items-center justify-center overflow-y-auto"
           onClick={() => setShowShenronModal(false)}
         >
           <div
@@ -2196,7 +2196,7 @@ export default function KaijuQuestApp() {
       {/* ==================== 図鑑の怪獣拡大＆育成モーダル ==================== */}
       {selectedZukanKaiju && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md p-4 flex items-center justify-center overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/88 p-4 flex items-center justify-center overflow-y-auto"
           onClick={() => setSelectedZukanKaiju(null)}
         >
           <div className="w-full max-w-md my-auto py-4" onClick={(e) => e.stopPropagation()}>
@@ -2223,7 +2223,7 @@ export default function KaijuQuestApp() {
       {/* ==================== 画面下部：5つの大きな切り替えタブ ==================== */}
       <nav
         aria-label="メインメニュー"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t-2 border-white/15 px-1.5 sm:px-3 py-2"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 border-t-2 border-white/15 px-1.5 sm:px-3 py-2"
       >
         <div className="max-w-xl mx-auto grid grid-cols-5 gap-1.5 sm:gap-2">
           {/* ① ⚡クエスト */}
