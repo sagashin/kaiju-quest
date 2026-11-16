@@ -8815,6 +8815,364 @@ function GiratinaSvg({ primary, secondary, accent, outline, silhouette }: SvgPar
 
 
 /* ==========================================================================
+   🐾 パウ・パトロール・レスキューチーム (チェイス・マーシャル・ラブル・スカイ)
+   ========================================================================== */
+
+/** No.155 チェイス (ジャーマンシェパード・青いポリスキャップ＆星バッジ・青いベスト・メガホン＆ポリスネット) */
+function ChaseSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  const policeBlue = silhouette ? primary : '#2563eb';
+  const darkBlue = silhouette ? primary : '#1e40af';
+  const furBrown = silhouette ? secondary : '#b45309';
+  const furTan = silhouette ? accent : '#fde68a';
+  const furDark = silhouette ? secondary : '#451a03';
+  const badgeGold = silhouette ? accent : '#facc15';
+  const netCyan = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 背後のパウパックから展開するスーパーポリス・メガホン＆スピード風ライン */}
+      <rect x="64" y="132" width="32" height="36" rx="8" fill={darkBlue} />
+      <rect x="164" y="132" width="32" height="36" rx="8" fill={darkBlue} />
+      {/* 左側の青いメガホン */}
+      <polygon points="68,144 30,126 30,166 68,154" fill={policeBlue} />
+      {!silhouette && (
+        <g stroke={netCyan} strokeWidth="2.8" fill="none" strokeLinecap="round">
+          <path d="M22 134 Q14 146, 22 158" />
+          <path d="M14 126 Q4 146, 14 166" />
+          {/* 右側のスーパーネット発射スパーク */}
+          <polygon points="196,136 226,120 226,162 196,154" fill="rgba(56,189,248,0.25)" />
+          <line x1="202" y1="138" x2="224" y2="148" />
+          <line x1="202" y1="150" x2="224" y2="128" />
+        </g>
+      )}
+
+      {/* しっぽ（ふさふさ茶色） */}
+      <path d="M160 185 Q198 182, 206 154 Q188 158, 174 172 Z" fill={furDark} />
+
+      {/* 4本の元気な子犬脚 */}
+      <ellipse cx="96" cy="222" rx="14" ry="10" fill={furTan} />
+      <ellipse cx="164" cy="222" rx="14" ry="10" fill={furTan} />
+      <rect x="86" y="175" width="22" height="44" rx="10" fill={furTan} />
+      <rect x="152" y="175" width="22" height="44" rx="10" fill={furTan} />
+      <rect x="108" y="178" width="18" height="46" rx="9" fill={furTan} />
+      <rect x="134" y="178" width="18" height="46" rx="9" fill={furTan} />
+      <ellipse cx="117" cy="225" rx="12" ry="9" fill={furTan} />
+      <ellipse cx="143" cy="225" rx="12" ry="9" fill={furTan} />
+
+      {/* 青いポリスベストの胴体 */}
+      <path d="M90 132 L86 186 Q130 198, 174 186 L170 132 Z" fill={policeBlue} />
+      <rect x="92" y="164" width="76" height="10" rx="4" fill={darkBlue} />
+      {/* 胸の金色のパウタグ（星バッジ） */}
+      <circle cx="130" cy="144" r="12" fill={badgeGold} />
+      {!silhouette && (
+        <polygon points="130,136 132,141 138,141 133,145 135,150 130,147 125,150 127,145 122,141 128,141" fill={policeBlue} stroke="none" />
+      )}
+
+      {/* シェパードの特徴：ピンと立った大きな三角耳 */}
+      <polygon points="94,76 74,26 112,56" fill={furDark} />
+      <polygon points="93,70 81,38 106,58" fill={furBrown} stroke="none" />
+      <polygon points="166,76 186,26 148,56" fill={furDark} />
+      <polygon points="167,70 179,38 154,58" fill={furBrown} stroke="none" />
+
+      {/* 頭部（茶色ベース＋明るいベージュの頬＆マズル） */}
+      <ellipse cx="130" cy="94" rx="38" ry="34" fill={furBrown} />
+      {/* 眉の明るいタン模様 */}
+      {!silhouette && (
+        <g fill={furTan} stroke="none">
+          <ellipse cx="114" cy="78" rx="8" ry="5" />
+          <ellipse cx="146" cy="78" rx="8" ry="5" />
+        </g>
+      )}
+      {/* 頬〜口元のクリームタン毛色 */}
+      <path d="M94 98 Q106 88, 130 92 Q154 88, 166 98 Q162 126, 130 128 Q98 126, 94 98 Z" fill={furTan} />
+
+      {/* 青いポリスキャップ（帽子＋ツバ＋星バッジ） */}
+      <path d="M92 70 Q130 34, 168 70 Z" fill={policeBlue} />
+      <path d="M88 68 Q130 58, 172 68 Q168 78, 130 74 Q92 78, 88 68 Z" fill={darkBlue} />
+      <circle cx="130" cy="54" r="9" fill={badgeGold} />
+
+      {/* パッチリした優しい瞳＆つやつやの黒鼻＆笑顔 */}
+      <circle cx="114" cy="88" r="8" fill="#ffffff" />
+      <circle cx="146" cy="88" r="8" fill="#ffffff" />
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="115" cy="88" r="5" fill="#78350f" />
+          <circle cx="145" cy="88" r="5" fill="#78350f" />
+          <circle cx="113" cy="86" r="2" fill="#ffffff" />
+          <circle cx="143" cy="86" r="2" fill="#ffffff" />
+        </g>
+      )}
+      <ellipse cx="130" cy="100" rx="8" ry="5.5" fill="#0f172a" />
+      <path d="M120 110 Q130 118, 140 110" fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" />
+    </g>
+  );
+}
+
+/** No.156 マーシャル (ダルメシアン・黒いブチ模様・赤い消防ヘルメット＆放水キャノンパウパック) */
+function MarshallSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  const fireRed = silhouette ? primary : '#dc2626';
+  const darkRed = silhouette ? primary : '#991b1b';
+  const bodyWhite = silhouette ? secondary : '#f8fafc';
+  const spotBlack = silhouette ? accent : '#0f172a';
+  const badgeGold = silhouette ? accent : '#facc15';
+  const waterCyan = silhouette ? accent : '#38bdf8';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* 背中のパウパックから展開する２門の放水キャノン＆みずしぶき！ */}
+      <rect x="64" y="132" width="30" height="36" rx="8" fill={darkRed} />
+      <rect x="166" y="132" width="30" height="36" rx="8" fill={darkRed} />
+      <rect x="44" y="138" width="24" height="14" rx="4" fill="#94a3b8" />
+      <rect x="192" y="138" width="24" height="14" rx="4" fill="#94a3b8" />
+      {!silhouette && (
+        <g stroke="none" fill={waterCyan} opacity="0.88">
+          <path d="M44 142 Q20 130, 8 145 Q22 158, 44 148 Z" />
+          <circle cx="12" cy="128" r="5" />
+          <circle cx="20" cy="162" r="4" />
+          <path d="M216 142 Q240 130, 252 145 Q238 158, 216 148 Z" />
+          <circle cx="248" cy="128" r="5" />
+          <circle cx="240" cy="162" r="4" />
+        </g>
+      )}
+
+      {/* 白い尻尾＆黒ブチ */}
+      <path d="M162 186 Q198 182, 206 156 Q190 162, 176 174 Z" fill={bodyWhite} />
+
+      {/* 4本のダルメシアン脚（白い脚＋黒いブチ） */}
+      <ellipse cx="96" cy="222" rx="14" ry="10" fill={bodyWhite} />
+      <ellipse cx="164" cy="222" rx="14" ry="10" fill={bodyWhite} />
+      <rect x="86" y="175" width="22" height="44" rx="10" fill={bodyWhite} />
+      <rect x="152" y="175" width="22" height="44" rx="10" fill={bodyWhite} />
+      <rect x="108" y="178" width="18" height="46" rx="9" fill={bodyWhite} />
+      <rect x="134" y="178" width="18" height="46" rx="9" fill={bodyWhite} />
+      <ellipse cx="117" cy="225" rx="12" ry="9" fill={bodyWhite} />
+      <ellipse cx="143" cy="225" rx="12" ry="9" fill={bodyWhite} />
+      {!silhouette && (
+        <g fill={spotBlack} stroke="none">
+          <circle cx="96" cy="196" r="4.5" />
+          <circle cx="164" cy="202" r="4.5" />
+          <circle cx="116" cy="208" r="4" />
+          <circle cx="144" cy="194" r="4" />
+        </g>
+      )}
+
+      {/* 真っ赤な消防士ベスト */}
+      <path d="M90 132 L86 186 Q130 198, 174 186 L170 132 Z" fill={fireRed} />
+      <rect x="92" y="164" width="76" height="9" rx="4" fill={badgeGold} />
+      {/* 胸の消防肉球タグ */}
+      <circle cx="130" cy="144" r="12" fill={badgeGold} />
+      {!silhouette && (
+        <path d="M130 135 Q136 142, 134 149 Q130 152, 126 149 Q124 142, 130 135 Z" fill={fireRed} stroke="none" />
+      )}
+
+      {/* ダルメシアンの黒い垂れ耳 */}
+      <ellipse cx="86" cy="96" rx="13" ry="26" transform="rotate(14 86 96)" fill={spotBlack} />
+      <ellipse cx="174" cy="96" rx="13" ry="26" transform="rotate(-14 174 96)" fill={spotBlack} />
+      {!silhouette && (
+        <g fill={bodyWhite} stroke="none">
+          <circle cx="84" cy="92" r="4" />
+          <circle cx="88" cy="108" r="3" />
+          <circle cx="176" cy="94" r="4" />
+        </g>
+      )}
+
+      {/* 白い丸顔＆ダルメシアンの黒斑点 */}
+      <ellipse cx="130" cy="96" rx="37" ry="33" fill={bodyWhite} />
+      {!silhouette && (
+        <g fill={spotBlack} stroke="none">
+          <circle cx="102" cy="102" r="5" />
+          <circle cx="156" cy="84" r="4.5" />
+          <circle cx="158" cy="108" r="3.5" />
+        </g>
+      )}
+
+      {/* 真っ赤な消防ヘルメット（ツバ＆後ろフラップ＆ファイヤーバッジ） */}
+      <path d="M84 72 Q130 30, 176 72 L182 80 Q130 68, 78 80 Z" fill={fireRed} />
+      <path d="M98 70 Q130 62, 162 70" fill="none" stroke={badgeGold} strokeWidth="3.5" />
+      <circle cx="130" cy="54" r="9" fill={badgeGold} />
+
+      {/* キラキラの青い瞳・鼻・元気な舌出し笑顔 */}
+      <circle cx="114" cy="88" r="8" fill="#ffffff" />
+      <circle cx="146" cy="88" r="8" fill="#ffffff" />
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="115" cy="88" r="5" fill="#0284c7" />
+          <circle cx="145" cy="88" r="5" fill="#0284c7" />
+          <circle cx="113" cy="86" r="2" fill="#ffffff" />
+          <circle cx="143" cy="86" r="2" fill="#ffffff" />
+        </g>
+      )}
+      <ellipse cx="130" cy="100" rx="8" ry="5.5" fill={spotBlack} />
+      <path d="M120 110 Q130 120, 140 110" fill="none" stroke={spotBlack} strokeWidth="3" strokeLinecap="round" />
+      {!silhouette && (
+        <ellipse cx="130" cy="117" rx="5" ry="6" fill="#f472b6" stroke={spotBlack} strokeWidth="2" />
+      )}
+    </g>
+  );
+}
+
+/** No.157 ラブル (ブルドッグ・黄色い工事ヘルメット＆作業ベスト・パワーショベルアーム) */
+function RubbleSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  const workYellow = silhouette ? primary : '#eab308';
+  const brightYellow = silhouette ? primary : '#facc15';
+  const furBrown = silhouette ? secondary : '#92400e';
+  const furWhite = silhouette ? accent : '#f8fafc';
+  const shovelGrey = silhouette ? accent : '#475569';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ 背中のパウパックから伸びる巨大なパワーショベルアーム ＆ バケット爪 ★ */}
+      <rect x="64" y="132" width="30" height="36" rx="8" fill={workYellow} />
+      <rect x="166" y="132" width="30" height="36" rx="8" fill={workYellow} />
+      <path d="M188 142 L222 104 L236 122 L200 156 Z" fill={brightYellow} />
+      {/* ショベルの先端バケットとギザギザ爪 */}
+      <path d="M214 96 L246 86 L252 126 L220 124 Z" fill={shovelGrey} />
+      <polygon points="248,92 258,90 250,102" fill="#cbd5e1" />
+      <polygon points="250,114 258,118 248,124" fill="#cbd5e1" />
+
+      {/* むっちりしたブルドッグ体型の両脚 */}
+      <ellipse cx="96" cy="222" rx="15" ry="11" fill={furBrown} />
+      <ellipse cx="164" cy="222" rx="15" ry="11" fill={furBrown} />
+      <rect x="84" y="172" width="24" height="46" rx="11" fill={furBrown} />
+      <rect x="152" y="172" width="24" height="46" rx="11" fill={furBrown} />
+      <rect x="108" y="176" width="19" height="48" rx="9" fill={furWhite} />
+      <rect x="133" y="176" width="19" height="48" rx="9" fill={furWhite} />
+      <ellipse cx="117" cy="225" rx="13" ry="10" fill={furWhite} />
+      <ellipse cx="143" cy="225" rx="13" ry="10" fill={furWhite} />
+
+      {/* 黄色い工事ベストの胴体 */}
+      <path d="M88 130 L84 186 Q130 198, 176 186 L172 130 Z" fill={workYellow} />
+      <rect x="90" y="164" width="80" height="10" rx="4" fill="#78350f" />
+      <circle cx="130" cy="144" r="12" fill={brightYellow} />
+      {!silhouette && (
+        <rect x="126" y="137" width="8" height="14" rx="2" fill={shovelGrey} stroke="none" />
+      )}
+
+      {/* ブルドッグの丸い小さな垂れ耳 */}
+      <ellipse cx="88" cy="84" rx="10" ry="16" transform="rotate(20 88 84)" fill={furBrown} />
+      <ellipse cx="172" cy="84" rx="10" ry="16" transform="rotate(-20 172 84)" fill={furBrown} />
+
+      {/* ぷっくり可愛いブルドッグ顔（茶色ベース＋大きく白い口元マズル） */}
+      <ellipse cx="130" cy="96" rx="40" ry="34" fill={furBrown} />
+      <ellipse cx="130" cy="110" rx="28" ry="18" fill={furWhite} />
+      {/* 左目周りの可愛い白いパッチ */}
+      {!silhouette && (
+        <ellipse cx="114" cy="90" rx="14" ry="12" fill={furWhite} stroke="none" />
+      )}
+
+      {/* 黄色い安全工事ヘルメット */}
+      <path d="M84 72 Q130 32, 176 72 L182 80 Q130 68, 78 80 Z" fill={brightYellow} />
+      <rect x="122" y="42" width="16" height="24" rx="4" fill={workYellow} />
+
+      {/* にっこりした目とブルドッグのちいさな牙 */}
+      <circle cx="114" cy="90" r="8" fill="#ffffff" />
+      <circle cx="146" cy="90" r="8" fill="#ffffff" />
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="115" cy="90" r="5" fill="#92400e" />
+          <circle cx="145" cy="90" r="5" fill="#92400e" />
+          <circle cx="113" cy="88" r="2" fill="#ffffff" />
+          <circle cx="143" cy="88" r="2" fill="#ffffff" />
+        </g>
+      )}
+      <ellipse cx="130" cy="102" rx="9" ry="6" fill="#0f172a" />
+      <path d="M118 112 Q130 120, 142 112" fill="none" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" />
+      <polygon points="120,113 123,108 126,114" fill="#ffffff" />
+      <polygon points="140,113 137,108 134,114" fill="#ffffff" />
+    </g>
+  );
+}
+
+/** No.158 スカイ (コッカースパニエル・ピンクのフライトゴーグル＆翼ジェットウイング・ふわふわ耳) */
+function SkyeSvg({ primary, secondary, accent, outline, silhouette }: SvgPartProps) {
+  const skyPink = silhouette ? primary : '#ec4899';
+  const softPink = silhouette ? primary : '#f472b6';
+  const furCream = silhouette ? secondary : '#fde68a';
+  const furHoney = silhouette ? secondary : '#f59e0b';
+  const goggleBlue = silhouette ? accent : '#38bdf8';
+  const wingWhite = silhouette ? accent : '#ffffff';
+
+  return (
+    <g stroke={outline} strokeWidth="3.5" strokeLinejoin="round">
+      {/* ★ スカイの象徴：背中から大きく開いたピンクのジェットウイング（翼）＆風エフェクト ★ */}
+      <path d="M92 140 C42 96, 14 114, 18 144 C38 158, 70 158, 95 156 Z" fill={softPink} />
+      <path d="M168 140 C218 96, 246 114, 242 144 C222 158, 190 158, 165 156 Z" fill={softPink} />
+      {/* 翼の白いライン模様 */}
+      {!silhouette && (
+        <g stroke={wingWhite} strokeWidth="3" fill="none" strokeLinecap="round">
+          <path d="M36 130 Q58 132, 82 144" />
+          <path d="M224 130 Q202 132, 178 144" />
+          {/* 風の輪っか＆キラキラ */}
+          <circle cx="38" cy="82" r="5" fill="#fbcfe8" stroke="none" />
+          <circle cx="222" cy="82" r="5" fill="#fbcfe8" stroke="none" />
+        </g>
+      )}
+
+      {/* クリーム色の可愛い尻尾 */}
+      <path d="M158 186 Q192 182, 200 158 Q182 162, 170 174 Z" fill={furHoney} />
+
+      {/* 4本の可愛い子犬脚 */}
+      <ellipse cx="98" cy="222" rx="13" ry="9" fill={furCream} />
+      <ellipse cx="162" cy="222" rx="13" ry="9" fill={furCream} />
+      <rect x="88" y="176" width="20" height="44" rx="9" fill={furCream} />
+      <rect x="152" y="176" width="20" height="44" rx="9" fill={furCream} />
+      <rect x="109" y="178" width="17" height="46" rx="8" fill={furCream} />
+      <rect x="134" y="178" width="17" height="46" rx="8" fill={furCream} />
+      <ellipse cx="117" cy="225" rx="11" ry="9" fill={furCream} />
+      <ellipse cx="143" cy="225" rx="11" ry="9" fill={furCream} />
+
+      {/* ピンクのフライトベスト胴体 */}
+      <path d="M94 134 L88 184 Q130 196, 172 184 L166 134 Z" fill={skyPink} />
+      <rect x="94" y="164" width="72" height="9" rx="4" fill="#be185d" />
+      {/* 胸のプロペラ肉球タグ */}
+      <circle cx="130" cy="144" r="11" fill={wingWhite} />
+      {!silhouette && (
+        <ellipse cx="130" cy="144" rx="7" ry="3" fill={skyPink} stroke="none" />
+      )}
+
+      {/* ふわふわカールした長めの垂れ耳（コッカースパニエル） */}
+      <path d="M92 84 Q66 96, 70 132 Q84 142, 98 124 Z" fill={furHoney} />
+      <path d="M168 84 Q194 96, 190 132 Q176 142, 162 124 Z" fill={furHoney} />
+
+      {/* ふわふわクリーム色の丸顔 */}
+      <ellipse cx="130" cy="96" rx="35" ry="32" fill={furCream} />
+      {/* ふわふわの額の前髪カール */}
+      <path d="M116 74 Q130 62, 144 74 Q136 82, 130 78 Q124 82, 116 74 Z" fill={furCream} />
+
+      {/* ★ ピンクのフライトキャップ ＆ 水色レンズの大きなパイロットゴーグル ★ */}
+      <path d="M95 72 Q130 40, 165 72 Z" fill={softPink} />
+      {/* ゴーグルのベルトと左右レンズ */}
+      <rect x="94" y="54" width="72" height="12" rx="4" fill="#db2777" />
+      <ellipse cx="114" cy="58" rx="13" ry="10" fill={skyPink} />
+      <ellipse cx="146" cy="58" rx="13" ry="10" fill={skyPink} />
+      <ellipse cx="114" cy="58" rx="8" ry="6" fill={goggleBlue} />
+      <ellipse cx="146" cy="58" rx="8" ry="6" fill={goggleBlue} />
+      {!silhouette && (
+        <g stroke="#ffffff" strokeWidth="2" strokeLinecap="round">
+          <line x1="110" y1="56" x2="115" y2="54" />
+          <line x1="142" y1="56" x2="147" y2="54" />
+        </g>
+      )}
+
+      {/* ピンク/マゼンタの可愛い瞳・まつ毛・鼻・笑顔 */}
+      <circle cx="115" cy="90" r="8" fill="#ffffff" />
+      <circle cx="145" cy="90" r="8" fill="#ffffff" />
+      {!silhouette && (
+        <g stroke="none">
+          <circle cx="116" cy="90" r="5" fill="#db2777" />
+          <circle cx="144" cy="90" r="5" fill="#db2777" />
+          <circle cx="114" cy="88" r="2" fill="#ffffff" />
+          <circle cx="142" cy="88" r="2" fill="#ffffff" />
+        </g>
+      )}
+      <ellipse cx="130" cy="100" rx="7" ry="5" fill="#78350f" />
+      <path d="M122 109 Q130 116, 138 109" fill="none" stroke="#78350f" strokeWidth="3" strokeLinecap="round" />
+    </g>
+  );
+}
+
+
+/* ==========================================================================
    🪲 実在昆虫 16スタイル別SVGアートワーク (REAL INSECT SVGS)
    ========================================================================== */
 
@@ -9723,6 +10081,16 @@ function KaijuSpecificSvgDispatcher({
       return <TyranitarSvg {...partProps} />;
     case 'nature-pkmn-giratina':
       return <GiratinaSvg {...partProps} />;
+
+    // 🐾 パウ・パトロール・レスキューチーム
+    case 'water-paw-chase':
+      return <ChaseSvg {...partProps} />;
+    case 'fire-paw-marshall':
+      return <MarshallSvg {...partProps} />;
+    case 'thunder-paw-rubble':
+      return <RubbleSvg {...partProps} />;
+    case 'nature-paw-skye':
+      return <SkyeSvg {...partProps} />;
 
     default:
       if (resolvedId.includes('kabuto')) return <YHornBeetleSvg {...partProps} />;
