@@ -1018,14 +1018,16 @@ export function KaijuTournamentAndChest({
                       <div className="flex flex-col items-end gap-1">
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                            item.rarity === 'SSR'
+                            item.rarity === 'UR'
+                              ? 'bg-gradient-to-r from-rose-400 via-yellow-300 to-cyan-300 text-slate-950 ring-1 ring-white'
+                              : item.rarity === 'SSR'
                               ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950'
                               : item.rarity === 'SR'
                               ? 'bg-amber-400 text-slate-950'
                               : 'bg-sky-400 text-slate-950'
                           }`}
                         >
-                          {item.rarity}
+                          {item.rarity === 'UR' ? '👑UR' : item.rarity}
                         </span>
                         {isUnlocked && (
                           <span

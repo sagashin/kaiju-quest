@@ -373,7 +373,7 @@ export function getAwakeningCost(currentStar: AwakeningStar): number {
   return 0;
 }
 
-export type EquipmentRarity = 'R' | 'SR' | 'SSR';
+export type EquipmentRarity = 'R' | 'SR' | 'SSR' | 'UR';
 
 export interface EquipmentItem {
   id: string;
@@ -392,6 +392,8 @@ export interface EquipmentItem {
   attackBonus: number;
   defenseBonus: number;
   speedBonus: number;
+  casinoOnly?: boolean;
+  casinoCost?: number;
 }
 
 export interface KaijuProgress {
@@ -3656,6 +3658,83 @@ export const EQUIPMENT_LIST: EquipmentItem[] = [
     defenseBonus: 25,
     speedBonus: 22,
   },
+  // 🎰 カジノ限定・超レア UR そうび（たからばこからは絶対に出ない！）
+  {
+    id: 'eq-casino-hagure-sword',
+    name: 'はぐれメタルのつるぎ',
+    emoji: '🗡️',
+    icon: '🗡️',
+    rarity: 'UR',
+    titleBadge: '🎰カジノ限定・白銀の光剣',
+    description: 'カジノの 景品交換所でしか 手に入らない 幻の剣！はぐれメタルのように 目にも止まらぬ 速さと 切れ味を 誇るぞ！',
+    hpBonus: 40,
+    mpBonus: 15,
+    atkBonus: 55,
+    defBonus: 20,
+    spdBonus: 45,
+    attackBonus: 55,
+    defenseBonus: 20,
+    speedBonus: 45,
+    casinoOnly: true,
+    casinoCost: 15000,
+  },
+  {
+    id: 'eq-casino-metalking-armor',
+    name: 'メタルキングのよろい',
+    emoji: '🛡️',
+    icon: '🛡️',
+    rarity: 'UR',
+    titleBadge: '🎰カジノ限定・無敵の銀甲冑',
+    description: '伝説のカジノ景品！あらゆる ほのおや 吹雪、大魔王の 一撃すら はねかえす 最強クラスの 輝きを はなつ よろい！',
+    hpBonus: 120,
+    mpBonus: 30,
+    atkBonus: 20,
+    defBonus: 65,
+    spdBonus: 25,
+    attackBonus: 20,
+    defenseBonus: 65,
+    speedBonus: 25,
+    casinoOnly: true,
+    casinoCost: 30000,
+  },
+  {
+    id: 'eq-casino-galaxy-sword',
+    name: 'ぎんがのつるぎ【極】',
+    emoji: '🌌',
+    icon: '🌌',
+    rarity: 'UR',
+    titleBadge: '🎰カジノ限定・星砕きの神剣',
+    description: '宇宙の 星々の パワーを 宿した カジノ超VIP限定の 伝説神剣！一振りで 銀河の 流れ星のように まばゆい 衝撃波を 放つ！',
+    hpBonus: 100,
+    mpBonus: 35,
+    atkBonus: 85,
+    defBonus: 35,
+    spdBonus: 55,
+    attackBonus: 85,
+    defenseBonus: 35,
+    speedBonus: 55,
+    casinoOnly: true,
+    casinoCost: 77777,
+  },
+  {
+    id: 'eq-casino-god-ring',
+    name: '神龍のカジノ王リング',
+    emoji: '💎',
+    icon: '💎',
+    rarity: 'UR',
+    titleBadge: '🎰カジノ究極秘宝・全能の指輪',
+    description: 'カジノを 極めた ほんとうの チャンピオンだけが 手にできる 最高峰の 秘宝！すべての 能力を 極限まで 引き上げるぞ！',
+    hpBonus: 160,
+    mpBonus: 60,
+    atkBonus: 95,
+    defBonus: 65,
+    spdBonus: 65,
+    attackBonus: 95,
+    defenseBonus: 65,
+    speedBonus: 65,
+    casinoOnly: true,
+    casinoCost: 150000,
+  },
 ];
 
 export function getEquipmentById(id?: string): EquipmentItem | undefined {
@@ -3686,8 +3765,8 @@ export function getScaledEquipmentStats(item: EquipmentItem, level: number = 1) 
 }
 
 /**
- * たからばこを開けたときに、まだ持っていない装備を最優先で抽選し、
- * コンプ後は Lv.10 未満の装備を優先して強化対象として抽選する
+ * たからばこを開けたときに、まだ持っていない通常装備を最優先で抽選し、
+ * コンプ後は Lv.10 未満の通常装備を優先して強化対象として抽選する（カジノ限定装備は除外）
  */
 export function rollTreasureChestEquipment(
   unlockedIds: string[] = [],
@@ -3696,15 +3775,16 @@ export function rollTreasureChestEquipment(
   item: EquipmentItem;
   isNew: boolean;
 } {
-  const locked = EQUIPMENT_LIST.filter((item) => !unlockedIds.includes(item.id));
+  const chestPool = EQUIPMENT_LIST.filter((item) => !item.casinoOnly);
+  const locked = chestPool.filter((item) => !unlockedIds.includes(item.id));
   if (locked.length > 0) {
     const picked = locked[Math.floor(Math.random() * locked.length)];
     return { item: picked, isNew: true };
   }
-  const upgradeable = EQUIPMENT_LIST.filter(
+  const upgradeable = chestPool.filter(
     (item) => (equipmentLevels[item.id] ?? 1) < MAX_EQUIPMENT_LEVEL
   );
-  const pool = upgradeable.length > 0 ? upgradeable : EQUIPMENT_LIST;
+  const pool = upgradeable.length > 0 ? upgradeable : chestPool;
   const picked = pool[Math.floor(Math.random() * pool.length)];
   return { item: picked, isNew: false };
 }

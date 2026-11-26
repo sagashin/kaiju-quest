@@ -42,6 +42,7 @@ import {
   EquipmentItem,
 } from '@/lib/kaiju-data';
 import { KaijuTournamentAndChest } from '@/components/kaiju-tournament';
+import { KaijuCasino, CasinoPrizePayload } from '@/components/kaiju-casino';
 import { MonsterEggSvg, KaijuSvgIllustration } from '@/components/kaiju-artwork';
 import { KaijuHeroCard } from '@/components/kaiju-card';
 import { KaijuBattle } from '@/components/kaiju-battle';
@@ -62,7 +63,7 @@ import {
   fireSummonConfetti,
 } from '@/lib/sound-and-speech';
 
-type ActiveTab = 'quest' | 'summon' | 'zukan' | 'quiz' | 'battle';
+type ActiveTab = 'quest' | 'summon' | 'zukan' | 'quiz' | 'battle' | 'casino';
 
 interface SavedAppState {
   energy: number;
@@ -80,6 +81,7 @@ interface SavedAppState {
   equipmentLevels?: Record<string, number>;
   chestKeys?: number;
   tournamentWins?: number;
+  casinoMedals?: number;
   zukanViewMode?: 'grid3' | 'grid4' | 'card2';
   zukanSortOrder?: 'newest' | 'oldest';
 }
@@ -103,6 +105,7 @@ export default function KaijuQuestApp() {
   const [equipmentLevels, setEquipmentLevels] = useState<Record<string, number>>({});
   const [chestKeys, setChestKeys] = useState<number>(1); // 最初から金のたからばこ1個プレゼント！
   const [tournamentWins, setTournamentWins] = useState<number>(0);
+  const [casinoMedals, setCasinoMedals] = useState<number>(100); // 初回おためしメダル100枚！
   const [battleSubMode, setBattleSubMode] = useState<'tournament' | 'raid'>('tournament');
   const [questTimeFilter, setQuestTimeFilter] = useState<'morning' | 'night' | 'all'>(() => {
     if (typeof window !== 'undefined') {
@@ -231,6 +234,9 @@ export default function KaijuQuestApp() {
           if (typeof parsed.tournamentWins === 'number') {
             setTournamentWins(parsed.tournamentWins);
           }
+          if (typeof parsed.casinoMedals === 'number') {
+            setCasinoMedals(parsed.casinoMedals);
+          }
           if (parsed.zukanViewMode === 'card2') {
             setZukanViewMode('card2');
           } else if (parsed.zukanViewMode === 'grid3' || parsed.zukanViewMode === 'grid4') {
@@ -268,6 +274,7 @@ export default function KaijuQuestApp() {
         equipmentLevels,
         chestKeys,
         tournamentWins,
+        casinoMedals,
         zukanViewMode,
         zukanSortOrder,
       };
@@ -291,6 +298,7 @@ export default function KaijuQuestApp() {
     equipmentLevels,
     chestKeys,
     tournamentWins,
+    casinoMedals,
     zukanViewMode,
     zukanSortOrder,
     isHydrated,
@@ -416,6 +424,45 @@ export default function KaijuQuestApp() {
     setChestKeys((prev) => prev + 1); // 金のたからばこ +1
     setExpOrbs((prev) => prev + 2);   // けいけんち玉 +2
     setStarBalls((prev) => Math.min(7, prev + 1)); // ほし玉 +1
+    setCasinoMedals((prev) => prev + 100); // カジノメダル +100
+  };
+
+  // カジノメダル増減
+  const handleChangeCasinoMedals = (delta: number) => {
+    setCasinoMedals((prev) => Math.max(0, prev + delta));
+  };
+
+  // けいけんち玉1個 → カジノメダル100枚
+  const handleExchangeOrbForMedals = () => {
+    if (expOrbs <= 0) return;
+    setExpOrbs((prev) => Math.max(0, prev - 1));
+    setCasinoMedals((prev) => prev + 100);
+  };
+
+  // メダル50枚未満のおこづかい救済
+  const handleClaimCasinoAllowance = () => {
+    if (casinoMedals >= 50) return;
+    setCasinoMedals((prev) => prev + 50);
+  };
+
+  // カジノ景品交換
+  const handleRedeemCasinoPrize = (prize: CasinoPrizePayload) => {
+    if (casinoMedals < prize.cost) return;
+    if (prize.type === 'equipment' && prize.equipmentId) {
+      if (unlockedEquipmentIds.includes(prize.equipmentId)) return;
+      setCasinoMedals((prev) => Math.max(0, prev - prize.cost));
+      setUnlockedEquipmentIds((prev) => [...prev, prize.equipmentId!]);
+      setEquipmentLevels((prev) => ({ ...prev, [prize.equipmentId!]: 1 }));
+    } else if (prize.type === 'expOrbs') {
+      setCasinoMedals((prev) => Math.max(0, prev - prize.cost));
+      setExpOrbs((prev) => prev + (prize.amount ?? 3));
+    } else if (prize.type === 'chestKey') {
+      setCasinoMedals((prev) => Math.max(0, prev - prize.cost));
+      setChestKeys((prev) => prev + (prize.amount ?? 1));
+    } else if (prize.type === 'starBall') {
+      setCasinoMedals((prev) => Math.max(0, prev - prize.cost));
+      setStarBalls((prev) => Math.min(7, prev + (prize.amount ?? 1)));
+    }
   };
 
   // けいけんち玉でレベルアップ ＆ Lv.10到達後は「キラキラ色違い超覚醒（★1〜★3）」
@@ -522,6 +569,12 @@ export default function KaijuQuestApp() {
         'ふたりで かいじゅうバトル！じょうくんと パパで 力をあわせて たたかおう！レッツゴー！',
         soundEnabled
       );
+    } else if (tab === 'casino') {
+      playBeatboxIntroSound();
+      speakJapanese(
+        'ジャジャーン！かいじゅうカジノへ ようこそ！スロットや ルーレット、ポーカーで メダルを ふやそう！',
+        soundEnabled
+      );
     }
   };
 
@@ -541,6 +594,7 @@ export default function KaijuQuestApp() {
     setCompletedQuests(nextCompleted);
     setEnergy(nextEnergy);
     setExpOrbs((prev) => prev + 1);
+    setCasinoMedals((prev) => prev + 15);
 
     // ☀️朝のクエスト(7個) または 🌙夜のクエスト(8個) コンプリートボーナス判定！
     const morningQuestIds = QUEST_LIST.filter((q) => q.timeOfDay === 'morning').map((q) => q.id);
@@ -2280,6 +2334,20 @@ export default function KaijuQuestApp() {
             )}
           </div>
         )}
+
+        {/* TAB 6: 🎰 かいじゅうカジノ */}
+        {activeTab === 'casino' && (
+          <KaijuCasino
+            medals={casinoMedals}
+            expOrbs={expOrbs}
+            unlockedEquipmentIds={unlockedEquipmentIds}
+            soundEnabled={soundEnabled}
+            onChangeMedals={handleChangeCasinoMedals}
+            onExchangeOrbForMedals={handleExchangeOrbForMedals}
+            onClaimAllowance={handleClaimCasinoAllowance}
+            onRedeemPrize={handleRedeemCasinoPrize}
+          />
+        )}
       </main>
 
       {/* ==================== 🐉 黄金の神龍（シェンロン）お願いモーダル ==================== */}
@@ -2388,17 +2456,17 @@ export default function KaijuQuestApp() {
         </div>
       )}
 
-      {/* ==================== 画面下部：5つの大きな切り替えタブ ==================== */}
+      {/* ==================== 画面下部：6つの大きな切り替えタブ ==================== */}
       <nav
         aria-label="メインメニュー"
-        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 border-t-2 border-white/15 px-1.5 sm:px-3 py-2"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/98 border-t-2 border-white/15 px-1 sm:px-3 py-2"
       >
-        <div className="max-w-xl mx-auto grid grid-cols-5 gap-1.5 sm:gap-2">
+        <div className="max-w-2xl mx-auto grid grid-cols-6 gap-1 sm:gap-2">
           {/* ① ⚡クエスト */}
           <button
             type="button"
             onClick={() => handleSelectTab('quest')}
-            className={`relative min-h-[62px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`relative min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'quest'
                 ? 'bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_0_20px_rgba(250,204,21,0.6)]'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
@@ -2409,15 +2477,15 @@ export default function KaijuQuestApp() {
                 🐉神龍!
               </span>
             )}
-            <span className="text-xl sm:text-2xl leading-none">⚡</span>
-            <span className="text-[11px] sm:text-xs mt-1">クエスト</span>
+            <span className="text-lg sm:text-2xl leading-none">⚡</span>
+            <span className="text-[10px] sm:text-xs mt-1">クエスト</span>
           </button>
 
           {/* ② 🥚しょうかん（エネルギー3つ以上のときピカピカ光る演出） */}
           <button
             type="button"
             onClick={() => handleSelectTab('summon')}
-            className={`relative min-h-[62px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`relative min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'summon'
                 ? 'bg-gradient-to-b from-rose-500 to-orange-500 text-white border-white shadow-[0_0_22px_rgba(244,63,94,0.7)]'
                 : canSummon
@@ -2430,15 +2498,15 @@ export default function KaijuQuestApp() {
                 OK!
               </span>
             )}
-            <span className="text-xl sm:text-2xl leading-none">🥚</span>
-            <span className="text-[11px] sm:text-xs mt-1">しょうかん</span>
+            <span className="text-lg sm:text-2xl leading-none">🥚</span>
+            <span className="text-[10px] sm:text-xs mt-1">しょうかん</span>
           </button>
 
           {/* ③ 📖ずかん */}
           <button
             type="button"
             onClick={() => handleSelectTab('zukan')}
-            className={`relative min-h-[62px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`relative min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'zukan'
                 ? 'bg-gradient-to-b from-cyan-400 to-blue-600 text-white border-white shadow-[0_0_20px_rgba(56,189,248,0.6)]'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
@@ -2449,8 +2517,8 @@ export default function KaijuQuestApp() {
                 🌟{expOrbs}
               </span>
             )}
-            <span className="text-xl sm:text-2xl leading-none">📖</span>
-            <span className="text-[11px] sm:text-xs mt-1">
+            <span className="text-lg sm:text-2xl leading-none">📖</span>
+            <span className="text-[10px] sm:text-xs mt-1">
               ずかん({unlockedKaijuIds.length})
             </span>
           </button>
@@ -2459,28 +2527,42 @@ export default function KaijuQuestApp() {
           <button
             type="button"
             onClick={() => handleSelectTab('quiz')}
-            className={`min-h-[62px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'quiz'
                 ? 'bg-gradient-to-b from-emerald-400 to-teal-600 text-slate-950 border-white shadow-[0_0_20px_rgba(52,211,153,0.7)]'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
             }`}
           >
-            <span className="text-xl sm:text-2xl leading-none">🎓</span>
-            <span className="text-[11px] sm:text-xs mt-1">クイズ</span>
+            <span className="text-lg sm:text-2xl leading-none">🎓</span>
+            <span className="text-[10px] sm:text-xs mt-1">クイズ</span>
           </button>
 
           {/* ⑤ ⚔️バトル */}
           <button
             type="button"
             onClick={() => handleSelectTab('battle')}
-            className={`min-h-[62px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+            className={`min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
               activeTab === 'battle'
                 ? 'bg-gradient-to-b from-purple-500 to-rose-600 text-white border-white shadow-[0_0_20px_rgba(168,85,247,0.7)]'
                 : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
             }`}
           >
             <Swords className="w-5 h-5 sm:w-6 sm:h-6 leading-none text-amber-300" />
-            <span className="text-[11px] sm:text-xs mt-1">バトル</span>
+            <span className="text-[10px] sm:text-xs mt-1">バトル</span>
+          </button>
+
+          {/* ⑥ 🎰カジノ */}
+          <button
+            type="button"
+            onClick={() => handleSelectTab('casino')}
+            className={`relative min-h-[60px] rounded-2xl font-black flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0 border-2 ${
+              activeTab === 'casino'
+                ? 'bg-gradient-to-b from-yellow-300 via-amber-400 to-orange-500 text-slate-950 border-white shadow-[0_0_22px_rgba(250,204,21,0.85)]'
+                : 'bg-slate-800/90 text-slate-200 border-white/10 hover:bg-slate-800'
+            }`}
+          >
+            <span className="text-lg sm:text-2xl leading-none">🎰</span>
+            <span className="text-[10px] sm:text-xs mt-1">カジノ</span>
           </button>
         </div>
       </nav>
