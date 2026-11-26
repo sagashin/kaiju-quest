@@ -20,7 +20,9 @@ import {
   EquipmentItem,
   KAIJU_LIST,
   EQUIPMENT_LIST,
+  MAX_EQUIPMENT_LEVEL,
   getKaijuStats,
+  getScaledEquipmentStats,
   getElementMeta,
   getElementAdvantage,
   getAwakeningOverrideColors,
@@ -44,11 +46,14 @@ export interface KaijuTournamentProps {
   papaPartnerKaiju?: KaijuData;
   partnerProgress?: KaijuProgress;
   unlockedEquipmentIds: string[];
+  equipmentLevels?: Record<string, number>;
+  expOrbs?: number;
   chestKeys: number;
   tournamentWins: number;
   soundEnabled: boolean;
   onOpenChest: (obtainedItem: EquipmentItem) => void;
   onEquipItem: (kaijuId: string, itemId: string | undefined) => void;
+  onUpgradeEquipment?: (equipmentId: string) => void;
   onTournamentWinReward: () => void;
 }
 
@@ -65,11 +70,14 @@ export function KaijuTournamentAndChest({
   papaPartnerKaiju,
   partnerProgress,
   unlockedEquipmentIds,
+  equipmentLevels = {},
+  expOrbs = 0,
   chestKeys,
   tournamentWins,
   soundEnabled,
   onOpenChest,
   onEquipItem,
+  onUpgradeEquipment,
   onTournamentWinReward,
 }: KaijuTournamentProps) {
   const [subTab, setSubTab] = useState<'tournament' | 'chest'>('tournament');
@@ -79,6 +87,7 @@ export function KaijuTournamentAndChest({
   const [newlyObtainedItem, setNewlyObtainedItem] = useState<{
     item: EquipmentItem;
     isNew: boolean;
+    newLevel?: number;
   } | null>(null);
   const [selectedEquipmentDetail, setSelectedEquipmentDetail] = useState<EquipmentItem | null>(
     null
@@ -102,8 +111,17 @@ export function KaijuTournamentAndChest({
   const [isDefeated, setIsDefeated] = useState<boolean>(false);
 
   const playerStats = useMemo(
-    () => getKaijuStats(partnerKaiju, partnerProgress),
-    [partnerKaiju, partnerProgress]
+    () => getKaijuStats(partnerKaiju, partnerProgress, equipmentLevels),
+    [partnerKaiju, partnerProgress, equipmentLevels]
+  );
+
+  const totalEquipLevel = useMemo(
+    () =>
+      unlockedEquipmentIds.reduce(
+        (sum, id) => sum + Math.min(MAX_EQUIPMENT_LEVEL, Math.max(1, equipmentLevels[id] ?? 1)),
+        0
+      ),
+    [unlockedEquipmentIds, equipmentLevels]
   );
 
   const currentOpponent = useMemo(() => {
@@ -137,15 +155,31 @@ export function KaijuTournamentAndChest({
     speakJapanese('ドキドキ…！金のたからばこを あけるぞーっ！なにが でるかな！？', soundEnabled);
 
     setTimeout(() => {
-      const result = rollTreasureChestEquipment(unlockedEquipmentIds);
+      const result = rollTreasureChestEquipment(unlockedEquipmentIds, equipmentLevels);
+      const currentLv = equipmentLevels[result.item.id] ?? 1;
+      const nextLevel = result.isNew
+        ? 1
+        : Math.min(MAX_EQUIPMENT_LEVEL, currentLv + 1);
       setIsOpeningChest(false);
-      setNewlyObtainedItem(result);
+      setNewlyObtainedItem({ ...result, newLevel: nextLevel });
       onOpenChest(result.item);
       playTreasureChestSound();
-      speakJapanese(
-        `キターーー！ファンファーレ！でんせつの そうび、${result.item.name} を ゲットしたぞーっ！${result.item.description}`,
-        soundEnabled
-      );
+      if (result.isNew) {
+        speakJapanese(
+          `キターーー！ファンファーレ！でんせつの そうび、${result.item.name} を ゲットしたぞーっ！${result.item.description}`,
+          soundEnabled
+        );
+      } else if (nextLevel > currentLv) {
+        speakJapanese(
+          `キターーー！ダブりパワーアップ！${result.item.name} が レベル${nextLevel} に きたえられたぞーっ！`,
+          soundEnabled
+        );
+      } else {
+        speakJapanese(
+          `ピカーン！もう レベルマックスの ${result.item.name} だ！すっごーい！`,
+          soundEnabled
+        );
+      }
     }, 1100);
   };
 
@@ -546,7 +580,7 @@ export function KaijuTournamentAndChest({
                 </span>
                 {playerStats.equippedItem && (
                   <span className="px-3 py-1 rounded-lg bg-amber-500/30 text-yellow-200 border border-yellow-300">
-                    {playerStats.equippedItem.emoji} {playerStats.equippedItem.name} 装備中！
+                    {playerStats.equippedItem.emoji} {playerStats.equippedItem.name} Lv.{playerStats.equippedItemLevel ?? 1} 装備中！
                   </span>
                 )}
               </div>
@@ -891,11 +925,11 @@ export function KaijuTournamentAndChest({
                 <div className="text-xs font-black text-yellow-300">
                   {newlyObtainedItem.isNew
                     ? '✨ あたらしい でんせつのそうび ゲット！！'
-                    : '🎉 でんせつのそうび ゲット！！'}
+                    : `🔥 パワーアップ！そうびレベルが Lv.${newlyObtainedItem.newLevel ?? 2} になったぞ！！`}
                 </div>
                 <div className="text-4xl">{newlyObtainedItem.item.emoji}</div>
                 <div className="text-lg sm:text-xl font-black text-yellow-200">
-                  【{newlyObtainedItem.item.rarity}】{newlyObtainedItem.item.name}
+                  【{newlyObtainedItem.item.rarity}】{newlyObtainedItem.item.name}（Lv.{newlyObtainedItem.newLevel ?? 1}）
                 </div>
                 <p className="text-xs font-bold text-slate-200">
                   {newlyObtainedItem.item.description}
@@ -918,22 +952,34 @@ export function KaijuTournamentAndChest({
             )}
           </div>
 
-          {/* ⚔️ でんせつの装備図鑑（全12種） */}
+          {/* ⚔️ でんせつの装備図鑑（全12種）＆ かじや鍛錬 */}
           <div className="dq-window p-4 space-y-3">
-            <div className="flex items-center justify-between border-b-2 border-white/20 pb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-white/20 pb-2">
               <div className="flex items-center gap-2 font-black text-sm sm:text-base text-yellow-300">
                 <Shield className="w-5 h-5" />
-                <span>⚔️ でんせつの そうび図鑑</span>
+                <span>⚔️ でんせつの そうび図鑑 ＆ かじや</span>
               </div>
-              <span className="text-xs sm:text-sm font-black text-amber-200 tabular-nums">
-                あつめた数：{unlockedEquipmentIds.length} / {EQUIPMENT_LIST.length}
-              </span>
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-black tabular-nums">
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-200">
+                  あつめた数：{unlockedEquipmentIds.length} / {EQUIPMENT_LIST.length}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-200">
+                  🔨 合計 Lv.{totalEquipLevel} / {EQUIPMENT_LIST.length * MAX_EQUIPMENT_LEVEL}
+                </span>
+              </div>
+            </div>
+
+            <div className="text-[11px] font-bold text-slate-300 bg-slate-900/70 rounded-xl px-3 py-2 border border-white/10">
+              💡 同じそうびを「金のたからばこ」でひくと自動でレベルアップ！さらに「🌟けいけんち玉」を使って <span className="text-yellow-300">最大 Lv.{MAX_EQUIPMENT_LEVEL}【極】</span> まで鍛えられるぞ！（現在の🌟玉：{expOrbs}こ）
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {EQUIPMENT_LIST.map((item) => {
                 const isUnlocked = unlockedEquipmentIds.includes(item.id);
                 const isEquippedByPartner = playerStats.equippedItem?.id === item.id;
+                const eqLv = Math.min(MAX_EQUIPMENT_LEVEL, Math.max(1, equipmentLevels[item.id] ?? 1));
+                const scaled = getScaledEquipmentStats(item, eqLv);
+                const isMaxLv = eqLv >= MAX_EQUIPMENT_LEVEL;
 
                 return (
                   <button
@@ -955,7 +1001,7 @@ export function KaijuTournamentAndChest({
                         isEquippedByPartner ? undefined : item.id
                       );
                       speakJapanese(
-                        `${item.name}！${item.description} あいぼうの ${playerStats.displayName} に そうびしたよ！`,
+                        `${item.name} レベル${eqLv}！${item.description} あいぼうの ${playerStats.displayName} に そうびしたよ！`,
                         soundEnabled
                       );
                     }}
@@ -969,17 +1015,32 @@ export function KaijuTournamentAndChest({
                   >
                     <div className="flex items-start justify-between gap-1">
                       <span className="text-3xl">{isUnlocked ? item.emoji : '🔒'}</span>
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                          item.rarity === 'SSR'
-                            ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950'
-                            : item.rarity === 'SR'
-                            ? 'bg-amber-400 text-slate-950'
-                            : 'bg-sky-400 text-slate-950'
-                        }`}
-                      >
-                        {item.rarity}
-                      </span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                            item.rarity === 'SSR'
+                              ? 'bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 text-slate-950'
+                              : item.rarity === 'SR'
+                              ? 'bg-amber-400 text-slate-950'
+                              : 'bg-sky-400 text-slate-950'
+                          }`}
+                        >
+                          {item.rarity}
+                        </span>
+                        {isUnlocked && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-black tabular-nums ${
+                              isMaxLv
+                                ? 'bg-gradient-to-r from-pink-400 via-amber-300 to-cyan-300 text-slate-950'
+                                : eqLv > 1
+                                ? 'bg-emerald-500/30 border border-emerald-400 text-emerald-200'
+                                : 'bg-slate-800 text-slate-300'
+                            }`}
+                          >
+                            {isMaxLv ? `🌈 Lv.${eqLv} 極` : eqLv > 1 ? `✨ Lv.${eqLv}` : `Lv.${eqLv}`}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -995,7 +1056,7 @@ export function KaijuTournamentAndChest({
                       <div className="text-[10px] font-black text-emerald-300 bg-slate-950/80 rounded-lg px-2 py-1">
                         {isEquippedByPartner
                           ? '✅ あいぼうが装備中！'
-                          : `⚔️+${item.atkBonus} ❤️+${item.hpBonus} 💨+${item.spdBonus}`}
+                          : `⚔️+${scaled.atkBonus} ❤️+${scaled.hpBonus} 💨+${scaled.spdBonus}`}
                       </div>
                     )}
                   </button>
@@ -1003,34 +1064,93 @@ export function KaijuTournamentAndChest({
               })}
             </div>
 
-            {selectedEquipmentDetail && (
-              <div className="rounded-xl bg-slate-900/95 border border-yellow-400/50 p-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="text-3xl shrink-0">{selectedEquipmentDetail.emoji}</span>
-                  <div className="min-w-0">
-                    <div className="text-sm font-black text-yellow-300">
-                      {selectedEquipmentDetail.name}（{selectedEquipmentDetail.titleBadge}）
+            {selectedEquipmentDetail && (() => {
+              const selLv = Math.min(
+                MAX_EQUIPMENT_LEVEL,
+                Math.max(1, equipmentLevels[selectedEquipmentDetail.id] ?? 1)
+              );
+              const selScaled = getScaledEquipmentStats(selectedEquipmentDetail, selLv);
+              const isSelMax = selLv >= MAX_EQUIPMENT_LEVEL;
+              return (
+                <div className="rounded-xl bg-slate-900/95 border-2 border-yellow-400/60 p-3.5 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="text-3xl shrink-0">{selectedEquipmentDetail.emoji}</span>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-sm font-black text-yellow-300">
+                            {selectedEquipmentDetail.name}（Lv.{selLv}/{MAX_EQUIPMENT_LEVEL}）
+                          </span>
+                          {isSelMax && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-pink-400 via-yellow-300 to-cyan-300 text-slate-950">
+                              🌈 鍛錬MAX【極】
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs font-bold text-slate-200 leading-relaxed mt-0.5">
+                          {selectedEquipmentDetail.description}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs font-bold text-slate-200 leading-relaxed">
-                      {selectedEquipmentDetail.description}
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        speakJapanese(
+                          `${selectedEquipmentDetail.name} レベル${selLv}！${selectedEquipmentDetail.description}`,
+                          soundEnabled
+                        )
+                      }
+                      className="px-3 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs shrink-0 flex items-center gap-1 cursor-pointer"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                      <span>きく</span>
+                    </button>
+                  </div>
+
+                  {/* 鍛錬ステータス表示＆かじや強化ボタン */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
+                    <div className="flex flex-wrap gap-1.5 text-[11px] font-black text-emerald-300">
+                      <span className="px-2 py-0.5 rounded bg-slate-950">❤️HP+{selScaled.hpBonus}</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-950">💧MP+{selScaled.mpBonus}</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-950">⚔️ちから+{selScaled.atkBonus}</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-950">🛡️まもり+{selScaled.defBonus}</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-950">💨はやさ+{selScaled.spdBonus}</span>
+                    </div>
+
+                    {onUpgradeEquipment && (
+                      <button
+                        type="button"
+                        disabled={isSelMax || expOrbs <= 0}
+                        onClick={() => {
+                          if (isSelMax || expOrbs <= 0) return;
+                          onUpgradeEquipment(selectedEquipmentDetail.id);
+                          playTreasureChestSound();
+                          speakJapanese(
+                            `カン！カン！カン！かじやで ${selectedEquipmentDetail.name} が レベル${selLv + 1} に パワーアップしたぞー！`,
+                            soundEnabled
+                          );
+                        }}
+                        className={`px-3.5 py-2 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                          isSelMax
+                            ? 'bg-slate-800 text-amber-300 border border-amber-400/40 cursor-default'
+                            : expOrbs > 0
+                            ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-950 border-2 border-white shadow-[0_3px_0_#0f766e]'
+                            : 'bg-slate-800 text-slate-400 border border-slate-700 cursor-not-allowed'
+                        }`}
+                      >
+                        {isSelMax ? (
+                          <span>👑 鍛錬MAX！</span>
+                        ) : expOrbs > 0 ? (
+                          <span>🔨 きたえる！（🌟玉1こ → Lv.{selLv + 1}）</span>
+                        ) : (
+                          <span>🔨 きたえる（🌟玉がたりないよ）</span>
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    speakJapanese(
-                      `${selectedEquipmentDetail.name}！${selectedEquipmentDetail.description}`,
-                      soundEnabled
-                    )
-                  }
-                  className="px-3 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs shrink-0 flex items-center gap-1 cursor-pointer"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  <span>きく</span>
-                </button>
-              </div>
-            )}
+              );
+            })()}
           </div>
         </div>
       )}

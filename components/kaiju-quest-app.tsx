@@ -37,6 +37,7 @@ import {
   getAwakeningCost,
   MAX_KAIJU_LEVEL,
   MAX_AWAKENING_STAR,
+  MAX_EQUIPMENT_LEVEL,
   AwakeningStar,
   EquipmentItem,
 } from '@/lib/kaiju-data';
@@ -76,6 +77,7 @@ interface SavedAppState {
   rewardedNightBonus?: boolean;
   recruitedBossKaijuIds?: string[];
   unlockedEquipmentIds?: string[];
+  equipmentLevels?: Record<string, number>;
   chestKeys?: number;
   tournamentWins?: number;
   zukanViewMode?: 'grid3' | 'grid4' | 'card2';
@@ -98,6 +100,7 @@ export default function KaijuQuestApp() {
   const [partnerKaijuId, setPartnerKaijuId] = useState<string | null>('fire-dino');
   const [starBalls, setStarBalls] = useState<number>(2); // 初回から2個持っていてすぐ集まるワクワク感！
   const [unlockedEquipmentIds, setUnlockedEquipmentIds] = useState<string[]>(['eq-arale-cap']); // 最初から1つプレゼント！
+  const [equipmentLevels, setEquipmentLevels] = useState<Record<string, number>>({});
   const [chestKeys, setChestKeys] = useState<number>(1); // 最初から金のたからばこ1個プレゼント！
   const [tournamentWins, setTournamentWins] = useState<number>(0);
   const [battleSubMode, setBattleSubMode] = useState<'tournament' | 'raid'>('tournament');
@@ -219,6 +222,9 @@ export default function KaijuQuestApp() {
           if (Array.isArray(parsed.unlockedEquipmentIds) && parsed.unlockedEquipmentIds.length > 0) {
             setUnlockedEquipmentIds(parsed.unlockedEquipmentIds);
           }
+          if (parsed.equipmentLevels && typeof parsed.equipmentLevels === 'object') {
+            setEquipmentLevels(parsed.equipmentLevels);
+          }
           if (typeof parsed.chestKeys === 'number') {
             setChestKeys(parsed.chestKeys);
           }
@@ -259,6 +265,7 @@ export default function KaijuQuestApp() {
         rewardedNightBonus,
         recruitedBossKaijuIds,
         unlockedEquipmentIds,
+        equipmentLevels,
         chestKeys,
         tournamentWins,
         zukanViewMode,
@@ -281,6 +288,7 @@ export default function KaijuQuestApp() {
     rewardedNightBonus,
     recruitedBossKaijuIds,
     unlockedEquipmentIds,
+    equipmentLevels,
     chestKeys,
     tournamentWins,
     zukanViewMode,
@@ -367,12 +375,39 @@ export default function KaijuQuestApp() {
     });
   };
 
-  // たからばこ開封ハンドラー
+  // たからばこ開封ハンドラー（初入手は登録＋Lv.1、すでに持っていれば鍛錬レベル+1）
   const handleOpenChest = (obtainedItem: EquipmentItem) => {
     setChestKeys((prev) => Math.max(0, prev - 1));
-    setUnlockedEquipmentIds((prev) =>
-      prev.includes(obtainedItem.id) ? prev : [...prev, obtainedItem.id]
-    );
+    const alreadyHas = unlockedEquipmentIds.includes(obtainedItem.id);
+    if (!alreadyHas) {
+      setUnlockedEquipmentIds((prev) =>
+        prev.includes(obtainedItem.id) ? prev : [...prev, obtainedItem.id]
+      );
+      setEquipmentLevels((prev) => ({
+        ...prev,
+        [obtainedItem.id]: prev[obtainedItem.id] ?? 1,
+      }));
+    } else {
+      setEquipmentLevels((prev) => {
+        const currentLv = prev[obtainedItem.id] ?? 1;
+        return {
+          ...prev,
+          [obtainedItem.id]: Math.min(MAX_EQUIPMENT_LEVEL, currentLv + 1),
+        };
+      });
+    }
+  };
+
+  // かじや鍛錬：けいけんち玉1個を消費して装備レベルを+1（最大Lv.10）
+  const handleUpgradeEquipment = (equipmentId: string) => {
+    if (expOrbs <= 0) return;
+    const currentLv = equipmentLevels[equipmentId] ?? 1;
+    if (currentLv >= MAX_EQUIPMENT_LEVEL) return;
+    setExpOrbs((prev) => Math.max(0, prev - 1));
+    setEquipmentLevels((prev) => ({
+      ...prev,
+      [equipmentId]: Math.min(MAX_EQUIPMENT_LEVEL, (prev[equipmentId] ?? 1) + 1),
+    }));
   };
 
   // トーナメント優勝ごほうびハンドラー
@@ -889,7 +924,7 @@ export default function KaijuQuestApp() {
   // 現在のあいぼう怪獣データ
   const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
   const partnerKaiju = KAIJU_LIST.find((k) => k.id === activePartnerId) || KAIJU_LIST[0];
-  const partnerStats = getKaijuStats(partnerKaiju, kaijuProgress[partnerKaiju.id]);
+  const partnerStats = getKaijuStats(partnerKaiju, kaijuProgress[partnerKaiju.id], equipmentLevels);
 
   // 選択中の属性×タイプに未解放の怪獣がいるかチェック（大魔王は対戦限定のため除外）
   const hasLockedCandidateForSelection = KAIJU_LIST.some(
@@ -2224,11 +2259,14 @@ export default function KaijuQuestApp() {
                 }
                 partnerProgress={kaijuProgress[partnerKaiju.id]}
                 unlockedEquipmentIds={unlockedEquipmentIds}
+                equipmentLevels={equipmentLevels}
+                expOrbs={expOrbs}
                 chestKeys={chestKeys}
                 tournamentWins={tournamentWins}
                 soundEnabled={soundEnabled}
                 onOpenChest={handleOpenChest}
                 onEquipItem={handleEquipItem}
+                onUpgradeEquipment={handleUpgradeEquipment}
                 onTournamentWinReward={handleTournamentWinReward}
               />
             ) : (

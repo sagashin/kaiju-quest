@@ -418,6 +418,7 @@ export interface KaijuComputedStats {
   unlockedSkills: KaijuSkill[];
   allSkills: KaijuSkill[];
   equippedItem?: EquipmentItem;
+  equippedItemLevel?: number;
 }
 
 export interface KaijuData {
@@ -3662,10 +3663,36 @@ export function getEquipmentById(id?: string): EquipmentItem | undefined {
   return EQUIPMENT_LIST.find((item) => item.id === id);
 }
 
+export const MAX_EQUIPMENT_LEVEL = 10;
+
 /**
- * たからばこを開けたときに、まだ持っていない装備を最優先で抽選して返す
+ * 装備の鍛錬レベル（1〜10）に応じたステータスボーナスを返す（Lv+1ごとに+20%、Lv.10で2.8倍）
  */
-export function rollTreasureChestEquipment(unlockedIds: string[] = []): {
+export function getScaledEquipmentStats(item: EquipmentItem, level: number = 1) {
+  const clampedLevel = Math.min(MAX_EQUIPMENT_LEVEL, Math.max(1, Math.floor(level || 1)));
+  const multiplier = 1 + (clampedLevel - 1) * 0.2;
+  const baseAtk = item.atkBonus ?? item.attackBonus ?? 0;
+  const baseDef = item.defBonus ?? item.defenseBonus ?? 0;
+  const baseSpd = item.spdBonus ?? item.speedBonus ?? 0;
+  return {
+    level: clampedLevel,
+    isMax: clampedLevel >= MAX_EQUIPMENT_LEVEL,
+    hpBonus: Math.round(item.hpBonus * multiplier),
+    mpBonus: Math.round(item.mpBonus * multiplier),
+    atkBonus: Math.round(baseAtk * multiplier),
+    defBonus: Math.round(baseDef * multiplier),
+    spdBonus: Math.round(baseSpd * multiplier),
+  };
+}
+
+/**
+ * たからばこを開けたときに、まだ持っていない装備を最優先で抽選し、
+ * コンプ後は Lv.10 未満の装備を優先して強化対象として抽選する
+ */
+export function rollTreasureChestEquipment(
+  unlockedIds: string[] = [],
+  equipmentLevels: Record<string, number> = {}
+): {
   item: EquipmentItem;
   isNew: boolean;
 } {
@@ -3674,14 +3701,22 @@ export function rollTreasureChestEquipment(unlockedIds: string[] = []): {
     const picked = locked[Math.floor(Math.random() * locked.length)];
     return { item: picked, isNew: true };
   }
-  const picked = EQUIPMENT_LIST[Math.floor(Math.random() * EQUIPMENT_LIST.length)];
+  const upgradeable = EQUIPMENT_LIST.filter(
+    (item) => (equipmentLevels[item.id] ?? 1) < MAX_EQUIPMENT_LEVEL
+  );
+  const pool = upgradeable.length > 0 ? upgradeable : EQUIPMENT_LIST;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
   return { item: picked, isNew: false };
 }
 
 /**
  * 怪獣の現在のレベル・進化段階・色違い覚醒ランク・ドラクエ風ステータス・習得技を計算する
  */
-export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): KaijuComputedStats {
+export function getKaijuStats(
+  kaiju: KaijuData,
+  progress?: KaijuProgress,
+  equipmentLevels?: Record<string, number>
+): KaijuComputedStats {
   const level = Math.min(MAX_KAIJU_LEVEL, Math.max(1, progress?.level ?? 1));
   const exp = Math.max(0, progress?.exp ?? 0);
   const awakeningStar = Math.min(
@@ -3741,13 +3776,19 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     displayName = `【虹神】${displayName}`;
   }
 
-  // 装備アイテムのボーナス加算
+  // 装備アイテムのボーナス加算（鍛錬レベル反映）
   const equippedItem = getEquipmentById(progress?.equippedItemId);
-  const equipHp = equippedItem?.hpBonus ?? 0;
-  const equipMp = equippedItem?.mpBonus ?? 0;
-  const equipAtk = equippedItem?.atkBonus ?? (equippedItem?.attackBonus ?? 0);
-  const equipDef = equippedItem?.defBonus ?? (equippedItem?.defenseBonus ?? 0);
-  const equipSpd = equippedItem?.spdBonus ?? (equippedItem?.speedBonus ?? 0);
+  const equippedItemLevel = equippedItem
+    ? Math.min(MAX_EQUIPMENT_LEVEL, Math.max(1, equipmentLevels?.[equippedItem.id] ?? 1))
+    : undefined;
+  const scaledEquip = equippedItem
+    ? getScaledEquipmentStats(equippedItem, equippedItemLevel ?? 1)
+    : undefined;
+  const equipHp = scaledEquip?.hpBonus ?? 0;
+  const equipMp = scaledEquip?.mpBonus ?? 0;
+  const equipAtk = scaledEquip?.atkBonus ?? 0;
+  const equipDef = scaledEquip?.defBonus ?? 0;
+  const equipSpd = scaledEquip?.spdBonus ?? 0;
 
   // ステータス計算（色違い覚醒ランク＋装備ボーナス加算！）
   const maxHp =
@@ -3797,6 +3838,7 @@ export function getKaijuStats(kaiju: KaijuData, progress?: KaijuProgress): Kaiju
     unlockedSkills,
     allSkills,
     equippedItem,
+    equippedItemLevel,
   };
 }
 
