@@ -79,6 +79,7 @@ interface SavedAppState {
   chestKeys?: number;
   tournamentWins?: number;
   zukanViewMode?: 'grid3' | 'grid4' | 'card2';
+  zukanSortOrder?: 'newest' | 'oldest';
 }
 
 const STORAGE_KEY = 'kaiju_oshitaku_quest_v1';
@@ -131,6 +132,7 @@ export default function KaijuQuestApp() {
   const [zukanFilter, setZukanFilter] = useState<'all' | ElementId>('all');
   const [zukanInsectTypeFilter, setZukanInsectTypeFilter] = useState<'all' | KaijuTypeId>('all');
   const [zukanViewMode, setZukanViewMode] = useState<'grid3' | 'card2'>('grid3');
+  const [zukanSortOrder, setZukanSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [selectedZukanKaiju, setSelectedZukanKaiju] = useState<KaijuData | null>(null);
 
   // 初回マウント時に localStorage から読み込み
@@ -228,6 +230,9 @@ export default function KaijuQuestApp() {
           } else if (parsed.zukanViewMode === 'grid3' || parsed.zukanViewMode === 'grid4') {
             setZukanViewMode('grid3');
           }
+          if (parsed.zukanSortOrder === 'newest' || parsed.zukanSortOrder === 'oldest') {
+            setZukanSortOrder(parsed.zukanSortOrder);
+          }
         }
       } catch {
         // ignore localStorage read errors
@@ -257,6 +262,7 @@ export default function KaijuQuestApp() {
         chestKeys,
         tournamentWins,
         zukanViewMode,
+        zukanSortOrder,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch {
@@ -278,6 +284,7 @@ export default function KaijuQuestApp() {
     chestKeys,
     tournamentWins,
     zukanViewMode,
+    zukanSortOrder,
     isHydrated,
   ]);
 
@@ -863,17 +870,21 @@ export default function KaijuQuestApp() {
       ? KAIJU_LIST
       : KAIJU_LIST.filter((k) => (k.category || 'kaiju') === zukanCategoryFilter);
 
-  const filteredZukanList = categoryFilteredZukanList.filter((k) => {
-    if (zukanFilter !== 'all' && k.element !== zukanFilter) return false;
-    if (
-      zukanCategoryFilter === 'insect' &&
-      zukanInsectTypeFilter !== 'all' &&
-      k.type !== zukanInsectTypeFilter
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const filteredZukanList = categoryFilteredZukanList
+    .filter((k) => {
+      if (zukanFilter !== 'all' && k.element !== zukanFilter) return false;
+      if (
+        zukanCategoryFilter === 'insect' &&
+        zukanInsectTypeFilter !== 'all' &&
+        k.type !== zukanInsectTypeFilter
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .sort((a, b) =>
+      zukanSortOrder === 'newest' ? b.dexNumber - a.dexNumber : a.dexNumber - b.dexNumber
+    );
 
   // 現在のあいぼう怪獣データ
   const activePartnerId = partnerKaijuId || unlockedKaijuIds[0] || 'fire-dino';
@@ -1812,44 +1823,81 @@ export default function KaijuQuestApp() {
               </div>
             </div>
 
-            {/* 表示モード切り替え＆件数バー */}
-            <div className="flex items-center justify-between gap-2 px-1">
+            {/* 表示モード＆並び順切り替え＆件数バー */}
+            <div className="flex flex-wrap items-center justify-between gap-2 px-1">
               <div className="text-xs sm:text-sm font-bold text-slate-300">
                 <span className="text-amber-300 font-black">{filteredZukanList.length}</span> 体を表示中
               </div>
-              <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-white/10 gap-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTapSound(600);
-                    setZukanViewMode('grid3');
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
-                    zukanViewMode === 'grid3'
-                      ? 'bg-amber-400 text-slate-950 shadow'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                  title="ポケモンGO風 3列表示"
-                >
-                  <Grid className="w-3.5 h-3.5" />
-                  <span>3列 (GO風)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTapSound(600);
-                    setZukanViewMode('card2');
-                  }}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
-                    zukanViewMode === 'card2'
-                      ? 'bg-amber-400 text-slate-950 shadow'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                  title="カード 2列表示"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span>2列 (大カード)</span>
-                </button>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {/* 新しい順 / 古い順 ソート切り替え */}
+                <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-white/10 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound(660);
+                      setZukanSortOrder('newest');
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+                      zukanSortOrder === 'newest'
+                        ? 'bg-sky-400 text-slate-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="新しいキャラから順番に表示"
+                  >
+                    <span>🆕 新しい順</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound(600);
+                      setZukanSortOrder('oldest');
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+                      zukanSortOrder === 'oldest'
+                        ? 'bg-sky-400 text-slate-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="No.1から古い順に表示"
+                  >
+                    <span>📜 古い順</span>
+                  </button>
+                </div>
+
+                {/* 3列 / 2列 表示モード切り替え */}
+                <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-white/10 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound(600);
+                      setZukanViewMode('grid3');
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                      zukanViewMode === 'grid3'
+                        ? 'bg-amber-400 text-slate-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="ポケモンGO風 3列表示"
+                  >
+                    <Grid className="w-3.5 h-3.5" />
+                    <span>3列 (GO風)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound(600);
+                      setZukanViewMode('card2');
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                      zukanViewMode === 'card2'
+                        ? 'bg-amber-400 text-slate-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                    title="カード 2列表示"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>2列 (大カード)</span>
+                  </button>
+                </div>
               </div>
             </div>
 
